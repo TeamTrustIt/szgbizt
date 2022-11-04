@@ -18,16 +18,19 @@ int main(int argc, char *argv[])
     std::cout << "Output file: " << output_path << std::endl;
 
     CAFF caff(input_path);
-    bool caff_parse_success = caff.ParseCAFF();
-
-    if (caff_parse_success)
-    {
-        std::cout << "CAFF file successfully parsed!" << std::endl;
-    }
-    else
+    if (!caff.ParseCAFF())
     {
         std::cout << "Error - CAFF file couldn't be parsed!" << std::endl;
+        return 1;
     }
 
+    std::cout << "CAFF file successfully parsed!" << std::endl;
+    if(!caff.GenerateOutput(output_path))
+    {
+        std::cout << "Error - Coulnd't create output files!" << std::endl;
+        return 1;
+    }
+
+    std::cout << "Output files successfully generated!" << std::endl;
     return 0;
 }

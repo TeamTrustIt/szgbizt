@@ -8,6 +8,23 @@
 
 #include "ciff.h"
 
+struct ParsedCreditsData
+{
+    uint16_t year = 0;
+    uint8_t month = 0;
+    uint8_t day = 0;
+    uint8_t hour = 0;
+    uint8_t minute = 0;
+
+    std::string creator;
+};
+
+struct ParsedCAFFData
+{
+    ParsedCreditsData credits_data;
+    std::vector<ParsedCIFFData> ciff_data;
+};
+
 class CAFF
 {
 public:
@@ -15,19 +32,17 @@ public:
     
     bool ParseCAFF();
 
-    void WriteOutCAFF();
+    bool GenerateOutput(std::string output_path);
 
 private:
-    const uint8_t HEADER_ID = 0x1;
-    const uint8_t CREDITS_ID = 0x2;
-    const uint8_t ANIMATION_ID = 0x3;
+    static constexpr uint8_t HEADER_ID = 0x1;
+    static constexpr uint8_t CREDITS_ID = 0x2;
+    static constexpr uint8_t ANIMATION_ID = 0x3;
 
     struct Block
     {
         uint8_t ID = 0;
-
         uint64_t length = 0;
-        std::vector<uint8_t> data;
     };
     const Block* ReadBlock(std::ifstream& input_stream);
 
@@ -41,7 +56,7 @@ private:
 
     struct Credits
     {
-        uint16_t year;
+        uint16_t year = 0;
         uint8_t month = 0;
         uint8_t day = 0;
         uint8_t hour = 0;
@@ -50,16 +65,19 @@ private:
         uint64_t creator_len = 0;
         std::vector<uint8_t> creator;
     };
-    const Credits* ReadCredits(std::ifstream& input_stream, const Block* block);
+    const CAFF::Credits* ReadCredits(std::ifstream& input_stream, const Block* block);
 
     struct Animation
     {
         uint64_t duration = 0;
-        std::vector<CIFF> ciff;
+        CIFF* ciff;
     };
-    void ReadAnimation(std::ifstream& input_stream){};
+    const Animation* ReadAnimation(std::ifstream& input_stream, const Block* block);
 
+    void GenerateImage(std::string output_path, ParsedCIFFData ciff_data);
 
 private:
     std::string& m_path;
+
+    ParsedCAFFData m_parsed_data;
 };
