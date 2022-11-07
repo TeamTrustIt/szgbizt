@@ -1,0 +1,1 @@
+../../caff_parser.exe ./input_files/missing_block.caff ./output_files/should_not_happen.json

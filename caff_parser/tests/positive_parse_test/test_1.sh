@@ -1,0 +1,1 @@
+../../caff_parser.exe ./input_files/1.caff ./output_files/1.json

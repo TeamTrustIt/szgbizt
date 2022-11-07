@@ -43,6 +43,15 @@ bool CAFF::ParseCAFF()
     while(remaining_anim_blocks > 0 || remaining_credit_blocks > 0)
     {
         const Block* block = ReadBlock(input_stream);
+        if (input_stream.fail())
+        {
+            std::cout<<"CAFF::Error - Missing Animation or Credits block! File couldn't be parsed!"<<std::endl;
+            delete block;
+            delete header;
+            delete header_block;
+            input_stream.close();
+            return false;
+        }
         
         switch (block->ID)
         {
@@ -51,6 +60,7 @@ bool CAFF::ParseCAFF()
                 if (remaining_credit_blocks <=0 )
                 {
                     std::cout << "CAFF::Error - More credit blocks than one! File couldn't be parsed!" << std::endl;
+                    delete block;
                     delete header;
                     delete header_block;
                     input_stream.close();
@@ -62,6 +72,7 @@ bool CAFF::ParseCAFF()
                 if (credits == nullptr)
                 {
                     std::cout << "CAFF::Error - Error during Credits parse!" << std::endl;
+                    delete block;
                     delete header;
                     delete header_block;
                     input_stream.close();
@@ -99,6 +110,15 @@ bool CAFF::ParseCAFF()
                 m_parsed_data.ciff_data.push_back(ciff_data);
                 delete animation;
                 break;
+            }
+            default:
+            {
+                std::cout << "CAFF::Error - Unknown Block ID! File couldn't be parsed!" << std::endl;
+                delete block;
+                delete header;
+                delete header_block;
+                input_stream.close();
+                return false;
             }
         }
 

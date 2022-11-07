@@ -1,0 +1,1 @@
+../../caff_parser.exe ./input_files/doesnt_start_with_header.caff ./output_files/should_not_happen.json
