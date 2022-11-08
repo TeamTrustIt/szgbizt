@@ -32,7 +32,6 @@ bool CAFF::ParseCAFF()
     if (header == nullptr)
     {
         std::cout << "CAFF::Error - Error during Header parse!" << std::endl;
-        delete header;
         delete header_block;
         input_stream.close();
         return false;
@@ -168,6 +167,7 @@ const CAFF::Header* CAFF::ReadHeader(std::ifstream& input_stream, const Block* b
     if (magic_string != "CAFF")
     {
         std::cout << "CAFF::Error - Magic string doesn't equal 'CAFF'! File couldn't be parsed!" << std::endl;
+        delete header;
         return nullptr;
     }
 
@@ -176,6 +176,7 @@ const CAFF::Header* CAFF::ReadHeader(std::ifstream& input_stream, const Block* b
     if (header->header_size != block->length)
     {
         std::cout << "CAFF::Error - Header size doesn't equal block data length! File couldn't be parsed!" << std::endl;
+        delete header;
         return nullptr;
     }
 
@@ -212,6 +213,7 @@ const CAFF::Credits* CAFF::ReadCredits(std::ifstream& input_stream, const Block*
     if (credits->creator_len + 6 + 8 != block->length)
     {
         std::cout << "CAFF::Error - Credits size doesn't equal block data length! File couldn't be parsed!" << std::endl;
+        delete credits;
         return nullptr;
     }
 
@@ -248,12 +250,14 @@ const CAFF::Animation* CAFF::ReadAnimation(std::ifstream& input_stream, const Bl
     if (!animation->ciff->ParseCIFF())
     {
         std::cout << "CAFF::Error - Error during CIFF parse!" << std::endl;
+        delete animation;
         return nullptr;
     }
 
     if (animation->ciff->GetHeaderSize() + animation->ciff->GetContentSize() + 8 != block->length)
     {
         std::cout << "CAFF::Error - Animation size doesn't equal block data length! File couldn't be parsed!" << std::endl;
+        delete animation;
         return nullptr;
     }
     

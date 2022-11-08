@@ -39,6 +39,7 @@ const CIFF::Header* CIFF::ReadHeader(std::ifstream& input_stream)
     if (magic_string != "CIFF")
     {
         std::cout << "CIFF::Error - Magic string doesn't equal 'CIFF'! File couldn't be parsed!" << std::endl;
+        delete header;
         return nullptr;
     }
 
@@ -60,6 +61,7 @@ const CIFF::Header* CIFF::ReadHeader(std::ifstream& input_stream)
     if (header->content_size != header->width * header->height * 3)
     {
         std::cout << "CIFF::Error - Content Size doesn't equal Width * Height * 3! File couldn't be parsed!" << std::endl;
+        delete header;
         return nullptr;
     }
 
@@ -90,6 +92,7 @@ const CIFF::Header* CIFF::ReadHeader(std::ifstream& input_stream)
             if (tags_size <= 0)
             {
                 std::cout << "CIFF::Error - Last tag doesn't end with '\\0'! File couldn't be parsed!" << std::endl;
+                delete header;
                 return nullptr;
             }
 
@@ -98,6 +101,7 @@ const CIFF::Header* CIFF::ReadHeader(std::ifstream& input_stream)
             if (tags_char == '\n')
             {
                 std::cout << "CIFF::Error - Tag contains '\\n' character! File couldn't be parsed!" << std::endl;
+                delete header;
                 return nullptr;
             }
 
