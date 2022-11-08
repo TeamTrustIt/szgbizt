@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
 {
     if (argc != 3)
     {
-        std::cout << "CAFF parser only accepts 2 parameters!" << std::endl;
+        std::cout << "Error - CAFF parser only accepts 2 parameters!" << std::endl;
         return 1;
     }
 
@@ -16,6 +16,18 @@ int main(int argc, char *argv[])
 
     std::cout << "Input file: " << input_path << std::endl;
     std::cout << "Output file: " << output_path << std::endl;
+
+    if(input_path.substr(input_path.find_last_of(".") + 1) != "caff") 
+    {
+        std::cout << "Error - Input file doesn't have .caff extension!" << std::endl;
+        return 1;
+    }
+
+    if(output_path.substr(output_path.find_last_of(".") + 1) != "json") 
+    {
+        std::cout << "Error - Output file doesn't have .json extension!" << std::endl;
+        return 1;
+    }
 
     CAFF caff(input_path);
     if (!caff.ParseCAFF())

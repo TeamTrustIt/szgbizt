@@ -58,5 +58,20 @@ echo "* Test file with smaller header size:"
 echo
 echo "* Test file with unknown block:"
 ../caff_parser.exe ./negative_parse_test/input_files/unknown_block.caff ./negative_parse_test/output_files/should_not_happen.json
+echo
+echo "* Test file with fewer input parameters:"
+../caff_parser.exe a
+echo
+echo "* Test file with more input parameters:"
+../caff_parser.exe a b c
+echo
+echo "* Test file with not .caff input file:"
+../caff_parser.exe a b
+echo
+echo "* Test file with not .json input file:"
+../caff_parser.exe a.caff b
+echo
+echo "* Test file with not existing input file:"
+../caff_parser.exe a.caff b.json
 echo "-------------------------"
 echo
