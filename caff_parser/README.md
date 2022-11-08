@@ -1,10 +1,10 @@
 # CAFF Parser
 
 ## Build: 
-    ```make caff_parser``` vagy ```make```
+```make caff_parser``` vagy ```make```
 
 ## Futtatás: 
-    ```caff_parser.exe <input_file> <output_file>```
+```caff_parser.exe <input_file> <output_file>```
 
 ## Dependencys:
 * [nlohmann/json](https://github.com/nlohmann/json) - .json fájl írása
