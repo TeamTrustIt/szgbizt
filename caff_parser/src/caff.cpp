@@ -107,6 +107,8 @@ bool CAFF::ParseCAFF()
                 ParsedCIFFData ciff_data = animation->ciff->GetParsedData();
                 ciff_data.duration = animation->duration;
                 m_parsed_data.ciff_data.push_back(ciff_data);
+                
+                delete animation->ciff;
                 delete animation;
                 break;
             }
@@ -250,6 +252,7 @@ const CAFF::Animation* CAFF::ReadAnimation(std::ifstream& input_stream, const Bl
     if (!animation->ciff->ParseCIFF())
     {
         std::cout << "CAFF::Error - Error during CIFF parse!" << std::endl;
+        delete animation->ciff;
         delete animation;
         return nullptr;
     }
@@ -257,6 +260,7 @@ const CAFF::Animation* CAFF::ReadAnimation(std::ifstream& input_stream, const Bl
     if (animation->ciff->GetHeaderSize() + animation->ciff->GetContentSize() + 8 != block->length)
     {
         std::cout << "CAFF::Error - Animation size doesn't equal block data length! File couldn't be parsed!" << std::endl;
+        delete animation->ciff;
         delete animation;
         return nullptr;
     }
