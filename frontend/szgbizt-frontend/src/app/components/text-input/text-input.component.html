@@ -1,0 +1,22 @@
+<div class="relative flex {{classes}}">
+
+  <ng-container [ngSwitch]="inputType">
+
+    <ng-container *ngSwitchCase="'textArea'">
+
+      <textarea [ngModel]="value" (ngModelChange)="valueChange.emit($event)" [placeholder]="placeholder"
+                class="simpleTextInput">
+      </textarea>
+      <p class="absolute sign">{{placeholder}}</p>
+    </ng-container>
+
+    <ng-container *ngSwitchDefault>
+      <input [ngModel]="value" (ngModelChange)="valueChange.emit($event)"
+             class="simpleTextInput flex-grow"
+             [type]="inputType" [placeholder]="placeholder">
+      <p class="absolute sign">{{placeholder}}</p>
+    </ng-container>
+
+  </ng-container>
+
+</div>

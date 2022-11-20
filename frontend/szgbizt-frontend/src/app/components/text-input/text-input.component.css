@@ -1,0 +1,31 @@
+.simpleTextInput {
+  outline: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  border: black solid 1px;
+}
+.simpleTextInput:focus {
+  border: green solid 1px;
+}
+.sign {
+  visibility: hidden;
+  position: absolute;
+  top: -55%;
+  left: 3%;
+  font-size: 13px;
+  z-index: 2;
+  background: white;
+  padding: 1px;
+}
+
+.simpleTextInput:not(:placeholder-shown)  ~ .sign{
+  visibility: visible;
+}
+
+textarea{
+  resize: none;
+}
+
+textarea ~ .sign {
+  top: -21px;
+}

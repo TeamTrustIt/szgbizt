@@ -1,0 +1,18 @@
+<div class="flex justify-between navbar">
+
+  <div class="flex">
+    <img class="simpleImage pr-10" src="assets/img/logo-circle.png" alt="logo">
+    <p class="bold">SECUSHOP</p>
+  </div>
+
+  <div *ngIf="!loggedIn">
+    <app-button routerLink="/login" text="Sign in"></app-button>
+  </div>
+
+  <div *ngIf="loggedIn" class="align-center flex justify-between">
+    <app-button routerLink="/home" type="nav" text="Home"></app-button>
+    <app-button routerLink="/profile" type="nav" text="Profile"></app-button>
+    <app-button (onClick)="logout()" type="nav" text="Log out"></app-button>
+  </div>
+
+</div>

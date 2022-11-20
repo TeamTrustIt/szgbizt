@@ -1,0 +1,53 @@
+.simpleButton {
+  border-radius: 10px;
+  border: 0;
+  background: #03a8f3;
+  color: white;
+  font-weight: bold;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+.simpleButton:hover {
+  background: rgba(3, 168, 243, 0.68);
+}
+.simpleButton:disabled {
+  background: rgba(3, 168, 243, 0.68);
+  cursor: progress;
+}
+.simpleButton:active {
+  background: rgba(3, 168, 243, 0.57);
+}
+
+.iconButton {
+  border: 0;
+  height: 40px;
+  aspect-ratio: 1/1;
+  cursor: pointer;
+  background: transparent;
+}
+.iconButton:hover {
+
+}
+.iconButton:disabled {
+  cursor: progress;
+}
+.iconButton:disabled:active {
+  cursor: progress;
+  scale: 100%
+}
+.iconButton:active {
+  scale: 110%;
+}
+
+.navButton {
+  border: transparent 1px solid;
+  background: transparent;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+}
+.navButton:hover {
+  border-bottom: black solid 1px;
+  //border-top: black solid 1px;
+}
+

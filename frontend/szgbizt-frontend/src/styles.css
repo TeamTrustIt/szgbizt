@@ -1,0 +1,144 @@
+/* You can add global styles to this file, and also import other style files */
+body {
+  margin: 0;
+}
+
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1vw;
+}
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1vw;
+}
+@media screen and (max-width: 1050px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1vw;
+  }
+  .grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1vw;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1vw;
+  }
+}
+
+.absolute {
+  position: absolute;
+}
+.relative {
+  position: relative;
+}
+
+.visible {
+  visibility: visible;
+}
+.invisible {
+  visibility: hidden;
+}
+
+.flex {
+  display: flex;
+  flex-direction: row;
+}
+.flex-grow {
+  flex-grow: 1;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.justify-right {
+  justify-content: right;
+}
+.align-center {
+  display: flex;
+  align-items: center;
+}
+.justify-center {
+  justify-content: center;
+}
+.items-center {
+  align-items: center;
+}
+
+.w-fit {
+  width: fit-content;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.max-w-45 {
+  max-width: 45%;
+}
+
+.w-20 {
+  width: 20%;
+}
+.w-full {
+  width: 100%;
+}
+.w-35 {
+  width: 35%;
+}
+.w-45 {
+  width: 45%;
+}
+.w-55 {
+  width: 55%;
+}
+.p-2 {
+  padding: 2rem;
+}
+.pr-10 {
+  padding-right: 10px;
+}
+.mb-5 {
+  margin-bottom: 1rem;
+}
+.mb-10 {
+  margin-bottom: 2rem;
+}
+.mb-20 {
+  margin-bottom: 4rem;
+}
+.mt-10s {
+  margin-top: 10%;
+}
+.mt-2 {
+  margin-top: 2rem;
+}
+.bg-red {
+  background-color: red !important;
+}
+.simpleImage {
+  object-fit: cover;
+  position: relative;
+}
+.simpleImage:before {
+  content: ' ';
+  display: block;
+  position: absolute;
+  aspect-ratio: 6/19;
+  height: 100%;
+  width: 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-image: url("assets/img/image404.png");
+}

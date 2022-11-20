@@ -1,0 +1,18 @@
+.simpleCard {
+  border-radius: 20px;
+  background: #ebebeb;
+  box-shadow:  14px 14px 28px #d4d4d4,
+  -14px -14px 28px #ffffff;
+}
+
+.simpleCardBottom {
+  padding: 1rem;
+}
+
+.cardImage {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+

@@ -1,0 +1,16 @@
+<div class="flex flex-col p-2">
+
+  <div class="flex flex-col align-center">
+
+    <div class="searchbar mb-5">
+      <app-text-input [(value)]="searchText" class="flex-grow" placeholder="Search"></app-text-input>
+      <app-button (onClick)="search()" text="Search"></app-button>
+    </div>
+
+    <div class="grid w-full mt-2">
+      <app-caff-card (onDetailsClicked)="navigateToDetails(c.id)" *ngFor="let c of caffsFiltered" [caffData]="c"></app-caff-card>
+    </div>
+
+  </div>
+
+</div>

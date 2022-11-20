@@ -1,0 +1,27 @@
+<div class="p-2">
+
+  <div class="profilePage">
+
+    <div class="w-35">
+      <p class="bold mb-5">User Profile:</p>
+      <app-text-input classes="mb-5" placeholder="Username" [(value)]="userO.name"></app-text-input>
+      <app-text-input [(value)]="userO.email" classes="mb-10" placeholder="Email Address"></app-text-input>
+      <div class="flex justify-between">
+        <app-button classes="bg-red" text="Delete User"></app-button>
+        <app-button text="Save"></app-button>
+      </div>
+    </div>
+
+    <div class="w-55">
+      <div class="mb-5 flex items-center">
+        <p class="bold pr-10">User's Caff Files:</p>
+        <app-button routerLink="/upload" icon="add" type="icon"></app-button>
+      </div>
+      <div class="grid-2">
+        <app-caff-card [deleteEnabled]="true" (onDetailsClicked)="navigateToDetail(c.id)" *ngFor="let c of userO.caffs" [caffData]="c"></app-caff-card>
+      </div>
+    </div>
+
+  </div>
+
+</div>

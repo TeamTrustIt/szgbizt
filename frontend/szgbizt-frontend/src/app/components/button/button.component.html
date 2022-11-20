@@ -1,0 +1,16 @@
+<ng-container [ngSwitch]="type">
+
+  <button *ngSwitchCase="'default'" (click)="onClicked()" [disabled]="disabled" class="simpleButton {{classes}}">
+    {{text}}
+  </button>
+
+  <button *ngSwitchCase="'nav'" (click)="onClicked()" [disabled]="disabled" class="navButton {{classes}}">
+    {{text}}
+  </button>
+
+  <button *ngSwitchCase="'icon'" (click)="onClicked()" [disabled]="disabled" class="iconButton {{classes}}">
+    <img *ngIf="icon === 'delete'" class="simpleImage" src="assets/svg/delete.svg" alt="delete icon">
+    <img *ngIf="icon === 'add'" class="simpleImage" src="assets/svg/add.svg" alt="add icon">
+  </button>
+
+</ng-container>

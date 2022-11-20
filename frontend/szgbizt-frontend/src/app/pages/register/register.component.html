@@ -1,0 +1,14 @@
+<div class="flex justify-center mt-10s">
+
+  <div class="flex-col flex items-center">
+    <app-text-input classes="mb-5" placeholder="Email Address"></app-text-input>
+    <app-text-input classes="mb-5" placeholder="Username"></app-text-input>
+    <app-text-input classes="mb-5" inputType="password" placeholder="Password"></app-text-input>
+    <app-text-input classes="mb-10" inputType="password" placeholder="Confirm Password"></app-text-input>
+    <div class="flex justify-between w-full items-center">
+      <app-button type="nav" routerLink="/login" text="Sign In"></app-button>
+      <app-button (onClick)="register()" text="Sign Up"></app-button>
+    </div>
+  </div>
+
+</div>
