@@ -51,3 +51,32 @@
   //border-top: black solid 1px;
 }
 
+.square {
+  width: 30px;
+  aspect-ratio: 1/1;
+}
+.buyButton {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  border-radius: 10px;
+  border: 0;
+  background: #03a8f3;
+  color: white;
+  font-weight: bold;
+  padding: 5px 20px;
+  cursor: pointer;
+}
+
+.buyButton:hover {
+  background: rgba(3, 168, 243, 0.68);
+}
+.buyButton:disabled {
+  background: rgba(3, 168, 243, 0.68);
+  cursor: progress;
+}
+.buyButton:active {
+  background: rgba(3, 168, 243, 0.57);
+}
+

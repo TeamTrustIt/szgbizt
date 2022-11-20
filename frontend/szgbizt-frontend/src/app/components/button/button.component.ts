@@ -8,7 +8,7 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
 export class ButtonComponent {
 
   @Input() text: string = 'Button'
-  @Input() type: 'default' | 'nav' | 'icon' = 'default'
+  @Input() type: 'default' | 'nav' | 'icon' | 'buy' = 'default'
   @Input() icon: 'delete' | 'add' = 'delete'
   @Input() classes: string = ''
   @Input() disabled: boolean = false

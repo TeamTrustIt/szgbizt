@@ -8,6 +8,14 @@
     {{text}}
   </button>
 
+  <button *ngSwitchCase="'buy'" (click)="onClicked()" [disabled]="disabled" class="buyButton {{classes}}">
+    <!---->
+    <div class="square">
+      <img src="assets/svg/buy.svg" class="simpleImage" alt="buy icon">
+    </div>
+    <p class="bold">{{text}}</p>
+  </button>
+
   <button *ngSwitchCase="'icon'" (click)="onClicked()" [disabled]="disabled" class="iconButton {{classes}}">
     <img *ngIf="icon === 'delete'" class="simpleImage" src="assets/svg/delete.svg" alt="delete icon">
     <img *ngIf="icon === 'add'" class="simpleImage" src="assets/svg/add.svg" alt="add icon">
