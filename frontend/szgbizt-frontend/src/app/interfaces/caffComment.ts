@@ -1,4 +1,4 @@
-export interface Comment {
+export interface CaffComment {
   id: number,
   authorName: string,
   message: string,

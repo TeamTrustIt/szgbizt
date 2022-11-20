@@ -2,8 +2,8 @@
 
   <form  class="flex-col flex items-center">
     <input class="fileInput mb-5" type="file" (change)="setFile($event)" accept="">
-    <app-text-input classes="mb-5 w-full" placeholder="File name"></app-text-input>
-    <app-text-input inputType="textArea" classes="" placeholder="Description"></app-text-input>
+    <app-text-input [(value)]="name" classes="mb-5 w-full" placeholder="File name"></app-text-input>
+    <app-text-input [(value)]="description" inputType="textArea" classes="" placeholder="Description"></app-text-input>
     <p *ngIf="error !== ''" style="color: red">{{error}}</p>
 
     <app-button classes="mt-2" (onClick)="upload()" text="Upload"></app-button>

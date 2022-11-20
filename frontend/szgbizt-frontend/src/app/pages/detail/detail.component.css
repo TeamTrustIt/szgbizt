@@ -1,0 +1,30 @@
+.detailPage {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  justify-content: space-between;
+}
+.-mt-2 {
+  margin-top: -2rem;
+}
+.flex-mobile {
+  display: flex;
+  flex-direction: row;
+}
+@media screen and (max-width: 800px) {
+  .flex-mobile {
+    flex-direction: column;
+  }
+  .detailPage {
+    flex-direction: column;
+  }
+  .w-35 {
+    width: 100%;
+  }
+  .w-45 {
+    width: 100%;
+  }
+  .w-55 {
+    width: 100%;
+  }
+}

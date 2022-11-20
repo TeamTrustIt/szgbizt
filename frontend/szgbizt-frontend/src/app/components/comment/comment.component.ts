@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {Comment} from "../../interfaces/comment";
+import {CaffComment} from "../../interfaces/caffComment";
 
 @Component({
   selector: 'app-comment',
@@ -8,6 +8,6 @@ import {Comment} from "../../interfaces/comment";
 })
 export class CommentComponent {
 
-  @Input() comment: Comment = {authorName: "Test Author", caffId: 0, id: 0, message: "Test Message", uploadDate: new Date(Date.now())}
+  @Input() comment: CaffComment = {authorName: "Test Author", caffId: 0, id: 0, message: "Test Message", uploadDate: new Date(Date.now())}
 
 }

@@ -1,6 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DetailComponent } from './detail.component';
+import {CommentModule} from "../../components/comment/comment.module";
+import {TextInputModule} from "../../components/text-input/text-input.module";
+import {ButtonModule} from "../../components/button/button.module";
 
 
 
@@ -9,7 +12,10 @@ import { DetailComponent } from './detail.component';
     DetailComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    CommentModule,
+    TextInputModule,
+    ButtonModule
   ]
 })
 export class DetailModule { }

@@ -1,3 +1,4 @@
+import {CaffComment} from "./caffComment";
 export interface CaffData {
   id: number,
   file: string,
@@ -6,5 +7,5 @@ export interface CaffData {
   price: number,
   authorName: string,
   uploadDate: Date,
-  comments: Comment[]
+  comments: CaffComment[]
 }
