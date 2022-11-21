@@ -1,13 +1,13 @@
 package hu.bme.szgbizt.secushop.security.persistence.entity;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
-@Table(name = "black_listed_access_token")
+@Table(name = "black_listed_access_tokens")
 public class BlackListedAccessToken {
 
     @Id
@@ -16,12 +16,14 @@ public class BlackListedAccessToken {
             name = "uuid",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
-    @Type(type = "uuid-char")
     @Column(name = "id", nullable = false, length = 36)
     private UUID id;
 
     @Column(name = "token", nullable = false)
     private String token;
+
+    @Column(name = "date_of_inserted", nullable = false)
+    private LocalDate dateOfInserted;
 
     /**
      * Instantiates a new {@link BlackListedAccessToken}.
@@ -37,6 +39,7 @@ public class BlackListedAccessToken {
      */
     public BlackListedAccessToken(String token) {
         this.token = token;
+        this.dateOfInserted = LocalDate.now();
     }
 
     public UUID getId() {

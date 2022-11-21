@@ -1,7 +1,6 @@
 package hu.bme.szgbizt.secushop.security.persistence.entity;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -16,20 +15,19 @@ public class UserEntity {
             name = "uuid",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
-    @Type(type = "uuid-char")
     @Column(name = "id", nullable = false, length = 36)
     private UUID id;
 
-    @Column(name = "username", nullable = false)
+    @Column(name = "username", nullable = false, length = 30, unique = true)
     private String username;
 
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, length = 30, unique = true)
     private String email;
 
-    @Column(name = "roles", nullable = false)
+    @Column(name = "roles", nullable = false, length = 10)
     private String roles;
 
     /**
