@@ -61,10 +61,10 @@ public class JwtBlackListFilter extends OncePerRequestFilter {
     }
 
     private boolean isRoleFreePath(String path) {
-        return buildFreeRoleFullPaths().contains(path);
+        return buildRoleFreeFullPaths().contains(path);
     }
 
-    private List<String> buildFreeRoleFullPaths() {
+    private List<String> buildRoleFreeFullPaths() {
         return ROLE_FREE_PATHS.stream().map(path -> SYSTEM_BASE_URL + path).collect(Collectors.toList());
     }
 }

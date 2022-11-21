@@ -10,6 +10,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import static hu.bme.szgbizt.secushop.util.Constant.ROLE_ADMIN;
+import static hu.bme.szgbizt.secushop.util.Constant.ROLE_USER;
+
 @EnableConfigurationProperties(RsaKeyProperties.class)
 @SpringBootApplication
 public class SecuShopApplication {
@@ -23,8 +26,8 @@ public class SecuShopApplication {
         return args -> {
 
             var defaultPassword = passwordEncoder.encode("Pass1234");
-            var admin = new UserEntity("admin", defaultPassword, "admin@admin.hu", "ROLE_ADMIN");
-            var user = new UserEntity("user", defaultPassword, "user@user.hu", "ROLE_USER");
+            var admin = new UserEntity("admin", defaultPassword, "admin@admin.hu", ROLE_ADMIN);
+            var user = new UserEntity("user", defaultPassword, "user@user.hu", ROLE_USER);
 
             userRepository.save(admin);
             userRepository.save(user);

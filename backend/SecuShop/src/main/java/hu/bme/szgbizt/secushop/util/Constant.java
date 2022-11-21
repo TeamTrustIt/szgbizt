@@ -8,6 +8,8 @@ public final class Constant {
     public static final String SYSTEM_ID = "secu-shop";
     public static final String SYSTEM_BASE_URL = "/api/v1/secu-shop";
     public static final String CLAIM_ROLES = "roles";
+    public static final String ROLE_USER = "ROLE_USER";
+    public static final String ROLE_ADMIN = "ROLE_ADMIN";
 
     private Constant() {
         // Empty constructor.
