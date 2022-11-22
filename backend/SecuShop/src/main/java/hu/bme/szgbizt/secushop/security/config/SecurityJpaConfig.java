@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -27,6 +28,7 @@ import java.util.Objects;
 public class SecurityJpaConfig {
 
     @Bean
+    @Primary
     public LocalContainerEntityManagerFactoryBean securityEntityManagerFactory(
             @Qualifier("securityDataSource") DataSource securityDataSource,
             EntityManagerFactoryBuilder builder) {
@@ -38,6 +40,7 @@ public class SecurityJpaConfig {
     }
 
     @Bean
+    @Primary
     public PlatformTransactionManager securityTransactionManager(
             @Qualifier("securityEntityManagerFactory") LocalContainerEntityManagerFactoryBean securityEntityManagerFactory) {
         return new JpaTransactionManager(Objects.requireNonNull(securityEntityManagerFactory.getObject()));
