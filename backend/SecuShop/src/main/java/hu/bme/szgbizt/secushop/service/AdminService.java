@@ -62,4 +62,8 @@ public class AdminService {
         shopUserRepository.deleteById(userIdToDelete);
         userRepository.deleteById(userIdToDelete);
     }
+
+    public void deleteCaffData(UUID caffDataIdToDelete) {
+        shopUserRepository.deleteById(caffDataIdToDelete);
+    }
 }

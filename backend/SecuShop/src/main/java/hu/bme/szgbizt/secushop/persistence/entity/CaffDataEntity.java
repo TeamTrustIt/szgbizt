@@ -41,7 +41,7 @@ public class CaffDataEntity {
     @JoinColumn(name = "user_id")
     private ShopUserEntity shopUser;
 
-    @OneToMany(mappedBy = "caffData")
+    @OneToMany(mappedBy = "caffData", cascade = CascadeType.REMOVE)
     private List<CommentEntity> comments;
 
     /**
