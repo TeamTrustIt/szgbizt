@@ -6,7 +6,8 @@ public enum ErrorCode {
     SS_0100("Missing input parameter"),
     SS_0101("Invalid input parameter"),
     SS_0120("Username is not unique"),
-    SS_0121("Email is not unique");
+    SS_0121("Email is not unique"),
+    SS_0141("User not found");
 
     private final String message;
 

@@ -1,6 +1,7 @@
 package hu.bme.szgbizt.secushop.security.controller;
 
 import hu.bme.szgbizt.secushop.controller.SecuShopBaseController;
+import hu.bme.szgbizt.secushop.dto.LoggedUser;
 import hu.bme.szgbizt.secushop.dto.PostRegistrationRequest;
 import hu.bme.szgbizt.secushop.dto.User;
 import hu.bme.szgbizt.secushop.security.service.SecurityService;
@@ -31,11 +32,11 @@ public class SecurityController implements SecuShopBaseController {
     }
 
     @PostMapping(value = "/login")
-    public @ResponseBody String login(Authentication authentication) {
-        LOGGER.info("Token requested for user [{}]", authentication.getName());
-        var token = securityService.generateToken(authentication);
-        LOGGER.info("Token granted for user [{}]", authentication.getName());
-        return token;
+    public @ResponseBody LoggedUser login(Authentication authentication) {
+        LOGGER.info("Login in progress with user [{}]", authentication.getName());
+        var loggedUser = securityService.login(authentication);
+        LOGGER.info("Successful login with user [{}]", authentication.getName());
+        return loggedUser;
     }
 
     @PostMapping(value = "/registration")

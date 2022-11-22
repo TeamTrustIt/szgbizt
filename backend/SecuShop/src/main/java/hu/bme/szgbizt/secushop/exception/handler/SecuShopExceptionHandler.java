@@ -2,6 +2,7 @@ package hu.bme.szgbizt.secushop.exception.handler;
 
 import hu.bme.szgbizt.secushop.dto.ErrorMessageResponse;
 import hu.bme.szgbizt.secushop.exception.EmailNotUniqueException;
+import hu.bme.szgbizt.secushop.exception.UserNotFoundException;
 import hu.bme.szgbizt.secushop.exception.UsernameNotUniqueException;
 import hu.bme.szgbizt.secushop.exception.errorcode.ErrorCode;
 import org.springframework.http.HttpStatus;
@@ -38,6 +39,12 @@ public class SecuShopExceptionHandler {
     @ExceptionHandler(EmailNotUniqueException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public @ResponseBody ErrorMessageResponse handleEmailNotUniqueException(EmailNotUniqueException ex) {
+        return buildErrorMessage(ex.getErrorCode());
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    public @ResponseBody ErrorMessageResponse handleUserNotFoundException(UserNotFoundException ex) {
         return buildErrorMessage(ex.getErrorCode());
     }
 

@@ -1,7 +1,5 @@
 package hu.bme.szgbizt.secushop.persistence.entity;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -13,11 +11,6 @@ import java.util.UUID;
 public class ShopUserEntity {
 
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(
-            name = "uuid",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
     @Column(name = "id", nullable = false, length = 36)
     private UUID id;
 
@@ -40,12 +33,13 @@ public class ShopUserEntity {
     /**
      * Instantiates a new {@link ShopUserEntity}.
      *
-     * @param balance  The balance of the {@link ShopUserEntity}.
-     * @param caffData The {@link CaffDataEntity}.
+     * @param id      The identifier of the {@link ShopUserEntity}.
+     * @param balance The balance of the {@link ShopUserEntity}.
      */
-    public ShopUserEntity(BigDecimal balance, List<CaffDataEntity> caffData) {
+    public ShopUserEntity(UUID id, BigDecimal balance) {
+        this.id = id;
         this.balance = balance;
-        this.caffData = caffData;
+        this.caffData = new ArrayList<>();
         this.comments = new ArrayList<>();
     }
 

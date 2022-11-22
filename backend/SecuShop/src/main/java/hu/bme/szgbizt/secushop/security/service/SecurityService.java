@@ -1,12 +1,15 @@
 package hu.bme.szgbizt.secushop.security.service;
 
+import hu.bme.szgbizt.secushop.dto.LoggedUser;
 import hu.bme.szgbizt.secushop.dto.PostRegistrationRequest;
 import hu.bme.szgbizt.secushop.dto.User;
 import hu.bme.szgbizt.secushop.exception.EmailNotUniqueException;
+import hu.bme.szgbizt.secushop.exception.UserNotFoundException;
 import hu.bme.szgbizt.secushop.exception.UsernameNotUniqueException;
+import hu.bme.szgbizt.secushop.persistence.entity.ShopUserEntity;
+import hu.bme.szgbizt.secushop.persistence.repository.ShopUserRepository;
 import hu.bme.szgbizt.secushop.security.persistence.entity.UserEntity;
 import hu.bme.szgbizt.secushop.security.persistence.repository.UserRepository;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +20,12 @@ import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.Collectors;
 
 import static hu.bme.szgbizt.secushop.util.Constant.*;
+import static java.math.BigDecimal.ZERO;
 import static java.time.Instant.now;
 import static java.time.temporal.ChronoUnit.MINUTES;
 
@@ -34,28 +39,78 @@ public class SecurityService {
 
     private static final Integer EXPIRE_IN_MINUTES = 10;
 
-    private final ModelMapper modelMapper;
     private final JwtEncoder jwtEncoder;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final ShopUserRepository shopUserRepository;
 
     /**
      * Instantiates a new {@link SecurityService}.
      *
-     * @param modelMapper     The mapper between classes.
-     * @param jwtEncoder      The encoder of JWT.
-     * @param passwordEncoder The password encoder.
-     * @param userRepository  The repository for {@link UserEntity}.
+     * @param jwtEncoder         The encoder of JWT.
+     * @param passwordEncoder    The password encoder.
+     * @param userRepository     The repository for {@link UserEntity}.
+     * @param shopUserRepository The repository for {@link ShopUserEntity}.
      */
     @Autowired
-    public SecurityService(ModelMapper modelMapper, JwtEncoder jwtEncoder, PasswordEncoder passwordEncoder, UserRepository userRepository) {
-        this.modelMapper = modelMapper;
+    public SecurityService(JwtEncoder jwtEncoder, PasswordEncoder passwordEncoder, UserRepository userRepository, ShopUserRepository shopUserRepository) {
         this.jwtEncoder = jwtEncoder;
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
+        this.shopUserRepository = shopUserRepository;
     }
 
-    public String generateToken(Authentication authentication) {
+    public LoggedUser login(Authentication authentication) {
+
+        LOGGER.info("Token requested for user [{}]", authentication.getName());
+        var token = generateToken(authentication);
+        LOGGER.info("Token granted for user [{}]", authentication.getName());
+
+        var userEntity = userRepository.findByUsername(authentication.getName())
+                .orElseThrow(UserNotFoundException::new);
+
+        var user = new User(
+                userEntity.getId(),
+                userEntity.getUsername(),
+                userEntity.getEmail(),
+                userEntity.getRoles()
+        );
+
+        return new LoggedUser(token, user);
+    }
+
+    @Transactional
+    public User registration(PostRegistrationRequest postRegistrationRequest) {
+
+        var username = postRegistrationRequest.getUsername();
+        var email = postRegistrationRequest.getEmail();
+
+        validateUserName(username);
+        validateEmail(email);
+
+        var userEntityToSave = new UserEntity(
+                username,
+                passwordEncoder.encode(postRegistrationRequest.getPassword()),
+                email,
+                ROLE_USER
+        );
+        var savedUserEntity = userRepository.save(userEntityToSave);
+
+        var shopUserEntityToSave = new ShopUserEntity(
+                savedUserEntity.getId(),
+                ZERO
+        );
+        shopUserRepository.save(shopUserEntityToSave);
+
+        return new User(
+                savedUserEntity.getId(),
+                savedUserEntity.getUsername(),
+                savedUserEntity.getEmail(),
+                savedUserEntity.getRoles()
+        );
+    }
+
+    private String generateToken(Authentication authentication) {
 
         var roles = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -71,26 +126,6 @@ public class SecurityService {
                 .build();
 
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
-    }
-
-    public User registration(PostRegistrationRequest postRegistrationRequest) {
-
-        var username = postRegistrationRequest.getUsername();
-        var email = postRegistrationRequest.getEmail();
-
-        validateUserName(username);
-        validateEmail(email);
-
-        var userEntityToSave = new UserEntity(
-                username,
-                passwordEncoder.encode(postRegistrationRequest.getPassword()),
-                email,
-                ROLE_USER
-        );
-
-        var savedUserEntity = userRepository.save(userEntityToSave);
-
-        return modelMapper.map(savedUserEntity, User.class);
     }
 
     private void validateUserName(String username) {
