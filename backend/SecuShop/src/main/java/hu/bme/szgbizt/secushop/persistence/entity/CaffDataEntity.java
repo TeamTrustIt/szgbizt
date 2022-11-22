@@ -4,7 +4,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -35,13 +35,13 @@ public class CaffDataEntity {
     private BigDecimal price;
 
     @Column(name = "upload_date", nullable = false)
-    private LocalDate uploadDate;
+    private Instant uploadDate;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private ShopUserEntity shopUser;
 
-    @OneToMany(mappedBy = "caffData", cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "caffData", cascade = CascadeType.ALL)
     private List<CommentEntity> comments;
 
     /**
@@ -66,7 +66,6 @@ public class CaffDataEntity {
         this.description = description;
         this.price = price;
         this.shopUser = shopUser;
-        this.uploadDate = LocalDate.now();
         this.comments = new ArrayList<>();
     }
 
@@ -118,11 +117,11 @@ public class CaffDataEntity {
         this.shopUser = shopUser;
     }
 
-    public LocalDate getUploadDate() {
+    public Instant getUploadDate() {
         return uploadDate;
     }
 
-    public void setUploadDate(LocalDate uploadDate) {
+    public void setUploadDate(Instant uploadDate) {
         this.uploadDate = uploadDate;
     }
 

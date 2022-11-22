@@ -17,11 +17,11 @@ public class ShopUserEntity {
     @Column(name = "balance", nullable = false)
     private BigDecimal balance;
 
-    @OneToMany(mappedBy = "shopUser", cascade = CascadeType.REMOVE)
-    private List<CaffDataEntity> caffData;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "shopUser", cascade = CascadeType.ALL)
+    private List<CaffDataEntity> caffData = new ArrayList<>();
 
-    @OneToMany(mappedBy = "shopUser", cascade = CascadeType.REMOVE)
-    private List<CommentEntity> comments;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "shopUser", cascade = CascadeType.ALL)
+    private List<CommentEntity> comments = new ArrayList<>();
 
     /**
      * Instantiates a new {@link ShopUserEntity}.
