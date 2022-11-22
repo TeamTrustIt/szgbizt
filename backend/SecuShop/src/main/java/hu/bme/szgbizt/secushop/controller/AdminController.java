@@ -53,5 +53,13 @@ public class AdminController implements SecuShopBaseController {
         adminService.deleteCaffData(caffDataId);
         LOGGER.info("Successful deleted caff data [{}] by [{}]", caffDataId, authentication.getName());
     }
+
+    @DeleteMapping(value = "/admin/comments/{commentId}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void deleteComment(Authentication authentication, @PathVariable("commentId") UUID commentId) {
+        LOGGER.info("Deleting comment [{}] by [{}]", commentId, authentication.getName());
+        adminService.deleteComment(commentId);
+        LOGGER.info("Successful deleted comment [{}] by [{}]", commentId, authentication.getName());
+    }
 }
 
