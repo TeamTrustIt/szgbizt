@@ -3,7 +3,7 @@ package hu.bme.szgbizt.secushop.security.controller;
 import hu.bme.szgbizt.secushop.controller.SecuShopBaseController;
 import hu.bme.szgbizt.secushop.dto.LoggedUser;
 import hu.bme.szgbizt.secushop.dto.PostRegistrationRequest;
-import hu.bme.szgbizt.secushop.dto.User;
+import hu.bme.szgbizt.secushop.dto.RegisteredUser;
 import hu.bme.szgbizt.secushop.security.service.SecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +40,7 @@ public class SecurityController implements SecuShopBaseController {
 
     @PostMapping(value = "/registration")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public @ResponseBody User registration(@Valid @RequestBody PostRegistrationRequest postRegistrationRequest) {
+    public @ResponseBody RegisteredUser registration(@Valid @RequestBody PostRegistrationRequest postRegistrationRequest) {
         LOGGER.info("Registration in progress for user [{}]", postRegistrationRequest.getUsername());
         var registeredUser = securityService.registration(postRegistrationRequest);
         LOGGER.info("Successful registration for user [{}]", registeredUser.getUsername());

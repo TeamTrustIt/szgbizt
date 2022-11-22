@@ -17,10 +17,10 @@ public class ShopUserEntity {
     @Column(name = "balance", nullable = false)
     private BigDecimal balance;
 
-    @OneToMany(mappedBy = "shopUser")
+    @OneToMany(mappedBy = "shopUser", cascade = CascadeType.REMOVE)
     private List<CaffDataEntity> caffData;
 
-    @OneToMany(mappedBy = "shopUser")
+    @OneToMany(mappedBy = "shopUser", cascade = CascadeType.REMOVE)
     private List<CommentEntity> comments;
 
     /**

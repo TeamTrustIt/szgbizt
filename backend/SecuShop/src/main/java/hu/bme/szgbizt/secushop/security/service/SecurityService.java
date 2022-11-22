@@ -2,7 +2,7 @@ package hu.bme.szgbizt.secushop.security.service;
 
 import hu.bme.szgbizt.secushop.dto.LoggedUser;
 import hu.bme.szgbizt.secushop.dto.PostRegistrationRequest;
-import hu.bme.szgbizt.secushop.dto.User;
+import hu.bme.szgbizt.secushop.dto.RegisteredUser;
 import hu.bme.szgbizt.secushop.exception.EmailNotUniqueException;
 import hu.bme.szgbizt.secushop.exception.UserNotFoundException;
 import hu.bme.szgbizt.secushop.exception.UsernameNotUniqueException;
@@ -75,7 +75,7 @@ public class SecurityService {
         var userEntity = userRepository.findByUsername(authentication.getName())
                 .orElseThrow(UserNotFoundException::new);
 
-        var user = new User(
+        var user = new RegisteredUser(
                 userEntity.getId(),
                 userEntity.getUsername(),
                 userEntity.getEmail(),
@@ -86,7 +86,7 @@ public class SecurityService {
     }
 
     @Transactional
-    public User registration(PostRegistrationRequest postRegistrationRequest) {
+    public RegisteredUser registration(PostRegistrationRequest postRegistrationRequest) {
 
         var username = postRegistrationRequest.getUsername();
         var email = postRegistrationRequest.getEmail();
@@ -108,7 +108,7 @@ public class SecurityService {
         );
         shopUserRepository.save(shopUserEntityToSave);
 
-        return new User(
+        return new RegisteredUser(
                 savedUserEntity.getId(),
                 savedUserEntity.getUsername(),
                 savedUserEntity.getEmail(),

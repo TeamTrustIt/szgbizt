@@ -2,6 +2,7 @@ package hu.bme.szgbizt.secushop.exception.handler;
 
 import hu.bme.szgbizt.secushop.dto.ErrorMessageResponse;
 import hu.bme.szgbizt.secushop.exception.EmailNotUniqueException;
+import hu.bme.szgbizt.secushop.exception.SelfDeletionException;
 import hu.bme.szgbizt.secushop.exception.UserNotFoundException;
 import hu.bme.szgbizt.secushop.exception.UsernameNotUniqueException;
 import hu.bme.szgbizt.secushop.exception.errorcode.ErrorCode;
@@ -39,6 +40,12 @@ public class SecuShopExceptionHandler {
     @ExceptionHandler(EmailNotUniqueException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public @ResponseBody ErrorMessageResponse handleEmailNotUniqueException(EmailNotUniqueException ex) {
+        return buildErrorMessage(ex.getErrorCode());
+    }
+
+    @ExceptionHandler(SelfDeletionException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public @ResponseBody ErrorMessageResponse handleSelfDeletionException(SelfDeletionException ex) {
         return buildErrorMessage(ex.getErrorCode());
     }
 
