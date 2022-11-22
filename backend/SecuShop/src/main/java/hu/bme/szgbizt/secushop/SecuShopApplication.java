@@ -29,8 +29,8 @@ public class SecuShopApplication {
             var admin = new UserEntity("admin", defaultPassword, "admin@admin.hu", ROLE_ADMIN);
             var user = new UserEntity("user", defaultPassword, "user@user.hu", ROLE_USER);
 
-            userRepository.save(admin);
-            userRepository.save(user);
+            //       userRepository.save(admin);
+            //       userRepository.save(user);
         };
     }
 }

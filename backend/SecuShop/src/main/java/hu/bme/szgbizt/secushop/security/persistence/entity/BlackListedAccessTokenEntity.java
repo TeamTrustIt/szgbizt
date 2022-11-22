@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "black_listed_access_tokens")
-public class BlackListedAccessToken {
+public class BlackListedAccessTokenEntity {
 
     @Id
     @GeneratedValue(generator = "uuid")
@@ -26,18 +26,18 @@ public class BlackListedAccessToken {
     private LocalDate dateOfInserted;
 
     /**
-     * Instantiates a new {@link BlackListedAccessToken}.
+     * Instantiates a new {@link BlackListedAccessTokenEntity}.
      */
-    public BlackListedAccessToken() {
+    public BlackListedAccessTokenEntity() {
         // Empty constructor.
     }
 
     /**
-     * Instantiates a new {@link BlackListedAccessToken}.
+     * Instantiates a new {@link BlackListedAccessTokenEntity}.
      *
      * @param token The black listed access token.
      */
-    public BlackListedAccessToken(String token) {
+    public BlackListedAccessTokenEntity(String token) {
         this.token = token;
         this.dateOfInserted = LocalDate.now();
     }
