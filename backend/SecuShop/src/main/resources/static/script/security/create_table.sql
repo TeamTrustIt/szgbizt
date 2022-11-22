@@ -10,8 +10,8 @@ create table users
 
 create table black_listed_access_tokens
 (
-    id               uuid         not null,
-    token            varchar(255) not null,
-    date_of_inserted date         not null,
+    id               uuid      not null,
+    token            text      not null,
+    date_of_inserted timestamp not null default current_timestamp,
     primary key (id)
 );

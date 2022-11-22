@@ -8,7 +8,9 @@ import hu.bme.szgbizt.secushop.exception.UserNotFoundException;
 import hu.bme.szgbizt.secushop.exception.UsernameNotUniqueException;
 import hu.bme.szgbizt.secushop.persistence.entity.ShopUserEntity;
 import hu.bme.szgbizt.secushop.persistence.repository.ShopUserRepository;
+import hu.bme.szgbizt.secushop.security.persistence.entity.BlackListedAccessTokenEntity;
 import hu.bme.szgbizt.secushop.security.persistence.entity.UserEntity;
+import hu.bme.szgbizt.secushop.security.persistence.repository.BlackListedAccessTokenRepository;
 import hu.bme.szgbizt.secushop.security.persistence.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
@@ -43,21 +46,24 @@ public class SecurityService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final ShopUserRepository shopUserRepository;
+    private final BlackListedAccessTokenRepository blackListedAccessTokenRepository;
 
     /**
      * Instantiates a new {@link SecurityService}.
      *
-     * @param jwtEncoder         The encoder of JWT.
-     * @param passwordEncoder    The password encoder.
-     * @param userRepository     The repository for {@link UserEntity}.
-     * @param shopUserRepository The repository for {@link ShopUserEntity}.
+     * @param jwtEncoder                       The encoder of JWT.
+     * @param passwordEncoder                  The password encoder.
+     * @param userRepository                   The repository for {@link UserEntity}.
+     * @param shopUserRepository               The repository for {@link ShopUserEntity}.
+     * @param blackListedAccessTokenRepository The repository for {@link BlackListedAccessTokenEntity}.
      */
     @Autowired
-    public SecurityService(JwtEncoder jwtEncoder, PasswordEncoder passwordEncoder, UserRepository userRepository, ShopUserRepository shopUserRepository) {
+    public SecurityService(JwtEncoder jwtEncoder, PasswordEncoder passwordEncoder, UserRepository userRepository, ShopUserRepository shopUserRepository, BlackListedAccessTokenRepository blackListedAccessTokenRepository) {
         this.jwtEncoder = jwtEncoder;
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.shopUserRepository = shopUserRepository;
+        this.blackListedAccessTokenRepository = blackListedAccessTokenRepository;
     }
 
     public LoggedUser login(Authentication authentication) {
@@ -108,6 +114,14 @@ public class SecurityService {
                 savedUserEntity.getEmail(),
                 savedUserEntity.getRoles()
         );
+    }
+
+    public void logout(Authentication authentication) {
+
+        var jwt = (Jwt) authentication.getPrincipal();
+        var blackListedAccessTokenEntityToSave = new BlackListedAccessTokenEntity(jwt.getTokenValue());
+        blackListedAccessTokenRepository.save(blackListedAccessTokenEntityToSave);
+        LOGGER.info("Access token successful added to the black list");
     }
 
     private String generateToken(Authentication authentication) {

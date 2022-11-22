@@ -3,7 +3,6 @@ package hu.bme.szgbizt.secushop.security.persistence.entity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
@@ -22,9 +21,6 @@ public class BlackListedAccessTokenEntity {
     @Column(name = "token", nullable = false)
     private String token;
 
-    @Column(name = "date_of_inserted", nullable = false)
-    private LocalDate dateOfInserted;
-
     /**
      * Instantiates a new {@link BlackListedAccessTokenEntity}.
      */
@@ -39,7 +35,6 @@ public class BlackListedAccessTokenEntity {
      */
     public BlackListedAccessTokenEntity(String token) {
         this.token = token;
-        this.dateOfInserted = LocalDate.now();
     }
 
     public UUID getId() {
