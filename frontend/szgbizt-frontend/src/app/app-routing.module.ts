@@ -9,13 +9,14 @@ import {DetailComponent} from "./pages/detail/detail.component";
 import {ProfileComponent} from "./pages/profile/profile.component";
 import {UploadComponent} from "./pages/upload/upload.component";
 import {AuthGuard} from "./guards/auth.guard";
+import {AdminGuard} from "./guards/admin.guard";
 
 const routes: Routes = [
-  {path: 'login', component: LoginComponent, canActivate: [AuthGuard]},
-  {path: 'register', component: RegisterComponent, canActivate: [AuthGuard]},
+  {path: 'login', component: LoginComponent, canActivate: [AuthGuard, AdminGuard]},
+  {path: 'register', component: RegisterComponent, canActivate: [AuthGuard, AdminGuard]},
 
-  {path: 'admin-login', component: LoginAdminComponent, canActivate: [AuthGuard]},
-  {path: 'admin-users', component: ListUserComponent, canActivate: [AuthGuard]},
+  {path: 'admin-login', component: LoginAdminComponent, canActivate: [AuthGuard, AdminGuard]},
+  {path: 'admin-users', component: ListUserComponent, canActivate: [AuthGuard, AdminGuard]},
 
   {path: 'home', component: ListComponent, canActivate: [AuthGuard]},
   {path: 'detail/:id', component: DetailComponent, canActivate: [AuthGuard]},
