@@ -1,5 +1,7 @@
 package hu.bme.szgbizt.secushop.controller;
 
+import hu.bme.szgbizt.secushop.dto.PutRegisteredUserRequest;
+import hu.bme.szgbizt.secushop.dto.RegisteredUser;
 import hu.bme.szgbizt.secushop.dto.User;
 import hu.bme.szgbizt.secushop.service.UserService;
 import org.slf4j.Logger;
@@ -7,12 +9,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
+
+import static hu.bme.szgbizt.secushop.util.JwtHandler.getUserId;
+import static hu.bme.szgbizt.secushop.util.JwtHandler.getUsername;
 
 @RestController
 @PreAuthorize("hasRole('ROLE_USER')")
@@ -34,9 +36,21 @@ public class UserController implements SecuShopBaseController {
     @GetMapping(value = "/users/{userId}")
     @ResponseStatus(value = HttpStatus.OK)
     public User getUser(Authentication authentication, @PathVariable("userId") UUID userId) {
-        LOGGER.info("Querying user [{}] by [{}]", userId, authentication.getName());
+        var callerUsername = getUsername(authentication);
+        LOGGER.info("Querying user [{}] by [{}]", userId, callerUsername);
         var user = userService.getUser(userId);
-        LOGGER.info("Successful queried user [{}] by [{}]", userId, authentication.getName());
+        LOGGER.info("Successful queried user [{}] by [{}]", userId, callerUsername);
+        return user;
+    }
+
+    @PutMapping(value = "/users/{userId}")
+    @ResponseStatus(value = HttpStatus.OK)
+    public RegisteredUser updateUser(Authentication authentication, @PathVariable("userId") UUID userId, @RequestBody PutRegisteredUserRequest putRegisteredUserRequest) {
+        var callerUsername = getUsername(authentication);
+        var callerUserId = getUserId(authentication);
+        LOGGER.info("Updating user [{}] by [{}]", userId, callerUsername);
+        var user = userService.updateUser(callerUserId, userId, putRegisteredUserRequest);
+        LOGGER.info("Successful updated user [{}] by [{}]", userId, callerUsername);
         return user;
     }
 }

@@ -12,7 +12,6 @@ import hu.bme.szgbizt.secushop.security.persistence.entity.UserEntity;
 import hu.bme.szgbizt.secushop.security.persistence.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,9 +58,9 @@ public class AdminService {
     }
 
     @Transactional
-    public void deleteUser(Authentication authentication, UUID userIdToDelete) {
+    public void deleteUser(UUID callerId, UUID userIdToDelete) {
 
-        var selfUserEntity = userRepository.findByUsername(authentication.getName())
+        var selfUserEntity = userRepository.findById(callerId)
                 .orElseThrow(UserNotFoundException::new);
 
         if (selfUserEntity.getId().equals(userIdToDelete)) {

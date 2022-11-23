@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import static hu.bme.szgbizt.secushop.util.JwtHandler.getUsername;
+
 @RestController
 public class SecurityController implements SecuShopBaseController {
 
@@ -50,8 +52,9 @@ public class SecurityController implements SecuShopBaseController {
     @PostMapping(value = "/logout")
     @ResponseStatus(value = HttpStatus.OK)
     public void logout(Authentication authentication) {
-        LOGGER.info("Logout in progress with user [{}]", authentication.getName());
+        var username = getUsername(authentication);
+        LOGGER.info("Logout in progress with user [{}]", username);
         securityService.logout(authentication);
-        LOGGER.info("Successful logout with user [{}]", authentication.getName());
+        LOGGER.info("Successful logout with user [{}]", username);
     }
 }

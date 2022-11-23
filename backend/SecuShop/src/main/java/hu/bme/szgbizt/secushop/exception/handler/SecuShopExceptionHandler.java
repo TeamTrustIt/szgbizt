@@ -1,10 +1,7 @@
 package hu.bme.szgbizt.secushop.exception.handler;
 
 import hu.bme.szgbizt.secushop.dto.ErrorMessageResponse;
-import hu.bme.szgbizt.secushop.exception.EmailNotUniqueException;
-import hu.bme.szgbizt.secushop.exception.SelfDeletionException;
-import hu.bme.szgbizt.secushop.exception.UserNotFoundException;
-import hu.bme.szgbizt.secushop.exception.UsernameNotUniqueException;
+import hu.bme.szgbizt.secushop.exception.*;
 import hu.bme.szgbizt.secushop.exception.errorcode.ErrorCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -52,6 +49,12 @@ public class SecuShopExceptionHandler {
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public @ResponseBody ErrorMessageResponse handleUserNotFoundException(UserNotFoundException ex) {
+        return buildErrorMessage(ex.getErrorCode());
+    }
+
+    @ExceptionHandler(NoAuthorityToProcessException.class)
+    @ResponseStatus(value = HttpStatus.FORBIDDEN)
+    public @ResponseBody ErrorMessageResponse handleNoAuthorityToProcessException(NoAuthorityToProcessException ex) {
         return buildErrorMessage(ex.getErrorCode());
     }
 

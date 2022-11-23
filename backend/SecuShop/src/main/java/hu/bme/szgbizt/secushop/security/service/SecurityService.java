@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
@@ -28,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.stream.Collectors;
 
 import static hu.bme.szgbizt.secushop.util.Constant.*;
+import static hu.bme.szgbizt.secushop.util.JwtHandler.getTokenValue;
 import static java.math.BigDecimal.ZERO;
 import static java.time.Instant.now;
 import static java.time.temporal.ChronoUnit.MINUTES;
@@ -118,8 +118,7 @@ public class SecurityService {
 
     public void logout(Authentication authentication) {
 
-        var jwt = (Jwt) authentication.getPrincipal();
-        var blackListedAccessTokenEntityToSave = new BlackListedAccessTokenEntity(jwt.getTokenValue());
+        var blackListedAccessTokenEntityToSave = new BlackListedAccessTokenEntity(getTokenValue(authentication));
         blackListedAccessTokenRepository.save(blackListedAccessTokenEntityToSave);
         LOGGER.info("Access token successful added to the black list");
     }
@@ -130,12 +129,19 @@ public class SecurityService {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(" "));
 
+        var username = authentication.getName();
+        var userId = userRepository.findByUsername(username)
+                .orElseThrow(UserNotFoundException::new)
+                .getId()
+                .toString();
+
         var now = now();
         var claims = JwtClaimsSet.builder()
                 .issuer(SYSTEM_ID)
                 .issuedAt(now)
                 .expiresAt(now.plus(EXPIRE_IN_MINUTES, MINUTES))
-                .subject(authentication.getName())
+                .subject(userId)
+                .claim(CLAIM_USERNAME, username)
                 .claim(CLAIM_ROLES, roles)
                 .build();
 

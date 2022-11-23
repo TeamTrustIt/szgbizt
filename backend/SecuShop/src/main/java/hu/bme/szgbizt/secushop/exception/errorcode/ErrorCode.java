@@ -8,7 +8,8 @@ public enum ErrorCode {
     SS_0120("Username is not unique"),
     SS_0121("Email is not unique"),
     SS_0141("User not found"),
-    SS_0151("Cannot delete yourself");
+    SS_0151("Cannot delete yourself"),
+    SS_0152("Cannot update other users");
 
     private final String message;
 
