@@ -8,6 +8,7 @@ public enum ErrorCode {
     SS_0120("Username is not unique"),
     SS_0121("Email is not unique"),
     SS_0141("User not found"),
+    SS_0142("Caff data not found"),
     SS_0151("Cannot delete yourself"),
     SS_0152("Cannot access or modify other users");
 
