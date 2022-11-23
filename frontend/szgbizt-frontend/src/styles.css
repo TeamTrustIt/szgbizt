@@ -2,8 +2,12 @@
 body {
   margin: 0;
 }
-
-
+.gap-1 {
+  gap: 1rem;
+}
+.gap-2 {
+  gap: 2rem;
+}
 .grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);

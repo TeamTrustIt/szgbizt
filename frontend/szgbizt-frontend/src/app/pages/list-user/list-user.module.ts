@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ListUserComponent } from './list-user.component';
+import {ButtonModule} from "../../components/button/button.module";
 
 
 
@@ -8,8 +9,9 @@ import { ListUserComponent } from './list-user.component';
   declarations: [
     ListUserComponent
   ],
-  imports: [
-    CommonModule
-  ]
+    imports: [
+        CommonModule,
+        ButtonModule
+    ]
 })
 export class ListUserModule { }

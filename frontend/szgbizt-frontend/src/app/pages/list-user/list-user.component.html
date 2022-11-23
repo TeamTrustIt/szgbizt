@@ -1,1 +1,12 @@
-<p>list-user works!</p>
+<div class="flex justify-center p-2 mt-10s">
+
+  <div class="flex-col flex items-center gap-1">
+    <p class="bold">Users:</p>
+    <div *ngFor="let u of users" class="flex justify-between items-center gap-1 user">
+      <p class="bold">{{u.username}}</p>
+      <app-button type="icon" icon="delete"></app-button>
+    </div>
+
+  </div>
+
+</div>

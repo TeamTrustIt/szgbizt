@@ -1,11 +1,12 @@
 import {Injectable} from "@angular/core";
 import {environment} from "../../environments/environment";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParamsOptions} from "@angular/common/http";
 import {Store} from "@ngrx/store";
 import {AuthState} from "../interfaces/states/auth-state";
 import {login, logout } from "../actions/auth.actions";
 import {UserLoginDto} from "../interfaces/user-login-dto";
 import {Router} from "@angular/router";
+import {NetworkResponse} from "../interfaces/network-response";
 
 @Injectable({providedIn: 'root'})
 export class AuthService {
@@ -25,14 +26,21 @@ export class AuthService {
     //return this.http.post<NetworkResponse>(`${this.baseUrl}/login`, {email: email, password: password})
   }
 
-  public login(email: string, password: string) /*: Observable<NetworkResponse>*/ {
+  public login(username: string, password: string) /*: Observable<NetworkResponse>*/ {
     const user: UserLoginDto = {
-      email: email, id: 1, name: "Tester", role: "user"
+      email: "t@t.hu", id: 1, name: username, role: "user"
     }
     this.setToken("mock")
     this.store.dispatch(login({user: user}))
     this.router.navigateByUrl("/home")
-    //return this.http.post<NetworkResponse>(`${this.baseUrl}/login`, {email: email, password: password})
+
+    // implemented:
+    const usernamePassword = `${username}:${password}`
+    const encoded = btoa(usernamePassword)
+    const authHeader = `Basic ${encoded}`
+    const headers = new HttpHeaders()
+      .set('Authorization', authHeader)
+    //return this.http.post<NetworkResponse>(`${this.baseUrl}/login`,null, {headers: headers})
   }
 
   public register(email: string, password: string) /*Observable<unknown>*/ {
