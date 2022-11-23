@@ -69,4 +69,13 @@ public class UserController implements SecuShopBaseController {
         userService.deleteCaffData(callerUserId, caffDataId);
         LOGGER.info("Successful deleted caff data [{}] by [{}]", caffDataId, callerUserId);
     }
+
+    @DeleteMapping(value = "/comments/{commentId}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void deleteComment(Authentication authentication, @PathVariable("commentId") UUID commentId) {
+        var callerUserId = getUserId(authentication);
+        LOGGER.info("Deleting comment [{}] by [{}]", commentId, callerUserId);
+        userService.deleteComment(callerUserId, commentId);
+        LOGGER.info("Successful deleted comment [{}] by [{}]", commentId, callerUserId);
+    }
 }

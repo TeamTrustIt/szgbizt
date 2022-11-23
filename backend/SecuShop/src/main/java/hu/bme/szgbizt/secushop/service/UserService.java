@@ -7,8 +7,10 @@ import hu.bme.szgbizt.secushop.dto.User;
 import hu.bme.szgbizt.secushop.exception.*;
 import hu.bme.szgbizt.secushop.exception.errorcode.ErrorCode;
 import hu.bme.szgbizt.secushop.persistence.entity.CaffDataEntity;
+import hu.bme.szgbizt.secushop.persistence.entity.CommentEntity;
 import hu.bme.szgbizt.secushop.persistence.entity.ShopUserEntity;
 import hu.bme.szgbizt.secushop.persistence.repository.CaffDataRepository;
+import hu.bme.szgbizt.secushop.persistence.repository.CommentRepository;
 import hu.bme.szgbizt.secushop.persistence.repository.ShopUserRepository;
 import hu.bme.szgbizt.secushop.security.persistence.entity.UserEntity;
 import hu.bme.szgbizt.secushop.security.persistence.repository.UserRepository;
@@ -30,18 +32,21 @@ public class UserService {
     private final UserRepository userRepository;
     private final ShopUserRepository shopUserRepository;
     private final CaffDataRepository caffDataRepository;
+    private final CommentRepository commentRepository;
 
     /**
      * @param passwordEncoder    The password encoder.
      * @param userRepository     Repository for {@link UserEntity}.
      * @param shopUserRepository Repository for {@link ShopUserEntity}.
-     * @param caffDataRepository The repository for {@link CaffDataEntity}.
+     * @param caffDataRepository Repository for {@link CaffDataEntity}.
+     * @param commentRepository  Repository for {@link CommentEntity}.
      */
-    public UserService(PasswordEncoder passwordEncoder, UserRepository userRepository, ShopUserRepository shopUserRepository, CaffDataRepository caffDataRepository) {
+    public UserService(PasswordEncoder passwordEncoder, UserRepository userRepository, ShopUserRepository shopUserRepository, CaffDataRepository caffDataRepository, CommentRepository commentRepository) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.shopUserRepository = shopUserRepository;
         this.caffDataRepository = caffDataRepository;
+        this.commentRepository = commentRepository;
     }
 
     public User getUser(UUID callerUserId, UUID userId) {
@@ -137,6 +142,21 @@ public class UserService {
 
         if (callerUserEntity.getCaffData().contains(caffDataEntityToDelete)) {
             caffDataRepository.delete(caffDataEntityToDelete);
+        } else {
+            LOGGER.error(ErrorCode.SS_0152.getMessage());
+            throw new NoAuthorityToProcessException(ErrorCode.SS_0152);
+        }
+    }
+
+    public void deleteComment(UUID callerUserId, UUID commentIdToDelete) {
+
+        var callerUserEntity = shopUserRepository.findById(callerUserId)
+                .orElseThrow(UserNotFoundException::new);
+        var commentEntityToDelete = commentRepository.findById(commentIdToDelete)
+                .orElseThrow(CommentNotFoundException::new);
+
+        if (callerUserEntity.getComments().contains(commentEntityToDelete)) {
+            commentRepository.delete(commentEntityToDelete);
         } else {
             LOGGER.error(ErrorCode.SS_0152.getMessage());
             throw new NoAuthorityToProcessException(ErrorCode.SS_0152);
