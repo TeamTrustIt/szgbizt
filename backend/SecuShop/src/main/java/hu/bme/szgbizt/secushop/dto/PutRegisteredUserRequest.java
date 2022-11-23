@@ -3,7 +3,7 @@ package hu.bme.szgbizt.secushop.dto;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
-public class PutRegisteredUserRequest {
+public final class PutRegisteredUserRequest {
 
     @NotNull(message = "Username cannot be null")
     private final String username;

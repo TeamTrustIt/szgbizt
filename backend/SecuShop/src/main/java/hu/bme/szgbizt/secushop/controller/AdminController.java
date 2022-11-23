@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static hu.bme.szgbizt.secushop.util.JwtHandler.getUserId;
-import static hu.bme.szgbizt.secushop.util.JwtHandler.getUsername;
 
 @RestController
 @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -35,38 +34,38 @@ public class AdminController implements SecuShopBaseController {
     @GetMapping(value = "/admin/users")
     @ResponseStatus(value = HttpStatus.OK)
     public @ResponseBody List<RegisteredUser> getUsers(Authentication authentication) {
-        var callerUsername = getUsername(authentication);
-        LOGGER.info("Querying all users by [{}]", callerUsername);
+        var callerUserId = getUserId(authentication);
+        LOGGER.info("Querying all users by [{}]", callerUserId);
         var registeredUsers = adminService.getUsers();
-        LOGGER.info("Successful queried all users by [{}]", callerUsername);
+        LOGGER.info("Successful queried all users by [{}]", callerUserId);
         return registeredUsers;
     }
 
     @DeleteMapping(value = "/admin/users/{userId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteUser(Authentication authentication, @PathVariable("userId") UUID userId) {
-        var callerUsername = getUsername(authentication);
-        LOGGER.info("Deleting user [{}] by [{}]", userId, callerUsername);
+        var callerUserId = getUserId(authentication);
+        LOGGER.info("Deleting user [{}] by [{}]", userId, callerUserId);
         adminService.deleteUser(getUserId(authentication), userId);
-        LOGGER.info("Successful deleted user [{}] by [{}]", userId, callerUsername);
+        LOGGER.info("Successful deleted user [{}] by [{}]", userId, callerUserId);
     }
 
     @DeleteMapping(value = "/admin/caff-data/{caffDataId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteCaffData(Authentication authentication, @PathVariable("caffDataId") UUID caffDataId) {
-        var callerUsername = getUsername(authentication);
-        LOGGER.info("Deleting caff data [{}] by [{}]", caffDataId, callerUsername);
+        var callerUserId = getUserId(authentication);
+        LOGGER.info("Deleting caff data [{}] by [{}]", caffDataId, callerUserId);
         adminService.deleteCaffData(caffDataId);
-        LOGGER.info("Successful deleted caff data [{}] by [{}]", caffDataId, callerUsername);
+        LOGGER.info("Successful deleted caff data [{}] by [{}]", caffDataId, callerUserId);
     }
 
     @DeleteMapping(value = "/admin/comments/{commentId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteComment(Authentication authentication, @PathVariable("commentId") UUID commentId) {
-        var callerUsername = getUsername(authentication);
-        LOGGER.info("Deleting comment [{}] by [{}]", commentId, callerUsername);
+        var callerUserId = getUserId(authentication);
+        LOGGER.info("Deleting comment [{}] by [{}]", commentId, callerUserId);
         adminService.deleteComment(commentId);
-        LOGGER.info("Successful deleted comment [{}] by [{}]", commentId, callerUsername);
+        LOGGER.info("Successful deleted comment [{}] by [{}]", commentId, callerUserId);
     }
 }
 

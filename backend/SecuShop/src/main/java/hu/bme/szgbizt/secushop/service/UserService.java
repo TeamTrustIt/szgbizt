@@ -45,6 +45,8 @@ public class UserService {
         var userEntity = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         var shopUserEntity = shopUserRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
+        //TODO csak saját magát
+
         var caffData = shopUserEntity.getCaffData().stream()
                 .map(caffDataEntity -> new BaseCaffData(
                         caffDataEntity.getId(),

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 import static hu.bme.szgbizt.secushop.util.JwtHandler.getUserId;
-import static hu.bme.szgbizt.secushop.util.JwtHandler.getUsername;
 
 @RestController
 @PreAuthorize("hasRole('ROLE_USER')")
@@ -36,21 +35,20 @@ public class UserController implements SecuShopBaseController {
     @GetMapping(value = "/users/{userId}")
     @ResponseStatus(value = HttpStatus.OK)
     public User getUser(Authentication authentication, @PathVariable("userId") UUID userId) {
-        var callerUsername = getUsername(authentication);
-        LOGGER.info("Querying user [{}] by [{}]", userId, callerUsername);
+        var callerUserId = getUserId(authentication);
+        LOGGER.info("Querying user [{}] by [{}]", userId, callerUserId);
         var user = userService.getUser(userId);
-        LOGGER.info("Successful queried user [{}] by [{}]", userId, callerUsername);
+        LOGGER.info("Successful queried user [{}] by [{}]", userId, callerUserId);
         return user;
     }
 
     @PutMapping(value = "/users/{userId}")
     @ResponseStatus(value = HttpStatus.OK)
     public RegisteredUser updateUser(Authentication authentication, @PathVariable("userId") UUID userId, @RequestBody PutRegisteredUserRequest putRegisteredUserRequest) {
-        var callerUsername = getUsername(authentication);
         var callerUserId = getUserId(authentication);
-        LOGGER.info("Updating user [{}] by [{}]", userId, callerUsername);
+        LOGGER.info("Updating user [{}] by [{}]", userId, callerUserId);
         var user = userService.updateUser(callerUserId, userId, putRegisteredUserRequest);
-        LOGGER.info("Successful updated user [{}] by [{}]", userId, callerUsername);
+        LOGGER.info("Successful updated user [{}] by [{}]", userId, callerUserId);
         return user;
     }
 }
