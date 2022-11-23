@@ -11,6 +11,9 @@ import {Router} from "@angular/router";
 export class ProfileComponent implements OnInit{
 
   userO: UserEditDto = {caffs: [], email: "", id: 0, name: "", role: ""}
+  currentPassword: string = "";
+  newPassword: string = "";
+  newPasswordConfirm: string = "";
 
   constructor(private userService: UserService, private router: Router) {
   }

@@ -6,9 +6,17 @@
       <p class="bold mb-5">User Profile:</p>
       <app-text-input classes="mb-5" placeholder="Username" [(value)]="userO.name"></app-text-input>
       <app-text-input [(value)]="userO.email" classes="mb-10" placeholder="Email Address"></app-text-input>
-      <div class="flex justify-between">
+      <div class="flex justify-between mb-20">
         <app-button classes="bg-red" text="Delete User"></app-button>
         <app-button text="Save"></app-button>
+      </div>
+
+      <p class="bold mb-5">User Password:</p>
+      <app-text-input classes="mb-5" placeholder="Current password" [(value)]="currentPassword"></app-text-input>
+      <app-text-input [(value)]="newPassword" classes="mb-5" placeholder="New password"></app-text-input>
+      <app-text-input [(value)]="newPasswordConfirm" classes="mb-10" placeholder="Confirm new password"></app-text-input>
+      <div class="flex justify-right">
+        <app-button text="Change password"></app-button>
       </div>
     </div>
 
