@@ -9,10 +9,10 @@
     <app-button routerLink="/login" text="Sign in"></app-button>
   </div>
 
-  <div *ngIf="loggedIn" class="align-center flex justify-between">
+  <div *ngIf="loggedIn" class="align-center flex justify-between gap-1">
     <app-button routerLink="/home" type="nav" text="Home"></app-button>
     <app-button routerLink="/profile" type="nav" text="Profile"></app-button>
-    <app-button routerLink="/admin-users" type="nav" text="Users"></app-button>
+    <app-button *ngIf="isAdmin" routerLink="/admin-users" type="nav" text="Users"></app-button>
     <app-button (onClick)="logout()" type="nav" text="Log out"></app-button>
   </div>
 
