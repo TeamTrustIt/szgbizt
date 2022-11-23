@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -41,37 +42,40 @@ public class UserService {
         this.shopUserRepository = shopUserRepository;
     }
 
-    public User getUser(UUID userId) {
-        var userEntity = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-        var shopUserEntity = shopUserRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+    public User getUser(UUID callerUserId, UUID userId) {
 
-        //TODO csak saját magát
+        var callerUserEntity = userRepository.findById(callerUserId)
+                .orElseThrow(UserNotFoundException::new);
+        var userEntity = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
 
-        var caffData = shopUserEntity.getCaffData().stream()
-                .map(caffDataEntity -> new BaseCaffData(
-                        caffDataEntity.getId(),
-                        caffDataEntity.getName(),
-                        caffDataEntity.getDescription()
-                ))
-                .collect(Collectors.toList());
+        if (callerUserEntity.equals(userEntity)) {
+            var shopUserEntity = shopUserRepository.findById(userId)
+                    .orElseThrow(UserNotFoundException::new);
 
-        return new User(
-                userEntity.getId(),
-                userEntity.getUsername(),
-                userEntity.getEmail(),
-                userEntity.getRoles(),
-                shopUserEntity.getBalance(),
-                caffData
-        );
+            var caffData = shopUserEntity.getCaffData().stream()
+                    .map(caffDataEntity -> new BaseCaffData(
+                            caffDataEntity.getId(),
+                            caffDataEntity.getName(),
+                            caffDataEntity.getDescription()
+                    ))
+                    .collect(Collectors.toList());
+
+            return new User(
+                    userEntity.getId(),
+                    userEntity.getUsername(),
+                    userEntity.getEmail(),
+                    userEntity.getRoles(),
+                    shopUserEntity.getBalance(),
+                    caffData
+            );
+        }
+
+        LOGGER.error(ErrorCode.SS_0152.getMessage());
+        throw new NoAuthorityToProcessException(ErrorCode.SS_0152);
     }
 
     public RegisteredUser updateUser(UUID callerUserId, UUID userIdToUpdate, PutRegisteredUserRequest putRegisteredUserRequest) {
-
-        var username = putRegisteredUserRequest.getUsername();
-        validateUserName(username);
-
-        var email = putRegisteredUserRequest.getEmail();
-        validateEmail(email);
 
         var callerUserEntity = userRepository.findById(callerUserId)
                 .orElseThrow(UserNotFoundException::new);
@@ -79,6 +83,13 @@ public class UserService {
                 .orElseThrow(UserNotFoundException::new);
 
         if (callerUserEntity.equals(userEntityToUpdate)) {
+
+            var username = putRegisteredUserRequest.getUsername();
+            validateUserName(username);
+
+            var email = putRegisteredUserRequest.getEmail();
+            validateEmail(email);
+
             userEntityToUpdate.setUsername(username);
             userEntityToUpdate.setPassword(passwordEncoder.encode(putRegisteredUserRequest.getPassword()));
             userEntityToUpdate.setEmail(email);
@@ -93,8 +104,27 @@ public class UserService {
             );
         }
 
-        LOGGER.error("Cannot update other users");
+        LOGGER.error(ErrorCode.SS_0152.getMessage());
         throw new NoAuthorityToProcessException(ErrorCode.SS_0152);
+    }
+
+
+    @Transactional
+    public void deleteUser(UUID callerUserId, UUID userIdToDelete) {
+
+        var callerUserEntity = userRepository.findById(callerUserId)
+                .orElseThrow(UserNotFoundException::new);
+        var userEntityToDelete = userRepository.findById(userIdToDelete)
+                .orElseThrow(UserNotFoundException::new);
+
+        if (callerUserEntity.equals(userEntityToDelete)) {
+
+            shopUserRepository.deleteById(userIdToDelete);
+            userRepository.deleteById(userIdToDelete);
+        } else {
+            LOGGER.error(ErrorCode.SS_0152.getMessage());
+            throw new NoAuthorityToProcessException(ErrorCode.SS_0152);
+        }
     }
 
     private void validateUserName(String username) {

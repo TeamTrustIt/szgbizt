@@ -37,7 +37,7 @@ public class UserController implements SecuShopBaseController {
     public User getUser(Authentication authentication, @PathVariable("userId") UUID userId) {
         var callerUserId = getUserId(authentication);
         LOGGER.info("Querying user [{}] by [{}]", userId, callerUserId);
-        var user = userService.getUser(userId);
+        var user = userService.getUser(callerUserId, userId);
         LOGGER.info("Successful queried user [{}] by [{}]", userId, callerUserId);
         return user;
     }
@@ -50,5 +50,14 @@ public class UserController implements SecuShopBaseController {
         var user = userService.updateUser(callerUserId, userId, putRegisteredUserRequest);
         LOGGER.info("Successful updated user [{}] by [{}]", userId, callerUserId);
         return user;
+    }
+
+    @DeleteMapping(value = "/users/{userId}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void deleteUser(Authentication authentication, @PathVariable("userId") UUID userId) {
+        var callerUserId = getUserId(authentication);
+        LOGGER.info("Deleting user [{}] by [{}]", userId, callerUserId);
+        userService.deleteUser(callerUserId, userId);
+        LOGGER.info("Successful deleted user [{}] by [{}]", userId, callerUserId);
     }
 }
