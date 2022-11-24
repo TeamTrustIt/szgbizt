@@ -22,9 +22,6 @@ public class CaffDataEntity {
     @Column(name = "id", nullable = false, length = 36)
     private UUID id;
 
-    @Column(name = "file", nullable = false)
-    private String file;
-
     @Column(name = "name", nullable = false, length = 30)
     private String name;
 
@@ -54,17 +51,16 @@ public class CaffDataEntity {
     /**
      * Instantiates a new {@link CaffDataEntity}.
      *
-     * @param file        The file itself.
      * @param name        The name of the file.
      * @param description The description of the file.
      * @param price       The price of the file.
      * @param shopUser    The user who belongs to the caff data.
      */
-    public CaffDataEntity(String file, String name, String description, BigDecimal price, ShopUserEntity shopUser) {
-        this.file = file;
+    public CaffDataEntity(String name, String description, BigDecimal price, ShopUserEntity shopUser) {
         this.name = name;
         this.description = description;
         this.price = price;
+        this.uploadDate = Instant.now();
         this.shopUser = shopUser;
         this.comments = new ArrayList<>();
     }
@@ -75,14 +71,6 @@ public class CaffDataEntity {
 
     public void setId(UUID id) {
         this.id = id;
-    }
-
-    public String getFile() {
-        return file;
-    }
-
-    public void setFile(String file) {
-        this.file = file;
     }
 
     public String getName() {

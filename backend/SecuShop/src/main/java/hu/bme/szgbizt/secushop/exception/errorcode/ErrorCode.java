@@ -5,6 +5,8 @@ public enum ErrorCode {
     SS_0001("Internal server error"),
     SS_0100("Missing input parameter"),
     SS_0101("Invalid input parameter"),
+    SS_0102("Invalid file extension"),
+    SS_0103("Caff data with the specified name already exists"),
     SS_0120("Username is not unique"),
     SS_0121("Email is not unique"),
     SS_0141("User not found"),

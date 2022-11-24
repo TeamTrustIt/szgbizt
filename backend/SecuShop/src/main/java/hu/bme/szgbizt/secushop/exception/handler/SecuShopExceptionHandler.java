@@ -5,6 +5,7 @@ import hu.bme.szgbizt.secushop.exception.*;
 import hu.bme.szgbizt.secushop.exception.errorcode.ErrorCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -28,6 +29,12 @@ public class SecuShopExceptionHandler {
         return buildErrorMessage(ErrorCode.SS_0100);
     }
 
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public @ResponseBody ErrorMessageResponse handleMissingServletRequestParameterException(MissingServletRequestParameterException ex) {
+        return buildErrorMessage(ErrorCode.SS_0100, ex.getMessage());
+    }
+
     @ExceptionHandler(UsernameNotUniqueException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public @ResponseBody ErrorMessageResponse handleUsernameNotUniqueException(UsernameNotUniqueException ex) {
@@ -46,15 +53,45 @@ public class SecuShopExceptionHandler {
         return buildErrorMessage(ex.getErrorCode());
     }
 
+    @ExceptionHandler(CaffDataAlreadyExistException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public @ResponseBody ErrorMessageResponse handleCaffDataAlreadyExistException(CaffDataAlreadyExistException ex) {
+        return buildErrorMessage(ex.getErrorCode());
+    }
+
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public @ResponseBody ErrorMessageResponse handleUserNotFoundException(UserNotFoundException ex) {
         return buildErrorMessage(ex.getErrorCode());
     }
 
+    @ExceptionHandler(CaffDataNotFoundException.class)
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    public @ResponseBody ErrorMessageResponse handleCaffDataNotFoundException(CaffDataNotFoundException ex) {
+        return buildErrorMessage(ex.getErrorCode());
+    }
+
+    @ExceptionHandler(CommentNotFoundException.class)
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    public @ResponseBody ErrorMessageResponse handleCommentNotFoundException(CommentNotFoundException ex) {
+        return buildErrorMessage(ex.getErrorCode());
+    }
+
+    @ExceptionHandler(InvalidFileExtensionException.class)
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    public @ResponseBody ErrorMessageResponse handleInvalidFileExtensionException(InvalidFileExtensionException ex) {
+        return buildErrorMessage(ex.getErrorCode());
+    }
+
     @ExceptionHandler(NoAuthorityToProcessException.class)
     @ResponseStatus(value = HttpStatus.FORBIDDEN)
     public @ResponseBody ErrorMessageResponse handleNoAuthorityToProcessException(NoAuthorityToProcessException ex) {
+        return buildErrorMessage(ex.getErrorCode());
+    }
+
+    @ExceptionHandler(SecuShopInternalServerException.class)
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    public @ResponseBody ErrorMessageResponse handleSecuShopInternalServerException(SecuShopInternalServerException ex) {
         return buildErrorMessage(ex.getErrorCode());
     }
 
