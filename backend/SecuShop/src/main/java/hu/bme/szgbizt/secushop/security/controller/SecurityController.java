@@ -1,6 +1,6 @@
 package hu.bme.szgbizt.secushop.security.controller;
 
-import hu.bme.szgbizt.secushop.controller.SecuShopBaseController;
+import hu.bme.szgbizt.secushop.controller.ISecuShopBaseController;
 import hu.bme.szgbizt.secushop.dto.LoggedUser;
 import hu.bme.szgbizt.secushop.dto.PostRegistrationRequest;
 import hu.bme.szgbizt.secushop.dto.RegisteredUser;
@@ -16,7 +16,7 @@ import javax.validation.Valid;
 import static hu.bme.szgbizt.secushop.util.JwtHandler.getUserId;
 
 @RestController
-public class SecurityController implements SecuShopBaseController {
+public class SecurityController implements ISecuShopBaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SecurityController.class);
 

@@ -137,7 +137,8 @@ public class UserService {
         var commentEntityToDelete = commentRepository.findById(commentIdToDelete)
                 .orElseThrow(CommentNotFoundException::new);
 
-        if (callerUserEntity.getComments().contains(commentEntityToDelete)) {
+        var callerUserComments = callerUserEntity.getComments().stream().map(CommentEntity::getId).collect(Collectors.toList());
+        if (callerUserComments.contains(commentIdToDelete)) {
             commentRepository.delete(commentEntityToDelete);
         } else {
             LOGGER.error(ErrorCode.SS_0152.getMessage());

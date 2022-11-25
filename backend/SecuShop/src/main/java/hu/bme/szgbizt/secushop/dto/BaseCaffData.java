@@ -1,5 +1,7 @@
 package hu.bme.szgbizt.secushop.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
@@ -7,6 +9,9 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+
+@JsonInclude(NON_NULL)
 public final class BaseCaffData {
 
     @NotNull(message = "Id cannot be null")

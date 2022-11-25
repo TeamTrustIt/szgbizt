@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static javax.persistence.CascadeType.REMOVE;
 import static javax.persistence.FetchType.EAGER;
 
 @Entity
@@ -40,7 +41,7 @@ public class CaffDataEntity {
     @JoinColumn(name = "user_id")
     private ShopUserEntity shopUser;
 
-    @OneToMany(fetch = EAGER, mappedBy = "caffData")
+    @OneToMany(fetch = EAGER, mappedBy = "caffData", cascade = REMOVE)
     private List<CommentEntity> comments;
 
     /**

@@ -13,7 +13,7 @@ public interface ICaffDataService {
 
     List<CaffData> loadAll();
 
-    Resource load(String filename);
+    CaffData load(UUID caffDataId);
 
     Resource loadAsResource(UUID caffDataId);
 

@@ -1,10 +1,17 @@
 package hu.bme.szgbizt.secushop.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.validation.constraints.NotNull;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+
 /**
- * Data transfer object class for logged user.
+ * Dto class for logged user.
  */
+@JsonInclude(NON_NULL)
 public final class LoggedUser {
 
     @NotNull(message = "Token cannot be null")
@@ -19,7 +26,11 @@ public final class LoggedUser {
      * @param token          The access token for the {@link LoggedUser}.
      * @param registeredUser The details of the {@link LoggedUser}.
      */
-    public LoggedUser(String token, RegisteredUser registeredUser) {
+    @JsonCreator
+    public LoggedUser(
+            @JsonProperty("token") String token,
+            @JsonProperty("registeredUser") RegisteredUser registeredUser) {
+
         this.token = token;
         this.registeredUser = registeredUser;
     }

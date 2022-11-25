@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static javax.persistence.CascadeType.REMOVE;
 import static javax.persistence.FetchType.EAGER;
 
 @Entity
@@ -19,10 +20,10 @@ public class ShopUserEntity {
     @Column(name = "balance", nullable = false)
     private BigDecimal balance;
 
-    @OneToMany(fetch = EAGER, mappedBy = "shopUser")
+    @OneToMany(fetch = EAGER, mappedBy = "shopUser", cascade = REMOVE)
     private List<CaffDataEntity> caffData;
 
-    @OneToMany(fetch = EAGER, mappedBy = "shopUser")
+    @OneToMany(fetch = EAGER, mappedBy = "shopUser", cascade = REMOVE)
     private List<CommentEntity> comments;
 
     /**

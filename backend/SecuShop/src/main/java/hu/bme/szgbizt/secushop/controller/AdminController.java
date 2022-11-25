@@ -16,7 +16,7 @@ import static hu.bme.szgbizt.secushop.util.JwtHandler.getUserId;
 
 @RestController
 @PreAuthorize("hasRole('ROLE_ADMIN')")
-public class AdminController implements SecuShopBaseController {
+public class AdminController implements ISecuShopBaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdminController.class);
 

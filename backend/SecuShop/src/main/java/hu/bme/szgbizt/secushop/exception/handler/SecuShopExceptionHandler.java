@@ -24,16 +24,16 @@ public class SecuShopExceptionHandler {
 
         if (nonNull(fieldError)) {
             var errorMessage = fieldError.getDefaultMessage();
-            return buildErrorMessage(ErrorCode.SS_0100, errorMessage);
+            return buildErrorMessage(ErrorCode.SS_0101, errorMessage);
         }
 
-        return buildErrorMessage(ErrorCode.SS_0100);
+        return buildErrorMessage(ErrorCode.SS_0101);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public @ResponseBody ErrorMessageResponse handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
-        return buildErrorMessage(ErrorCode.SS_0100, ex.getMessage());
+        return buildErrorMessage(ErrorCode.SS_0101, "Invalid input parameter(s)");
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)

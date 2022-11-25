@@ -120,8 +120,17 @@ public class CaffDataService implements ICaffDataService {
     }
 
     @Override
-    public Resource load(String filename) {
-        return null;
+    public CaffData load(UUID caffDataId) {
+        return caffDataRepository.findById(caffDataId)
+                .map(caffDataEntity -> new CaffData(
+                        caffDataEntity.getId(),
+                        caffDataEntity.getName(),
+                        caffDataEntity.getDescription(),
+                        caffDataEntity.getPrice(),
+                        caffDataEntity.getUploadDate(),
+                        caffDataEntity.getShopUser().getId(),
+                        ""))
+                .orElseThrow(CaffDataNotFoundException::new);
     }
 
     @Override
