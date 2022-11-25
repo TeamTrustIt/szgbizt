@@ -22,7 +22,7 @@ public class ShopUserEntity {
     @OneToMany(fetch = EAGER, mappedBy = "shopUser")
     private List<CaffDataEntity> caffData;
 
-    @OneToMany(mappedBy = "shopUser")
+    @OneToMany(fetch = EAGER, mappedBy = "shopUser")
     private List<CommentEntity> comments;
 
     /**

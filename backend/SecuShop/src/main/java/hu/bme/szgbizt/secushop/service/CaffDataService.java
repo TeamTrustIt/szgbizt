@@ -22,9 +22,10 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 import static java.math.BigDecimal.ZERO;
 
@@ -95,13 +96,27 @@ public class CaffDataService implements ICaffDataService {
     }
 
     @Override
-    public Stream<Path> loadAll() {
+    public List<CaffData> loadAll() {
+        return caffDataRepository.findAll().stream()
+                .map(caffDataEntity -> new CaffData(
+                        caffDataEntity.getId(),
+                        caffDataEntity.getName(),
+                        caffDataEntity.getDescription(),
+                        caffDataEntity.getPrice(),
+                        caffDataEntity.getUploadDate(),
+                        caffDataEntity.getShopUser().getId(),
+                        ""
+                ))
+                .collect(Collectors.toList());
+
+        /*
         try {
             return Files.walk(ROOT, 1).filter(path -> !path.equals(ROOT)).map(ROOT::relativize);
         } catch (IOException ex) {
             LOGGER.error("Error while loading all caff data, exception: {}", ex.getMessage());
             throw new SecuShopInternalServerException();
         }
+         */
     }
 
     @Override

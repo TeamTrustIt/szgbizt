@@ -1,9 +1,6 @@
 package hu.bme.szgbizt.secushop.controller;
 
-import hu.bme.szgbizt.secushop.dto.CaffData;
-import hu.bme.szgbizt.secushop.dto.PutRegisteredUserRequest;
-import hu.bme.szgbizt.secushop.dto.RegisteredUser;
-import hu.bme.szgbizt.secushop.dto.User;
+import hu.bme.szgbizt.secushop.dto.*;
 import hu.bme.szgbizt.secushop.exception.InvalidFileExtensionException;
 import hu.bme.szgbizt.secushop.service.CaffDataService;
 import hu.bme.szgbizt.secushop.service.UserService;
@@ -16,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -71,16 +69,6 @@ public class UserController implements SecuShopBaseController {
         LOGGER.info("Successful deleted user [{}] by [{}]", userId, callerUserId);
     }
 
-    /**
-     * @DeleteMapping(value = "/caff-data/{caffDataId}")
-     * @ResponseStatus(value = HttpStatus.NO_CONTENT)
-     * public void deleteCaffData(Authentication authentication, @PathVariable("caffDataId") UUID caffDataId) {
-     * var callerUserId = getUserId(authentication);
-     * LOGGER.info("Deleting caff data [{}] by [{}]", caffDataId, callerUserId);
-     * userService.deleteCaffData(callerUserId, caffDataId);
-     * LOGGER.info("Successful deleted caff data [{}] by [{}]", caffDataId, callerUserId);
-     * }
-     */
     @DeleteMapping(value = "/comments/{commentId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteComment(Authentication authentication, @PathVariable("commentId") UUID commentId) {
@@ -127,5 +115,29 @@ public class UserController implements SecuShopBaseController {
         LOGGER.info("Deleting caff data [{}] by [{}]", caffDataId, callerUserId);
         caffDataService.delete(caffDataId);
         LOGGER.info("Successful deleted caff data [{}] by [{}]", caffDataId, callerUserId);
+    }
+
+    @PostMapping(value = "/caff-data/{caffDataId}")
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public @ResponseBody Comment createComment(
+            Authentication authentication,
+            @PathVariable("caffDataId") UUID caffDataId,
+            @RequestBody PostCommentRequest postCommentRequest) {
+
+        var callerUserId = getUserId(authentication);
+        LOGGER.info("Posting comment to caff data [{}] by [{}]", caffDataId, callerUserId);
+        var comment = userService.postComment(callerUserId, caffDataId, postCommentRequest.getMessage());
+        LOGGER.info("Successful posted comment to caff data [{}] by [{}]", caffDataId, callerUserId);
+        return comment;
+    }
+
+    @GetMapping(value = "/caff-data")
+    @ResponseStatus(value = HttpStatus.OK)
+    public @ResponseBody List<CaffData> getCaffDataList(Authentication authentication) {
+        var callerUserId = getUserId(authentication);
+        LOGGER.info("Querying all caff data by [{}]", callerUserId);
+        var caffDataList = caffDataService.loadAll();
+        LOGGER.info("Successful queried all caff data by [{}]", callerUserId);
+        return caffDataList;
     }
 }

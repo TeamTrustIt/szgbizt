@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static javax.persistence.FetchType.EAGER;
+
 @Entity
 @Table(name = "caff_data")
 public class CaffDataEntity {
@@ -38,7 +40,7 @@ public class CaffDataEntity {
     @JoinColumn(name = "user_id")
     private ShopUserEntity shopUser;
 
-    @OneToMany(mappedBy = "caffData")
+    @OneToMany(fetch = EAGER, mappedBy = "caffData")
     private List<CommentEntity> comments;
 
     /**

@@ -1,9 +1,6 @@
 package hu.bme.szgbizt.secushop.service;
 
-import hu.bme.szgbizt.secushop.dto.BaseCaffData;
-import hu.bme.szgbizt.secushop.dto.PutRegisteredUserRequest;
-import hu.bme.szgbizt.secushop.dto.RegisteredUser;
-import hu.bme.szgbizt.secushop.dto.User;
+import hu.bme.szgbizt.secushop.dto.*;
 import hu.bme.szgbizt.secushop.exception.*;
 import hu.bme.szgbizt.secushop.exception.errorcode.ErrorCode;
 import hu.bme.szgbizt.secushop.persistence.entity.CaffDataEntity;
@@ -24,6 +21,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class UserService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
@@ -115,7 +113,6 @@ public class UserService {
         throw new NoAuthorityToProcessException(ErrorCode.SS_0152);
     }
 
-    @Transactional
     public void deleteUser(UUID callerUserId, UUID userIdToDelete) {
 
         var callerUserEntity = userRepository.findById(callerUserId)
@@ -127,21 +124,6 @@ public class UserService {
 
             shopUserRepository.deleteById(userIdToDelete);
             userRepository.deleteById(userIdToDelete);
-        } else {
-            LOGGER.error(ErrorCode.SS_0152.getMessage());
-            throw new NoAuthorityToProcessException(ErrorCode.SS_0152);
-        }
-    }
-
-    public void deleteCaffData(UUID callerUserId, UUID caffDataIdToDelete) {
-
-        var callerUserEntity = shopUserRepository.findById(callerUserId)
-                .orElseThrow(UserNotFoundException::new);
-        var caffDataEntityToDelete = caffDataRepository.findById(caffDataIdToDelete)
-                .orElseThrow(CaffDataNotFoundException::new);
-
-        if (callerUserEntity.getCaffData().contains(caffDataEntityToDelete)) {
-            caffDataRepository.delete(caffDataEntityToDelete);
         } else {
             LOGGER.error(ErrorCode.SS_0152.getMessage());
             throw new NoAuthorityToProcessException(ErrorCode.SS_0152);
@@ -161,6 +143,33 @@ public class UserService {
             LOGGER.error(ErrorCode.SS_0152.getMessage());
             throw new NoAuthorityToProcessException(ErrorCode.SS_0152);
         }
+    }
+
+    public Comment postComment(UUID callerUserId, UUID caffDataId, String message) {
+
+        var shopUserEntity = shopUserRepository.findById(callerUserId)
+                .orElseThrow(UserNotFoundException::new);
+        var caffDataEntity = caffDataRepository.findById(caffDataId)
+                .orElseThrow(CaffDataNotFoundException::new);
+
+        var commentEntity = new CommentEntity(
+                message,
+                shopUserEntity,
+                caffDataEntity
+        );
+
+        shopUserEntity.getComments().add(commentEntity);
+        caffDataEntity.getComments().add(commentEntity);
+
+        var savedCommentEntity = commentRepository.save(commentEntity);
+
+        return new Comment(
+                savedCommentEntity.getId(),
+                savedCommentEntity.getMessage(),
+                savedCommentEntity.getUploadDate(),
+                savedCommentEntity.getShopUser().getId(),
+                savedCommentEntity.getCaffData().getId()
+        );
     }
 
     private void validateUserName(String username) {

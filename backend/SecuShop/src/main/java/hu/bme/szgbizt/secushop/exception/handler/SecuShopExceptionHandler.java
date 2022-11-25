@@ -4,6 +4,7 @@ import hu.bme.szgbizt.secushop.dto.ErrorMessageResponse;
 import hu.bme.szgbizt.secushop.exception.*;
 import hu.bme.szgbizt.secushop.exception.errorcode.ErrorCode;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -27,6 +28,12 @@ public class SecuShopExceptionHandler {
         }
 
         return buildErrorMessage(ErrorCode.SS_0100);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public @ResponseBody ErrorMessageResponse handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+        return buildErrorMessage(ErrorCode.SS_0100, ex.getMessage());
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
