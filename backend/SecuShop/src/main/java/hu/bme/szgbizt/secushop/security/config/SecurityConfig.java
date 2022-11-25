@@ -21,6 +21,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static hu.bme.szgbizt.secushop.config.SwaggerConfig.PUBLIC_SWAGGER_ENDPOINT_PATTERNS;
 import static hu.bme.szgbizt.secushop.util.Constant.SYSTEM_BASE_URL;
 import static org.springframework.security.config.Customizer.withDefaults;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
@@ -62,6 +63,7 @@ public class SecurityConfig {
         return http
                 .csrf().disable()
                 .authorizeRequests()
+                .antMatchers(PUBLIC_SWAGGER_ENDPOINT_PATTERNS).permitAll()
                 .mvcMatchers(PUBLIC_ENDPOINT_PATTERNS).permitAll()
                 .anyRequest().authenticated()
                 .and()
