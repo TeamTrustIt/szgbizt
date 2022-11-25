@@ -8,7 +8,7 @@
     <app-text-input [(value)]="description" inputType="textArea" classes="" placeholder="Description"></app-text-input>
     <p *ngIf="error !== ''" style="color: red">{{error}}</p>
 
-    <app-button classes="mt-2" (onClick)="upload()" text="Upload"></app-button>
+    <app-button classes="mt-2" [disabled]="uploading" (onClick)="upload()" text="Upload"></app-button>
 
   </form>
 

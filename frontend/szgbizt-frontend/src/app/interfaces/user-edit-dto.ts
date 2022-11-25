@@ -6,5 +6,5 @@ export interface UserEditDto {
   email: string,
   roles: 'ROLE_USER' | 'ROLE_ADMIN',
   balance: number,
-  caffs: CaffDataNoCommentDto[]
+  caffData: CaffDataNoCommentDto[]
 }

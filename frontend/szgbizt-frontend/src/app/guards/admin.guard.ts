@@ -37,13 +37,7 @@ export class AdminGuard implements CanActivate {
 
     return this.isAdmin ?
       this.mustNotBeAdmin.indexOf(url) === -1 ? true : this.router.navigate(['/home']) :
-      this.mustBeAdmin.indexOf(url) === -1 ? true : this.router.navigate(['/admin-login'])
+      this.mustBeAdmin.indexOf(url) === -1 ? true : this.router.navigate(['/login'])
   }
-
-  /*canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    return true;
-  }*/
 
 }

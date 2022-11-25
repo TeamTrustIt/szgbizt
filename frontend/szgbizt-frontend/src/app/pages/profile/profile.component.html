@@ -26,7 +26,7 @@
         <app-button routerLink="/upload" icon="add" type="icon"></app-button>
       </div>
       <div class="grid-2">
-        <app-caff-card [deleteEnabled]="true" (onDetailsClicked)="navigateToDetail(c.id)" *ngFor="let c of userO.caffs" [caffData]="c"></app-caff-card>
+        <app-caff-card [deleteEnabled]="true" (onDeleteClicked)="deleteCaff(c.id, c.filename)" (onDetailsClicked)="navigateToDetail(c.id)" *ngFor="let c of userO.caffData" [caffData]="c"></app-caff-card>
       </div>
     </div>
 

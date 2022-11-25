@@ -3,9 +3,10 @@
   <div class="detailPage mt-2">
 
     <div class="w-55 flex flex-col -mt-2">
-      <div class="flex mb-5">
-        <p class="bold pr-10">{{caff?.filename}}</p>
-        <app-button type="buy" [text]="caff?.price?.toString() + ' Eur'"></app-button>
+      <div class="flex gap-2 mb-5">
+        <p class="bold">{{caff?.filename}}</p>
+        <app-button [disabled]="buyingCaff" (onClick)="buyCaff(caff?.id)" type="buy" [text]="caff?.price?.toString() + ' Eur'"></app-button>
+        <app-button *ngIf="isAdmin" [disabled]="deletingCaff" (onClick)="deleteCaff(caff?.id, caff?.filename)" type="icon" icon="delete"></app-button>
       </div>
       <img class="simpleImage aspect-video" [src]="caff?.urlImage" [alt]="caff?.urlImage + ' image'">
       <div class="flex-mobile justify-between">

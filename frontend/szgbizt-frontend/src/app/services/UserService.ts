@@ -1,6 +1,6 @@
-import {Injectable, OnInit} from "@angular/core";
+import {Injectable} from "@angular/core";
 import {environment} from "../../environments/environment";
-import {HttpClient, HttpParams} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {CaffDataNoCommentDto} from "../interfaces/caff-data-no-comment-dto";
 import {Observable} from "rxjs";
 import {UserEditDto} from "../interfaces/user-edit-dto";
@@ -16,9 +16,9 @@ export class UserService {
 
   userId: string = ""
 
-  constructor(private http: HttpClient, private store: Store<{auth: AuthState}>) {
+  constructor(private http: HttpClient, private store: Store<{ auth: AuthState }>) {
     this.store.subscribe(state => {
-      this.userId = state.auth.user?.id? state.auth.user.id : ''
+      this.userId = state.auth.user?.id ? state.auth.user.id : ''
     })
   }
 
@@ -35,7 +35,7 @@ export class UserService {
   }
 
   sendComment(caffId: string, newCommentText: string): Observable<CaffComment> {
-    const comment: {message: string} = {
+    const comment: { message: string } = {
       message: newCommentText
     }
     return this.http.post<CaffComment>(`${this.baseUrl}/caff-data/${caffId}/comments`, comment)
@@ -57,8 +57,23 @@ export class UserService {
     return this.http.delete<unknown>(`${this.baseUrl}/comments/${id}`) //204 ha sikeres
   }
 
-  updateProfile()/*: Observable<unknown> */{
-    // todo password and profile update backend ready?
+  updatePassword(id: string, currentPassword: string, newPassword: string): Observable<unknown> {
+    const data: { currentPassword: string, newPassword: string } = {
+      currentPassword: currentPassword,
+      newPassword: newPassword
+    }
+    return this.http.patch<unknown>(`${this.baseUrl}/users/${id}/password`, data) //200 ha sikeres
+  }
 
+  updateProfile(id: string, email: string, username: string): Observable<unknown> {
+    const data: { email: string, username: string } = {
+      email: email,
+      username: username
+    }
+    return this.http.patch<unknown>(`${this.baseUrl}/users/${id}/profile`, data) //200 ha sikeres
+  }
+
+  buyCaff(id: string) {
+    return this.http.get<string>(`${this.baseUrl}/caff-data/${id}/caff`)
   }
 }

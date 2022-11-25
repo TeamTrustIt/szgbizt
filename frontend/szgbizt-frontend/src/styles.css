@@ -57,7 +57,9 @@ body {
 .flex-grow {
   flex-grow: 1;
 }
-
+.flex-reverse {
+  flex-direction: row-reverse;
+}
 .flex-col {
   flex-direction: column;
 }

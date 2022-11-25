@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import {LoginComponent} from "./pages/login/login.component";
 import {RegisterComponent} from "./pages/register/register.component";
-import {LoginAdminComponent} from "./pages/login-admin/login-admin.component";
 import {ListUserComponent} from "./pages/list-user/list-user.component";
 import {ListComponent} from "./pages/list/list.component";
 import {DetailComponent} from "./pages/detail/detail.component";
@@ -15,7 +14,7 @@ const routes: Routes = [
   {path: 'login', component: LoginComponent, canActivate: [AuthGuard, AdminGuard]},
   {path: 'register', component: RegisterComponent, canActivate: [AuthGuard, AdminGuard]},
 
-  {path: 'admin-login', component: LoginAdminComponent, canActivate: [AuthGuard, AdminGuard]},
+  //{path: 'admin-login', component: LoginAdminComponent, canActivate: [AuthGuard, AdminGuard]},
   {path: 'admin-users', component: ListUserComponent, canActivate: [AuthGuard, AdminGuard]},
 
   {path: 'home', component: ListComponent, canActivate: [AuthGuard]},

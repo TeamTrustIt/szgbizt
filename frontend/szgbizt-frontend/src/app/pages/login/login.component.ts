@@ -12,6 +12,8 @@ export class LoginComponent implements OnDestroy {
 
   username: string = ""
   password: string = ""
+  loggingIn: boolean = false;
+
   subscription?: Subscription
 
   constructor(private authService: AuthService, private alertService: HotToastService) {
@@ -19,12 +21,18 @@ export class LoginComponent implements OnDestroy {
 
   login() {
     if (this.username !== "" && this.password !== "") {
-      this.subscription = this.authService.login(this.username, this.password).subscribe()
-    }
-    else {
+      this.loggingIn = true
+      this.subscription = this.authService.login(this.username, this.password).subscribe({
+        next: (res) => {
+          this.alertService.success(`Successfully logged in as ${res.user.username}`)
+          this.loggingIn = false
+        },
+        complete: () => {
+          this.loggingIn = false
+        }
+      })
+    } else {
       this.alertService.warning("Fill every field")
-      // todo remove
-      this.subscription = this.authService.login('ttest1', '1234').subscribe()
     }
   }
 
