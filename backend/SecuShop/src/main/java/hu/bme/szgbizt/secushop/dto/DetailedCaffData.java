@@ -8,16 +8,17 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 /**
- * Dto class for caff data without comments.
+ * Dto class for detailed caff data.
  */
-@JsonPropertyOrder(value = {"id", "filename", "description", "price", "username", "imageUrl", "uploadDate"})
+@JsonPropertyOrder(value = {"id", "filename", "description", "price", "username", "imageUrl", "uploadDate", "comments"})
 @JsonInclude(NON_NULL)
-public final class CaffData {
+public final class DetailedCaffData {
 
     @NotNull(message = "Id cannot be null")
     private final UUID id;
@@ -40,8 +41,11 @@ public final class CaffData {
     @NotNull(message = "Upload date cannot be null")
     private final Instant uploadDate;
 
+    @NotNull(message = "Comments cannot be null")
+    private final List<CaffComment> comments;
+
     /**
-     * Instantiates a new {@link CaffData}.
+     * Instantiates a new {@link DetailedCaffData}.
      *
      * @param id          The identifier of the detailed caff data.
      * @param filename    The filename of the detailed caff data.
@@ -50,16 +54,18 @@ public final class CaffData {
      * @param username    The username of the owner of the detailed caff data.
      * @param imageUrl    The image url of the detailed caff data.
      * @param uploadDate  The upload data of the detailed caff data.
+     * @param comments    The comments of the detailed caff data.
      */
     @JsonCreator
-    public CaffData(
+    public DetailedCaffData(
             @JsonProperty("id") UUID id,
             @JsonProperty("filename") String filename,
             @JsonProperty("description") String description,
             @JsonProperty("price") BigDecimal price,
             @JsonProperty("username") String username,
             @JsonProperty("imageUrl") String imageUrl,
-            @JsonProperty("uploadDate") Instant uploadDate) {
+            @JsonProperty("uploadDate") Instant uploadDate,
+            @JsonProperty("comments") List<CaffComment> comments) {
 
         this.id = id;
         this.filename = filename;
@@ -68,6 +74,7 @@ public final class CaffData {
         this.username = username;
         this.imageUrl = imageUrl;
         this.uploadDate = uploadDate;
+        this.comments = comments;
     }
 
     public UUID getId() {
@@ -96,5 +103,9 @@ public final class CaffData {
 
     public Instant getUploadDate() {
         return uploadDate;
+    }
+
+    public List<CaffComment> getComments() {
+        return comments;
     }
 }

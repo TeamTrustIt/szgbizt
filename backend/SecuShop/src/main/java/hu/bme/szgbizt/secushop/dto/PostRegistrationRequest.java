@@ -3,6 +3,7 @@ package hu.bme.szgbizt.secushop.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -14,6 +15,7 @@ import static hu.bme.szgbizt.secushop.util.Constant.REGEX_ONLY_LETTERS_AND_NUMBE
 /**
  * Dto class for registration.
  */
+@JsonPropertyOrder(value = {"username", "password", "email"})
 @JsonInclude(NON_NULL)
 public final class PostRegistrationRequest {
 
@@ -34,7 +36,7 @@ public final class PostRegistrationRequest {
      *
      * @param username The username of the user to register, has to be unique.
      * @param password The password of the user to register.
-     * @param email    The email of the user to register, has to ber unique.
+     * @param email    The email of the user to register, has to be unique.
      */
     @JsonCreator
     public PostRegistrationRequest(

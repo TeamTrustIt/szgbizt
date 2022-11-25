@@ -3,6 +3,7 @@ package hu.bme.szgbizt.secushop.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import javax.validation.constraints.NotNull;
 
@@ -11,6 +12,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 /**
  * Dto class for logged user.
  */
+@JsonPropertyOrder(value = {"token", "registeredUser"})
 @JsonInclude(NON_NULL)
 public final class LoggedUser {
 

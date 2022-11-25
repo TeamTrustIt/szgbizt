@@ -1,6 +1,6 @@
 package hu.bme.szgbizt.secushop.service;
 
-import hu.bme.szgbizt.secushop.dto.CaffData;
+import hu.bme.szgbizt.secushop.dto.DetailedCaffData;
 import hu.bme.szgbizt.secushop.exception.CaffDataAlreadyExistException;
 import hu.bme.szgbizt.secushop.exception.CaffDataNotFoundException;
 import hu.bme.szgbizt.secushop.exception.SecuShopInternalServerException;
@@ -53,7 +53,7 @@ public class CaffDataService implements ICaffDataService {
     }
 
     @Override
-    public CaffData store(UUID callerUserId, String filename, String description, MultipartFile file) {
+    public DetailedCaffData store(UUID callerUserId, String filename, String description, MultipartFile file) {
         try {
 
             caffDataRepository.findByName(filename).ifPresent(ignored -> {
@@ -75,14 +75,15 @@ public class CaffDataService implements ICaffDataService {
             Files.copy(file.getInputStream(), ROOT.resolve(Objects.requireNonNull(filename)));
             var savedCaffDataEntity = caffDataRepository.save(caffDataEntityToSave);
 
-            return new CaffData(
+            return new DetailedCaffData(
                     savedCaffDataEntity.getId(),
-                    filename, savedCaffDataEntity.getDescription(),
+                    savedCaffDataEntity.getName(),
+                    savedCaffDataEntity.getDescription(),
                     savedCaffDataEntity.getPrice(),
+                    savedCaffDataEntity.getShopUser().getUsername(),
+                    "imageUrl", // todo
                     savedCaffDataEntity.getUploadDate(),
-                    callerUserId,
-                    null
-            );
+                    List.of());
 
         } catch (Exception ex) {
 
@@ -96,17 +97,17 @@ public class CaffDataService implements ICaffDataService {
     }
 
     @Override
-    public List<CaffData> loadAll() {
+    public List<DetailedCaffData> loadAll() {
         return caffDataRepository.findAll().stream()
-                .map(caffDataEntity -> new CaffData(
+                .map(caffDataEntity -> new DetailedCaffData(
                         caffDataEntity.getId(),
                         caffDataEntity.getName(),
                         caffDataEntity.getDescription(),
                         caffDataEntity.getPrice(),
+                        caffDataEntity.getShopUser().getUsername(),
+                        "imageUrl",
                         caffDataEntity.getUploadDate(),
-                        caffDataEntity.getShopUser().getId(),
-                        ""
-                ))
+                        List.of()))
                 .collect(Collectors.toList());
 
         /*
@@ -120,16 +121,17 @@ public class CaffDataService implements ICaffDataService {
     }
 
     @Override
-    public CaffData load(UUID caffDataId) {
+    public DetailedCaffData load(UUID caffDataId) {
         return caffDataRepository.findById(caffDataId)
-                .map(caffDataEntity -> new CaffData(
+                .map(caffDataEntity -> new DetailedCaffData(
                         caffDataEntity.getId(),
                         caffDataEntity.getName(),
                         caffDataEntity.getDescription(),
                         caffDataEntity.getPrice(),
-                        caffDataEntity.getUploadDate(),
-                        caffDataEntity.getShopUser().getId(),
-                        ""))
+                        caffDataEntity.getShopUser().getUsername(),
+                        "imageUrl",
+                        caffDataEntity.getUploadDate(), List.of())
+                )
                 .orElseThrow(CaffDataNotFoundException::new);
     }
 

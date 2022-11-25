@@ -3,6 +3,7 @@ package hu.bme.szgbizt.secushop.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -13,10 +14,11 @@ import java.util.UUID;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 /**
- * Dto class for user.
+ * Dto class for detailed user.
  */
+@JsonPropertyOrder(value = {"id", "username", "email", "roles", "balance", "caffData"})
 @JsonInclude(NON_NULL)
-public final class User {
+public final class DetailedUser {
 
     @NotNull(message = "Id cannot be null")
     private final UUID id;
@@ -35,26 +37,26 @@ public final class User {
     private final BigDecimal balance;
 
     @NotNull(message = "Caff data cannot be null")
-    private final List<BaseCaffData> caffData;
+    private final List<CaffData> caffData;
 
     /**
-     * Instantiates a new {@link User}.
+     * Instantiates a new {@link DetailedUser}.
      *
-     * @param id       The identifier of the user.
-     * @param username The username of the user.
-     * @param email    The email of the user.
-     * @param roles    The roles of the user.
-     * @param balance  The balance of the user.
-     * @param caffData The caff data of the user.
+     * @param id       The identifier of the detailed user.
+     * @param username The username of the detailed user.
+     * @param email    The email of the detailed user.
+     * @param roles    The roles of the detailed user.
+     * @param balance  The balance of the detailed user.
+     * @param caffData The caff data of the detailed user.
      */
     @JsonCreator
-    public User(
+    public DetailedUser(
             @JsonProperty("id") UUID id,
             @JsonProperty("username") String username,
             @JsonProperty("email") String email,
             @JsonProperty("roles") String roles,
             @JsonProperty("balance") BigDecimal balance,
-            @JsonProperty("caffData") List<BaseCaffData> caffData) {
+            @JsonProperty("caffData") List<CaffData> caffData) {
 
         this.id = id;
         this.username = username;
@@ -84,7 +86,7 @@ public final class User {
         return balance;
     }
 
-    public List<BaseCaffData> getCaffData() {
+    public List<CaffData> getCaffData() {
         return caffData;
     }
 }

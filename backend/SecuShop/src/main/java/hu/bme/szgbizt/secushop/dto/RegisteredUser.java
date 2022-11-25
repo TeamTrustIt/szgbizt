@@ -3,6 +3,7 @@ package hu.bme.szgbizt.secushop.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -15,6 +16,7 @@ import static hu.bme.szgbizt.secushop.util.Constant.REGEX_ONLY_LETTERS_AND_NUMBE
 /**
  * Dto class for registered user.
  */
+@JsonPropertyOrder(value = {"id", "username", "email", "roles"})
 @JsonInclude(NON_NULL)
 public final class RegisteredUser {
 

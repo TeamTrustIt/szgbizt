@@ -16,7 +16,7 @@ import static hu.bme.szgbizt.secushop.util.Constant.REGEX_ONLY_LETTERS_AND_NUMBE
 @JsonInclude(NON_NULL)
 public final class PostCommentRequest {
 
-    @Pattern(regexp = REGEX_ONLY_LETTERS_AND_NUMBERS_AND_POINT, message = "Invalid character(s), every character should be letter or number")
+    @Pattern(regexp = REGEX_ONLY_LETTERS_AND_NUMBERS_AND_POINT, message = "Invalid character(s), every character should be letter, number or point")
     @NotNull(message = "Message cannot be null")
     private final String message;
 
