@@ -29,6 +29,7 @@ import java.util.stream.Stream;
 import static java.math.BigDecimal.ZERO;
 
 @Service
+@Transactional
 public class CaffDataService implements ICaffDataService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CaffDataService.class);
@@ -50,7 +51,6 @@ public class CaffDataService implements ICaffDataService {
         this.shopUserRepository = shopUserRepository;
     }
 
-    @Transactional
     @Override
     public CaffData store(UUID callerUserId, String filename, String description, MultipartFile file) {
         try {
@@ -132,7 +132,6 @@ public class CaffDataService implements ICaffDataService {
         }
     }
 
-    @Transactional
     @Override
     public void delete(UUID caffDataId) {
 
@@ -143,7 +142,6 @@ public class CaffDataService implements ICaffDataService {
         try {
             var path = ROOT.resolve(filename);
 
-            caffDataEntity.setShopUser(null);
             caffDataRepository.delete(caffDataEntity);
             Files.delete(path);
 

@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static javax.persistence.FetchType.EAGER;
+
 @Entity
 @Table(name = "users")
 public class ShopUserEntity {
@@ -17,11 +19,11 @@ public class ShopUserEntity {
     @Column(name = "balance", nullable = false)
     private BigDecimal balance;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "shopUser", cascade = CascadeType.ALL)
-    private List<CaffDataEntity> caffData = new ArrayList<>();
+    @OneToMany(fetch = EAGER, mappedBy = "shopUser")
+    private List<CaffDataEntity> caffData;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "shopUser", cascade = CascadeType.ALL)
-    private List<CommentEntity> comments = new ArrayList<>();
+    @OneToMany(mappedBy = "shopUser")
+    private List<CommentEntity> comments;
 
     /**
      * Instantiates a new {@link ShopUserEntity}.
