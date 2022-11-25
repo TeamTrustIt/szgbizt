@@ -1,11 +1,12 @@
 import {CaffComment} from "./caffComment";
 export interface CaffData {
-  id: number,
-  file: string,
-  name: string,
+  id: string,
+  filename: string,
   description: string,
   price: number,
-  authorName: string,
-  uploadDate: Date,
+  username: string,
+  urlImage: string,
+  uploadDate: Date
+
   comments: CaffComment[]
 }

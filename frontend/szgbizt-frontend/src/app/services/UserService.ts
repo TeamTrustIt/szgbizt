@@ -1,64 +1,64 @@
-import {Injectable} from "@angular/core";
+import {Injectable, OnInit} from "@angular/core";
 import {environment} from "../../environments/environment";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {CaffDataNoCommentDto} from "../interfaces/caff-data-no-comment-dto";
-import {Observable, of} from "rxjs";
+import {Observable} from "rxjs";
 import {UserEditDto} from "../interfaces/user-edit-dto";
 import {CaffData} from "../interfaces/caff-data";
 import {CaffComment} from "../interfaces/caffComment";
-import {NetworkResponse} from "../interfaces/network-response";
+import {AuthState} from "../interfaces/states/auth-state";
+import {Store} from "@ngrx/store";
 
 @Injectable({providedIn: 'root'})
 export class UserService {
 
-  private baseUrl = environment.apiBaseUrl + "/user";
+  private baseUrl = environment.apiBaseUrl;
 
-  constructor(private http: HttpClient) { }
+  userId: string = ""
+
+  constructor(private http: HttpClient, private store: Store<{auth: AuthState}>) {
+    this.store.subscribe(state => {
+      this.userId = state.auth.user?.id? state.auth.user.id : ''
+    })
+  }
 
   getCaffs(): Observable<CaffDataNoCommentDto[]> {
-    const list: CaffDataNoCommentDto[] = []
-    list.push({authorName: "Tester", description: "This is a test caff data", file: "assets/img/sample.jpg", id: 0, name: "TestCaff", price: 0.0, uploadDate: new Date(Date.now())})
-    for(let c of [1,2,3,4,5,6,7,8,9,10]){
-      list.push({authorName: "Tester", description: "This is a test caff data", file: "assets/img/samples.jpg", id: 0, name: "TestCaff"+c, price: 0.0, uploadDate: new Date(Date.now())})
-    }
-    return of(list)
+    return this.http.get<CaffDataNoCommentDto[]>(`${this.baseUrl}/caff-data`)
   }
 
-  getUserData(): Observable<UserEditDto> {
-    const list: CaffDataNoCommentDto[] = []
-    list.push({authorName: "Tester", description: "This is a test caff data", file: "assets/img/sample.jpg", id: 0, name: "TestCaff", price: 0.0, uploadDate: new Date(Date.now())})
-    for(let c of [1,2,3]){
-      list.push({authorName: "Tester", description: "This is a test caff data", file: "assets/img/samples.jpg", id: 0, name: "TestCaff"+c, price: 0.0, uploadDate: new Date(Date.now())})
-    }
-    const user: UserEditDto = {
-      caffs: list, email: "bela@test.hu", id: 1, name: "Tester Béla", role: "user"
-    }
-    return of(user)
+  getUserDataById(id: string = this.userId): Observable<UserEditDto> {
+    return this.http.get<UserEditDto>(`${this.baseUrl}/users/${id}`)
   }
 
-  getCaffById(id: number): Observable<CaffData> {
-    const caff: CaffData = {
-      authorName: "A Lajos",
-      comments: [
-        {caffId: id, message: "message1", id: 0, authorName: "Béla", uploadDate: new Date(Date.now()-20)},
-        {caffId: id, message: "message2", id: 1, authorName: "Ádám", uploadDate: new Date(Date.now())}
-      ],
-      description: "Best caff ever",
-      file: "",
-      id: id,
-      name: "Best Caff",
-      price: 0,
-      uploadDate: new Date(Date.now())
+  getCaffById(id: string): Observable<CaffData> {
+    return this.http.get<CaffData>(`${this.baseUrl}/caff-data/${id}`)
+  }
+
+  sendComment(caffId: string, newCommentText: string): Observable<CaffComment> {
+    const comment: {message: string} = {
+      message: newCommentText
     }
-
-    return of(caff)
+    return this.http.post<CaffComment>(`${this.baseUrl}/caff-data/${caffId}/comments`, comment)
   }
 
-  sendComment(caffId: number, newCommentText: string): Observable<NetworkResponse> {
-    //todo authorname? or backend
-    const newComment: CaffComment = {authorName: "", caffId: caffId, id: 0, message: newCommentText, uploadDate: new Date(Date.now())}
-    return of({isSuccess: true, errorMessage: ""})
+  upload(data: FormData): Observable<CaffData> {
+    return this.http.post<CaffData>(`${this.baseUrl}/caff-data`, data)
   }
 
-// todo ng ondestroy unsubscribes all
+  deleteUser(id: string = this.userId): Observable<unknown> {
+    return this.http.delete<unknown>(`${this.baseUrl}/users/${id}`) //204 ha sikeres
+  }
+
+  deleteCaff(id: string): Observable<unknown> {
+    return this.http.delete<unknown>(`${this.baseUrl}/caff-data/${id}`) //204 ha sikeres
+  }
+
+  deleteComment(id: string): Observable<unknown> {
+    return this.http.delete<unknown>(`${this.baseUrl}/comments/${id}`) //204 ha sikeres
+  }
+
+  updateProfile()/*: Observable<unknown> */{
+    // todo password and profile update backend ready?
+
+  }
 }

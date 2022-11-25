@@ -1,4 +1,4 @@
 export interface NetworkResponse {
-  isSuccess: boolean,
-  errorMessage: string,
+  errorCode: string,
+  message: string
 }

@@ -1,7 +1,7 @@
 export interface CaffComment {
-  id: number,
-  authorName: string,
+  id: string,
+  caffDataId: string,
+  username: string,
   message: string,
-  caffId: number,
   uploadDate: Date
 }

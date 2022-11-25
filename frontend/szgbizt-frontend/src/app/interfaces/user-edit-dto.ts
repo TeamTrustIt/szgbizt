@@ -1,9 +1,10 @@
 import {CaffDataNoCommentDto} from "./caff-data-no-comment-dto";
 
 export interface UserEditDto {
-  id: number,
-  name: string,
+  id: string,
+  username: string,
   email: string,
-  role: string,
+  roles: 'ROLE_USER' | 'ROLE_ADMIN',
+  balance: number,
   caffs: CaffDataNoCommentDto[]
 }

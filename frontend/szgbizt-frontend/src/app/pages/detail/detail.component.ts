@@ -3,6 +3,7 @@ import {CaffData} from "../../interfaces/caff-data";
 import {ActivatedRoute} from "@angular/router";
 import {UserService} from "../../services/UserService";
 import {Subscription} from "rxjs";
+import {HotToastService} from "@ngneat/hot-toast";
 
 @Component({
   selector: 'app-detail',
@@ -12,12 +13,15 @@ import {Subscription} from "rxjs";
 export class DetailComponent implements OnInit, OnDestroy {
 
   caff?: CaffData
-  subscription?: Subscription
-  subscription2?: Subscription
+  caffId?: string
   newCommentText: string = "";
-  caffId?: number
 
-  constructor(private route: ActivatedRoute, private userService: UserService) {
+  commenting: boolean = false
+
+  subscriptionGetCaff?: Subscription
+  subscriptionComment?: Subscription
+
+  constructor(private route: ActivatedRoute, private userService: UserService, private alertService: HotToastService) {
   }
 
   ngOnInit(): void {
@@ -29,7 +33,7 @@ export class DetailComponent implements OnInit, OnDestroy {
 
   getCaffData() {
     if (this.caffId) {
-      this.subscription = this.userService.getCaffById(this.caffId).subscribe(c => {
+      this.subscriptionGetCaff = this.userService.getCaffById(this.caffId).subscribe(c => {
         this.caff = c
       })
     }
@@ -37,16 +41,20 @@ export class DetailComponent implements OnInit, OnDestroy {
 
   sendComment() {
     if (this.newCommentText !== "" && this.caffId) {
-      this.subscription2 = this.userService.sendComment(this.caffId, this.newCommentText).subscribe(res => {
-        if(res.isSuccess){
-          this.getCaffData()
-        }
+      this.commenting = true
+      this.subscriptionComment = this.userService.sendComment(this.caffId, this.newCommentText).subscribe(res => {
+        this.newCommentText = ""
+        this.commenting = false
+        this.getCaffData()
       })
+    }
+    else {
+      this.alertService.warning("Comment text field must not be empty")
     }
   }
 
   ngOnDestroy(): void {
-    this.subscription?.unsubscribe()
-    this.subscription2?.unsubscribe()
+    this.subscriptionGetCaff?.unsubscribe()
+    this.subscriptionComment?.unsubscribe()
   }
 }

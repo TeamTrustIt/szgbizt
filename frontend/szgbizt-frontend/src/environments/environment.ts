@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiBaseUrl: ""
+  apiBaseUrl: "http://localhost:8080/api/v1/secu-shop"
 };
 
 /*

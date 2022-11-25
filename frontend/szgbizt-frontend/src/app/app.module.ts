@@ -59,7 +59,8 @@ function initializeAuth(authService: AuthService): Function {
   return () => new Promise<void>((resolve) => {
     const token = authService.getToken()
     if(token) {
-      authService.login("test@test.hu", "")
+      localStorage.clear()
+      //authService.login("test@test.hu", "")
       resolve()
       // todo when backend done
       /*const authObserver: Observer<AuthResource> = {

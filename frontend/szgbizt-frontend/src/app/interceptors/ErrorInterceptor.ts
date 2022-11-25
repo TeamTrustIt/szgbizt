@@ -20,12 +20,17 @@ export class ErrorInterceptor implements HttpInterceptor {
       catchError((err: any, caught: any) => {
         if(err instanceof HttpErrorResponse) {
           switch (err.status) {
-            case HttpStatusCode.Unauthorized: {
-              this.toastService.error("Unauthorized request")
+            case HttpStatusCode.Forbidden: {
+              this.toastService.error("Forbidden request")
               break;
             }
             case HttpStatusCode.BadRequest: {
-              this.toastService.error("Bad Request")
+              if(err.error.message) {
+                this.toastService.error("Bad Request: " + err.error.message)
+              }
+              else {
+                this.toastService.error("Bad Request")
+              }
               break;
             }
             case HttpStatusCode.InternalServerError: {

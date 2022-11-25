@@ -1,53 +1,50 @@
 import {Injectable} from "@angular/core";
 import {environment} from "../../environments/environment";
-import {HttpClient, HttpHeaders, HttpParamsOptions} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Store} from "@ngrx/store";
 import {AuthState} from "../interfaces/states/auth-state";
-import {login, logout } from "../actions/auth.actions";
+import {login, logout} from "../actions/auth.actions";
 import {UserLoginDto} from "../interfaces/user-login-dto";
 import {Router} from "@angular/router";
-import {NetworkResponse} from "../interfaces/network-response";
+import {Observable, tap} from "rxjs";
+import {NetworkLoginResponse} from "../interfaces/network-login-response";
+import {UserRegisterDto} from "../interfaces/user-register-dto";
 
 @Injectable({providedIn: 'root'})
 export class AuthService {
 
-  private baseUrl = environment.apiBaseUrl + "/auth";
+  private baseUrl = environment.apiBaseUrl;
 
-  constructor(private http: HttpClient, private store: Store<{auth: AuthState}> , private router: Router) { }
-
-  public adminLogin(email: string, password: string) /*: Observable<NetworkResponse>*/ {
-    const user: UserLoginDto = {
-      email: email, id: 0, name: "AdminTester", role: "admin"
-
-    }
-    this.setToken("mock-admin")
-    this.store.dispatch(login({user: user}))
-    this.router.navigateByUrl("/home")
-    //return this.http.post<NetworkResponse>(`${this.baseUrl}/login`, {email: email, password: password})
+  constructor(private http: HttpClient, private store: Store<{ auth: AuthState }>, private router: Router) {
   }
 
-  public login(username: string, password: string) /*: Observable<NetworkResponse>*/ {
-    const user: UserLoginDto = {
-      email: "t@t.hu", id: 1, name: username, role: "user"
-    }
-    this.setToken("mock")
-    this.store.dispatch(login({user: user}))
-    this.router.navigateByUrl("/home")
+  public login(username: string, password: string): Observable<NetworkLoginResponse> {
 
-    // implemented:
     const usernamePassword = `${username}:${password}`
     const encoded = btoa(usernamePassword)
     const authHeader = `Basic ${encoded}`
     const headers = new HttpHeaders()
       .set('Authorization', authHeader)
-    //return this.http.post<NetworkResponse>(`${this.baseUrl}/login`,null, {headers: headers})
+    return this.http.post<NetworkLoginResponse>(`${this.baseUrl}/login`, null, {headers: headers}).pipe(tap(res => {
+      const token = res.token
+      const user = res.user
+      this.setToken(token)
+      this.store.dispatch(login({user: user}))
+      this.router.navigateByUrl("/home")
+    }))
   }
 
-  public register(email: string, password: string) /*Observable<unknown>*/ {
-    /*return this.http.post<unknown>(`${this.baseUrl}/register`, {email: email, password: password})*/
+  public register(email: string, password: string, username: string): Observable<UserLoginDto> {
+    const regUser: UserRegisterDto = {
+      email: email,
+      password: password,
+      username: username
+    }
+    return this.http.post<UserLoginDto>(`${this.baseUrl}/registration`, regUser)
   }
 
   public logout() {
+    this.http.post<UserLoginDto>(`${this.baseUrl}/logout`, null).subscribe() // todo
     this.removeToken()
     this.store.dispatch(logout())
     this.router.navigateByUrl("/login")

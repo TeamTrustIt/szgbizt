@@ -12,13 +12,15 @@ export class NavbarComponent implements OnInit {
 
   loggedIn: boolean = false
   isAdmin: boolean = false
+  title: string = 'SECUSHOP'
 
   constructor(private store: Store<{ auth: AuthState }>, private authService: AuthService) { }
 
   ngOnInit(): void {
     this.store.subscribe((state: { auth: AuthState }) => {
       this.loggedIn = state.auth.isLoggedIn
-      this.isAdmin = state.auth.user?.role === 'admin'
+      this.isAdmin = state.auth.user?.roles === 'ROLE_ADMIN'
+      this.title = this.isAdmin ? 'SECUSHOP ADMIN' : 'SECUSHOP';
     })
   }
 

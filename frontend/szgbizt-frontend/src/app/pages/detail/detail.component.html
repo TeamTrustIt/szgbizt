@@ -4,14 +4,14 @@
 
     <div class="w-55 flex flex-col -mt-2">
       <div class="flex mb-5">
-        <p class="bold pr-10">{{caff?.name}}</p>
+        <p class="bold pr-10">{{caff?.filename}}</p>
         <app-button type="buy" [text]="caff?.price?.toString() + ' Eur'"></app-button>
       </div>
-      <img class="simpleImage aspect-video" [src]="caff?.file" [alt]="caff?.name + ' image'">
+      <img class="simpleImage aspect-video" [src]="caff?.urlImage" [alt]="caff?.urlImage + ' image'">
       <div class="flex-mobile justify-between">
         <div class="flex pr-10">
           <p class="bold pr-10">Author:</p>
-          <p>{{caff?.authorName}}</p>
+          <p>{{caff?.username}}</p>
         </div>
         <div class="flex ">
           <p class="bold pr-10">Date:</p>
@@ -31,7 +31,7 @@
       </div>
       <div class="flex justify-between">
         <app-text-input classes="pr-10" [(value)]="newCommentText" placeholder="Write a Comment..."></app-text-input>
-        <app-button type="default" text="Send" (onClick)="sendComment()"></app-button>
+        <app-button type="default" text="Send" [disabled]="commenting" (onClick)="sendComment()"></app-button>
       </div>
 
     </div>

@@ -2,6 +2,8 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from "rxjs";
 import {User} from "../../interfaces/user";
 import {AdminService} from "../../services/AdminService";
+import {UserLoginDto} from "../../interfaces/user-login-dto";
+import {HotToastService} from "@ngneat/hot-toast";
 
 @Component({
   selector: 'app-list-user',
@@ -10,11 +12,12 @@ import {AdminService} from "../../services/AdminService";
 })
 export class ListUserComponent implements OnInit, OnDestroy{
 
-  users: User[] = [];
+  users: UserLoginDto[] = [];
   subscriptionGet?: Subscription
   subscriptionDelete?: Subscription
+  deleting: boolean = false;
 
-  constructor(private adminService: AdminService) {
+  constructor(private adminService: AdminService, private alertService: HotToastService) {
   }
 
   ngOnInit(): void {
@@ -27,12 +30,16 @@ export class ListUserComponent implements OnInit, OnDestroy{
     })
   }
 
-  deleteUser(id: number) {
-    this.subscriptionDelete = this.adminService.deleteUser(id).subscribe(res => {
-      if(res.isSuccess){
+  deleteUser(id: string, name: string) {
+    const sure: boolean = window.confirm(`Are you sure to delete ${name}?`)
+    if(sure) {
+      this.deleting = true
+      this.subscriptionDelete = this.adminService.deleteUserById(id).subscribe(res => {
+        this.deleting = false
+        this.alertService.success(name + " successfully deleted")
         this.getUsers()
-      }
-    })
+      })
+    }
   }
 
   ngOnDestroy(): void {

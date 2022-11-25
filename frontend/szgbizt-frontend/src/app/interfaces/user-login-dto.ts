@@ -1,6 +1,6 @@
 export interface UserLoginDto {
-  id: number,
-  name: string,
+  id: string,
+  username: string,
   email: string,
-  role: string,
+  roles: 'ROLE_USER' | 'ROLE_ADMIN'
 }

@@ -26,10 +26,10 @@ export class ListComponent implements OnInit{
   }
 
   search() {
-    this.caffsFiltered = this.caffs.filter(c => c.name.toLowerCase().includes(this.searchText.toLowerCase()))
+    this.caffsFiltered = this.caffs.filter(c => c.filename.toLowerCase().includes(this.searchText.toLowerCase()))
   }
 
-  navigateToDetails(id: number) {
+  navigateToDetails(id: string) {
     this.router.navigateByUrl("/detail/" + id)
   }
 }

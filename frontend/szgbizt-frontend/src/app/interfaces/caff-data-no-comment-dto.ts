@@ -1,9 +1,9 @@
 export interface CaffDataNoCommentDto {
-  id: number,
-  file: string,
-  name: string,
+  id: string,
+  filename: string,
   description: string,
   price: number,
-  authorName: string,
+  username: string,
+  urlImage: string,
   uploadDate: Date
 }

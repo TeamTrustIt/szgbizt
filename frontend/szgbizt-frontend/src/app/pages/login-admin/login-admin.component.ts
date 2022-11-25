@@ -1,17 +1,32 @@
-import { Component } from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 import {AuthService} from "../../services/AuthService";
+import {Subscription} from "rxjs";
+import {HotToastService} from "@ngneat/hot-toast";
 
 @Component({
   selector: 'app-login-admin',
   templateUrl: './login-admin.component.html',
   styleUrls: ['./login-admin.component.css']
 })
-export class LoginAdminComponent {
+export class LoginAdminComponent implements OnDestroy {
 
-  constructor(private authService: AuthService) {
+  username: string = ""
+  password: string = ""
+  subscription?: Subscription
+
+  constructor(private authService: AuthService, private alertService: HotToastService) {
   }
 
   login() {
-    this.authService.adminLogin("test@test.hu", "")
+    if (this.username !== "" && this.password !== "") {
+      this.subscription = this.authService.login(this.username, this.password).subscribe()
+    }
+    else {
+      this.alertService.warning("Fill every field")
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.subscription?.unsubscribe()
   }
 }

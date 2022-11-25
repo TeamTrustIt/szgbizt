@@ -8,6 +8,6 @@ import {CaffComment} from "../../interfaces/caffComment";
 })
 export class CommentComponent {
 
-  @Input() comment: CaffComment = {authorName: "Test Author", caffId: 0, id: 0, message: "Test Message", uploadDate: new Date(Date.now())}
+  @Input() comment: CaffComment = {username: "Test Author", caffDataId: "0", id: "0", message: "Test Message", uploadDate: new Date(Date.now())}
 
 }

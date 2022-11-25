@@ -25,7 +25,7 @@ export class AdminGuard implements CanActivate {
     private router: Router
   ) {
     this.store.subscribe((state: { auth: AuthState }) => {
-      this.isAdmin = state.auth.user?.role === 'admin'
+      this.isAdmin = state.auth.user?.roles === 'ROLE_ADMIN'
     })
   }
 

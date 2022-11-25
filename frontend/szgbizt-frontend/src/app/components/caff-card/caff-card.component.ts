@@ -11,15 +11,15 @@ export class CaffCardComponent {
   @Input() classes: string = ''
   @Input() deleteEnabled: boolean = false
   @Input() caffData: CaffDataNoCommentDto = {
-    authorName: "Author0",
+    username: "Author0",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut a velit ligula. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Cras felis sem, congue vitae aliquam eget, ultrices luctus justo. Nunc vitae libero at leo pellentesque volutpat ut id leo. Ut tincidunt lorem at tincidunt iaculis. Nulla at tempor nunc.",
-    file: "assets/img/sample.jpg",
-    id: 0,
-    name: "Caff0",
+    urlImage: "assets/img/sample.jpg",
+    id: "0",
+    filename: "Caff0",
     price: 12,
     uploadDate: new Date(Date.now())
   }
 
-  @Output() onDetailsClicked = new EventEmitter<number>()
-  @Output() onDeleteClicked = new EventEmitter<number>()
+  @Output() onDetailsClicked = new EventEmitter<string>()
+  @Output() onDeleteClicked = new EventEmitter<string>()
 }
