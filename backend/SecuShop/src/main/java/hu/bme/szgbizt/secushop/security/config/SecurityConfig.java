@@ -20,6 +20,11 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 import static hu.bme.szgbizt.secushop.config.SwaggerConfig.PUBLIC_SWAGGER_ENDPOINT_PATTERNS;
 import static hu.bme.szgbizt.secushop.util.Constant.SYSTEM_BASE_URL;
@@ -38,6 +43,25 @@ public class SecurityConfig {
             SYSTEM_BASE_URL + "/login",
             SYSTEM_BASE_URL + "/registration"
     };
+
+    private static final List<String> ALLOWED_ORIGINS = List.of(
+            "http://localhost:4200"
+    );
+
+    private static final List<String> ALLOWED_HEADERS = List.of(
+            "Origin", "Access-Control-Allow-Origin", "Content-Type",
+            "Accept", "Authorization", "Origin, Accept", "X-Requested-With",
+            "Access-Control-Request-Method", "Access-Control-Request-Headers"
+    );
+
+    private static final List<String> EXPOSED_HEADERS = List.of(
+            "Origin", "Content-Type", "Accept", "Authorization",
+            "Access-Control-Allow-Origin", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials"
+    );
+
+    private static final List<String> ALLOWED_METHODS = List.of(
+            "GET", "POST", "PUT", "DELETE", "OPTIONS"
+    );
 
     private final RsaKeyProperties rsaKeyProperties;
     private final JpaUserDetailsService jpaUserDetailsService;
@@ -75,6 +99,20 @@ public class SecurityConfig {
                 .httpBasic(withDefaults())
                 .addFilterBefore(jwtBlackListFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        var corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.setAllowedOrigins(ALLOWED_ORIGINS);
+        corsConfiguration.setAllowedHeaders(ALLOWED_HEADERS);
+        corsConfiguration.setExposedHeaders(EXPOSED_HEADERS);
+        corsConfiguration.setAllowedMethods(ALLOWED_METHODS);
+
+        var urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
+        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
+        return urlBasedCorsConfigurationSource;
     }
 
     @Bean
