@@ -1,5 +1,7 @@
 package hu.bme.szgbizt.secushop.service;
 
+import hu.bme.szgbizt.secushop.dto.CaffData;
+import hu.bme.szgbizt.secushop.dto.DetailedUser;
 import hu.bme.szgbizt.secushop.dto.RegisteredUser;
 import hu.bme.szgbizt.secushop.exception.SelfDeletionException;
 import hu.bme.szgbizt.secushop.exception.UserNotFoundException;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 import static hu.bme.szgbizt.secushop.util.Constant.ROLE_USER;
 
 @Service
+@Transactional
 public class AdminService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdminService.class);
@@ -52,15 +55,44 @@ public class AdminService {
                         userEntity.getId(),
                         userEntity.getUsername(),
                         userEntity.getEmail(),
-                        userEntity.getRoles()
-                ))
+                        userEntity.getRoles())
+                )
                 .collect(Collectors.toList());
     }
 
-    @Transactional
-    public void deleteUser(UUID callerId, UUID userIdToDelete) {
+    public DetailedUser getUser(UUID userId) {
 
-        var selfUserEntity = userRepository.findById(callerId)
+        var userEntity = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+
+        var shopUserEntity = shopUserRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+
+        var caffData = shopUserEntity.getCaffData().stream()
+                .map(caffDataEntity -> new CaffData(
+                        caffDataEntity.getId(),
+                        caffDataEntity.getName(),
+                        caffDataEntity.getDescription(),
+                        caffDataEntity.getPrice(),
+                        caffDataEntity.getShopUser().getUsername(),
+                        "imageUrl",
+                        caffDataEntity.getUploadDate())
+                )
+                .collect(Collectors.toList());
+
+        return new DetailedUser(
+                userEntity.getId(),
+                userEntity.getUsername(),
+                userEntity.getEmail(),
+                userEntity.getRoles(),
+                shopUserEntity.getBalance(),
+                caffData
+        );
+    }
+
+    public void deleteUser(UUID callerUserId, UUID userIdToDelete) {
+
+        var selfUserEntity = userRepository.findById(callerUserId)
                 .orElseThrow(UserNotFoundException::new);
 
         if (selfUserEntity.getId().equals(userIdToDelete)) {

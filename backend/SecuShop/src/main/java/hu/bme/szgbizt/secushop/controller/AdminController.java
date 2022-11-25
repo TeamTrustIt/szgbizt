@@ -1,5 +1,6 @@
 package hu.bme.szgbizt.secushop.controller;
 
+import hu.bme.szgbizt.secushop.dto.DetailedUser;
 import hu.bme.szgbizt.secushop.dto.RegisteredUser;
 import hu.bme.szgbizt.secushop.service.AdminService;
 import org.slf4j.Logger;
@@ -41,12 +42,22 @@ public class AdminController implements ISecuShopBaseController {
         return registeredUsers;
     }
 
+    @GetMapping(value = "/admin/users/{userId}")
+    @ResponseStatus(value = HttpStatus.OK)
+    public @ResponseBody DetailedUser getUser(Authentication authentication, @PathVariable("userId") UUID userId) {
+        var callerUserId = getUserId(authentication);
+        LOGGER.info("Querying user [{}] by [{}]", userId, callerUserId);
+        var user = adminService.getUser(userId);
+        LOGGER.info("Successful queried user [{}] by [{}]", userId, callerUserId);
+        return user;
+    }
+
     @DeleteMapping(value = "/admin/users/{userId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteUser(Authentication authentication, @PathVariable("userId") UUID userId) {
         var callerUserId = getUserId(authentication);
         LOGGER.info("Deleting user [{}] by [{}]", userId, callerUserId);
-        adminService.deleteUser(getUserId(authentication), userId);
+        adminService.deleteUser(callerUserId, userId);
         LOGGER.info("Successful deleted user [{}] by [{}]", userId, callerUserId);
     }
 
