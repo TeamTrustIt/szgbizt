@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -31,8 +30,9 @@ import java.util.stream.Collectors;
 
 import static hu.bme.szgbizt.secushop.service.AdminService.PATH_CAFF_DATA_JPG;
 import static hu.bme.szgbizt.secushop.service.AdminService.PATH_CAFF_DATA_RAW;
+import static hu.bme.szgbizt.secushop.util.CaffParser.runParseCommand;
 import static hu.bme.szgbizt.secushop.util.Constant.FILE_EXTENSION_CAFF;
-import static hu.bme.szgbizt.secushop.util.Constant.FILE_EXTENSION_JSON;
+import static hu.bme.szgbizt.secushop.util.handler.FileHandler.*;
 import static java.math.BigDecimal.ZERO;
 import static java.util.Collections.emptyList;
 
@@ -61,7 +61,8 @@ public class SecuShopService {
     }
 
     public UrlResource getImage(String filename) {
-        var path = Paths.get(PATH_CAFF_DATA_JPG + "/" + filename + ".jpg");
+        var filePackageDirectory = filename.substring(0, filename.length() - "_ciff0".length());
+        var path = Paths.get(PATH_CAFF_DATA_JPG + "/" + filePackageDirectory + "/" + filename + ".jpg");
 
         try {
             return new UrlResource(path.toUri());
@@ -219,30 +220,18 @@ public class SecuShopService {
         try {
             LOGGER.info("Parsing caff file [{}]", filename);
 
-            var userDirectory = System.getProperty("user.dir");
-            var caffDataDirectory = userDirectory + "\\caffdata";
-            var fileExe = caffDataDirectory + "\\caff_parser.exe";
-            var inputFile = ".\\raw\\" + filename + FILE_EXTENSION_CAFF;
-            var outputFile = ".\\jpg\\" + filename + FILE_EXTENSION_JSON;
-            var directory = new File(caffDataDirectory);
-            var process = Runtime.getRuntime().exec(fileExe + " " + inputFile + " " + outputFile, null, directory);
-            var exitCode = process.waitFor();
-
-            if (exitCode != 0) {
-                throw new CaffDataParsingException();
-            }
+            createSubdirectoryForCiffData(filename);
+            runParseCommand(filename);
 
         } catch (IOException | InterruptedException | CaffDataParsingException ex) {
-            try {
-                LOGGER.error("Something went wrong under the caff data [{}] parsing, error: {}", filename, ex.getMessage());
 
-                LOGGER.info("Try to rollback caff data [{}] automatically", filename);
-                var pathRaw = PATH_CAFF_DATA_RAW.resolve(filename);
-                Files.delete(pathRaw);
-                LOGGER.info("Successful rollback caff data [{}]", filename);
-            } catch (IOException e) {
-                LOGGER.info("Something went wrong under the caff data [{}] rollback", filename);
-            }
+            LOGGER.error("Something went wrong under the caff data [{}] parsing, error: {}", filename, ex.getMessage());
+            LOGGER.info("Try to rollback caff data [{}] automatically", filename);
+
+            deleteCaffDataRaw(filename);
+            deleteCaffDataJpg(filename);
+
+            LOGGER.info("Successful rollback caff data [{}]", filename);
 
             Thread.currentThread().interrupt();
             throw new CaffDataParsingException();

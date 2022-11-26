@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartException;
 
+import java.io.FileNotFoundException;
+
+import static hu.bme.szgbizt.secushop.exception.errorcode.ErrorCode.SS_0142;
 import static java.util.Objects.nonNull;
 
 @ControllerAdvice
@@ -108,6 +111,12 @@ public class SecuShopExceptionHandler {
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public @ResponseBody ErrorMessageResponse handleCommentNotFoundException(CommentNotFoundException ex) {
         return buildErrorMessage(ex.getErrorCode());
+    }
+
+    @ExceptionHandler(FileNotFoundException.class)
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    public @ResponseBody ErrorMessageResponse handleFileNotFoundException(FileNotFoundException ex) {
+        return buildErrorMessage(SS_0142, "Caff related ciff data not found");
     }
 
     @ExceptionHandler(NoAuthorityToProcessException.class)

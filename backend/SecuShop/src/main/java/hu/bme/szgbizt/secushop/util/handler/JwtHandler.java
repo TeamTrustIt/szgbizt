@@ -1,4 +1,4 @@
-package hu.bme.szgbizt.secushop.util;
+package hu.bme.szgbizt.secushop.util.handler;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;

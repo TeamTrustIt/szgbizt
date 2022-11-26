@@ -1,5 +1,7 @@
 package hu.bme.szgbizt.secushop;
 
+import hu.bme.szgbizt.secushop.persistence.entity.ShopUserEntity;
+import hu.bme.szgbizt.secushop.persistence.repository.ShopUserRepository;
 import hu.bme.szgbizt.secushop.security.config.RsaKeyProperties;
 import hu.bme.szgbizt.secushop.security.persistence.entity.UserEntity;
 import hu.bme.szgbizt.secushop.security.persistence.repository.UserRepository;
@@ -11,7 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static hu.bme.szgbizt.secushop.util.Constant.ROLE_ADMIN;
-import static hu.bme.szgbizt.secushop.util.Constant.ROLE_USER;
+import static java.math.BigDecimal.ZERO;
 
 @EnableConfigurationProperties(RsaKeyProperties.class)
 @SpringBootApplication
@@ -22,15 +24,16 @@ public class SecuShopApplication {
     }
 
     @Bean
-    public CommandLineRunner commandLineRunner(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        return args -> {
+    public CommandLineRunner commandLineRunner(UserRepository userRepository, ShopUserRepository shopUserRepository, PasswordEncoder passwordEncoder) {
+        return args -> userRepository.findByUsername("admin")
+                .ifPresentOrElse(userEntity -> System.out.println(""),
+                        () -> {
+                            var defaultPassword = passwordEncoder.encode("Pass1234");
+                            var admin = new UserEntity("admin", defaultPassword, "admin@admin.hu", ROLE_ADMIN);
+                            var savedAdmin = userRepository.save(admin);
 
-            var defaultPassword = passwordEncoder.encode("Pass1234");
-            var admin = new UserEntity("admin", defaultPassword, "admin@admin.hu", ROLE_ADMIN);
-            var user = new UserEntity("user", defaultPassword, "user@user.hu", ROLE_USER);
-
-            //       userRepository.save(admin);
-            //       userRepository.save(user);
-        };
+                            var shopAdmin = new ShopUserEntity(savedAdmin.getId(), savedAdmin.getUsername(), ZERO);
+                            shopUserRepository.save(shopAdmin);
+                        });
     }
 }

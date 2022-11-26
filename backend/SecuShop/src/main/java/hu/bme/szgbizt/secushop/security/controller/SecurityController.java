@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static hu.bme.szgbizt.secushop.util.JwtHandler.getUserId;
+import static hu.bme.szgbizt.secushop.util.handler.JwtHandler.getUserId;
 
 @RestController
 public class SecurityController implements ISecuShopBaseController {

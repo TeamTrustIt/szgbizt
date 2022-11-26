@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-import static hu.bme.szgbizt.secushop.util.JwtHandler.getUserId;
+import static hu.bme.szgbizt.secushop.util.handler.JwtHandler.getUserId;
 
 @RestController
 @PreAuthorize("hasRole('ROLE_ADMIN')")

@@ -23,7 +23,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 import static hu.bme.szgbizt.secushop.util.Constant.FILE_EXTENSION_CAFF;
-import static hu.bme.szgbizt.secushop.util.JwtHandler.getUserId;
+import static hu.bme.szgbizt.secushop.util.handler.JwtHandler.getUserId;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 

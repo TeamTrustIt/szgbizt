@@ -27,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.stream.Collectors;
 
 import static hu.bme.szgbizt.secushop.util.Constant.*;
-import static hu.bme.szgbizt.secushop.util.JwtHandler.getTokenValue;
+import static hu.bme.szgbizt.secushop.util.handler.JwtHandler.getTokenValue;
 import static java.math.BigDecimal.ZERO;
 import static java.time.Instant.now;
 import static java.time.temporal.ChronoUnit.MINUTES;

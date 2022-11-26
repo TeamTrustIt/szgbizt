@@ -4,7 +4,6 @@ import hu.bme.szgbizt.secushop.dto.CaffData;
 import hu.bme.szgbizt.secushop.dto.DetailedUser;
 import hu.bme.szgbizt.secushop.dto.RegisteredUser;
 import hu.bme.szgbizt.secushop.exception.CaffDataNotFoundException;
-import hu.bme.szgbizt.secushop.exception.SecuShopInternalServerException;
 import hu.bme.szgbizt.secushop.exception.SelfDeletionException;
 import hu.bme.szgbizt.secushop.exception.UserNotFoundException;
 import hu.bme.szgbizt.secushop.persistence.entity.CaffDataEntity;
@@ -20,8 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -29,6 +26,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static hu.bme.szgbizt.secushop.util.Constant.ROLE_USER;
+import static hu.bme.szgbizt.secushop.util.handler.FileHandler.deleteCaffDataJpg;
+import static hu.bme.szgbizt.secushop.util.handler.FileHandler.deleteCaffDataRaw;
 
 @Service
 @Transactional
@@ -121,18 +120,10 @@ public class AdminService {
                 .orElseThrow(CaffDataNotFoundException::new);
 
         var filename = caffDataEntity.getName();
-        try {
-            var pathRaw = PATH_CAFF_DATA_RAW.resolve(filename);
-            var pathJpg = PATH_CAFF_DATA_JPG.resolve(filename);
+        deleteCaffDataRaw(filename);
+        deleteCaffDataJpg(filename);
+        caffDataRepository.delete(caffDataEntity);
 
-            caffDataRepository.delete(caffDataEntity);
-            Files.delete(pathRaw);
-            Files.delete(pathJpg);
-
-        } catch (IOException e) {
-            LOGGER.error("Error while deleting caff data [{}]", filename);
-            throw new SecuShopInternalServerException();
-        }
     }
 
     public void deleteComment(UUID commentIdToDelete) {
