@@ -5,6 +5,7 @@ import hu.bme.szgbizt.secushop.dto.RegisteredUser;
 import hu.bme.szgbizt.secushop.service.AdminService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -28,6 +29,7 @@ public class AdminController implements ISecuShopBaseController {
      *
      * @param adminService The service class for admin related processes.
      */
+    @Autowired
     public AdminController(AdminService adminService) {
         this.adminService = adminService;
     }

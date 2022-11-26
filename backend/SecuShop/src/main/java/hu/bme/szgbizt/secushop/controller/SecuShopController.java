@@ -8,6 +8,7 @@ import hu.bme.szgbizt.secushop.exception.InvalidFileExtensionException;
 import hu.bme.szgbizt.secushop.service.SecuShopService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
@@ -38,6 +39,7 @@ public class SecuShopController implements ISecuShopBaseController {
      *
      * @param secuShopService The service class for base processes.
      */
+    @Autowired
     protected SecuShopController(SecuShopService secuShopService) {
         this.secuShopService = secuShopService;
     }

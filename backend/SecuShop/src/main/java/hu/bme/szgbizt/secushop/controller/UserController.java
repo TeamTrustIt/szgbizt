@@ -85,7 +85,7 @@ public class UserController implements ISecuShopBaseController {
         LOGGER.info("Successful modified user password by [{}]", callerUserId);
     }
 
-    @PatchMapping(value = "/users/{userId}/password")
+    @PatchMapping(value = "/users/{userId}/profile")
     @ResponseStatus(value = HttpStatus.OK)
     public void modifyProfile(
             Authentication authentication,
