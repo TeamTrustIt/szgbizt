@@ -9,6 +9,7 @@ public enum ErrorCode {
     SS_0103("Caff data with the specified name already exists"),
     SS_0120("Username is not unique"),
     SS_0121("Email is not unique"),
+    SS_0122("Invalid current password"),
     SS_0141("User not found"),
     SS_0142("Caff data not found"),
     SS_0143("Comment not found"),

@@ -1,7 +1,9 @@
 package hu.bme.szgbizt.secushop.controller;
 
+import hu.bme.szgbizt.secushop.dto.CaffComment;
 import hu.bme.szgbizt.secushop.dto.CaffData;
 import hu.bme.szgbizt.secushop.dto.DetailedCaffData;
+import hu.bme.szgbizt.secushop.dto.PostCommentRequest;
 import hu.bme.szgbizt.secushop.exception.InvalidFileExtensionException;
 import hu.bme.szgbizt.secushop.service.SecuShopService;
 import org.slf4j.Logger;
@@ -14,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -98,5 +101,20 @@ public class SecuShopController implements ISecuShopBaseController {
         var caffDataList = secuShopService.getCaffDataList();
         LOGGER.info("Successful queried all caff data by [{}]", callerUserId);
         return caffDataList;
+    }
+
+
+    @PostMapping(value = "/caff-data/{caffDataId}/comments")
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public @ResponseBody CaffComment createComment(
+            Authentication authentication,
+            @PathVariable("caffDataId") UUID caffDataId,
+            @Valid @RequestBody PostCommentRequest postCommentRequest) {
+
+        var callerUserId = getUserId(authentication);
+        LOGGER.info("Posting comment to caff data [{}] by [{}]", caffDataId, callerUserId);
+        var comment = secuShopService.postComment(callerUserId, caffDataId, postCommentRequest.getMessage());
+        LOGGER.info("Successful posted comment to caff data [{}] by [{}]", caffDataId, callerUserId);
+        return comment;
     }
 }

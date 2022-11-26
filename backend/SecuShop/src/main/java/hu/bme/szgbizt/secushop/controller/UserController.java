@@ -1,10 +1,12 @@
 package hu.bme.szgbizt.secushop.controller;
 
-import hu.bme.szgbizt.secushop.dto.*;
-import hu.bme.szgbizt.secushop.service.SecuShopService;
+import hu.bme.szgbizt.secushop.dto.DetailedUser;
+import hu.bme.szgbizt.secushop.dto.PatchPasswordRequest;
+import hu.bme.szgbizt.secushop.dto.PatchProfileRequest;
 import hu.bme.szgbizt.secushop.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -22,17 +24,15 @@ public class UserController implements ISecuShopBaseController {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     private final UserService userService;
-    private final SecuShopService secuShopService;
 
     /**
      * Instantiates a new {@link UserService}.
      *
-     * @param userService     The service class for user related processes.
-     * @param secuShopService The service class for caff data related processes.
+     * @param userService The service class for user related processes.
      */
-    public UserController(UserService userService, SecuShopService secuShopService) {
+    @Autowired
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.secuShopService = secuShopService;
     }
 
     @GetMapping(value = "/users/{userId}")
@@ -45,20 +45,6 @@ public class UserController implements ISecuShopBaseController {
         return user;
     }
 
-    @PutMapping(value = "/users/{userId}")
-    @ResponseStatus(value = HttpStatus.OK)
-    public RegisteredUser updateUser(
-            Authentication authentication,
-            @PathVariable("userId") UUID userId,
-            @Valid @RequestBody PatchProfileRequest putRegisteredUserRequest) {
-
-        var callerUserId = getUserId(authentication);
-        LOGGER.info("Updating user [{}] by [{}]", userId, callerUserId);
-        var user = userService.updateUser(callerUserId, userId, putRegisteredUserRequest);
-        LOGGER.info("Successful updated user [{}] by [{}]", userId, callerUserId);
-        return user;
-    }
-
     @DeleteMapping(value = "/users/{userId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteUser(Authentication authentication, @PathVariable("userId") UUID userId) {
@@ -66,20 +52,6 @@ public class UserController implements ISecuShopBaseController {
         LOGGER.info("Deleting user [{}] by [{}]", userId, callerUserId);
         userService.deleteUser(callerUserId, userId);
         LOGGER.info("Successful deleted user [{}] by [{}]", userId, callerUserId);
-    }
-
-    @PostMapping(value = "/caff-data/{caffDataId}/comments")
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public @ResponseBody CaffComment createComment(
-            Authentication authentication,
-            @PathVariable("caffDataId") UUID caffDataId,
-            @Valid @RequestBody PostCommentRequest postCommentRequest) {
-
-        var callerUserId = getUserId(authentication);
-        LOGGER.info("Posting comment to caff data [{}] by [{}]", caffDataId, callerUserId);
-        var comment = userService.postComment(callerUserId, caffDataId, postCommentRequest.getMessage());
-        LOGGER.info("Successful posted comment to caff data [{}] by [{}]", caffDataId, callerUserId);
-        return comment;
     }
 
     @DeleteMapping(value = "/comments/{commentId}")
@@ -98,5 +70,31 @@ public class UserController implements ISecuShopBaseController {
         LOGGER.info("Deleting caff data [{}] by [{}]", caffDataId, callerUserId);
         userService.deleteCaffData(callerUserId, caffDataId);
         LOGGER.info("Successful deleted caff data [{}] by [{}]", caffDataId, callerUserId);
+    }
+
+    @PatchMapping(value = "/users/{userId}/password")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void modifyPassword(
+            Authentication authentication,
+            @PathVariable("userId") UUID userId,
+            @Valid @RequestBody PatchPasswordRequest patchPasswordRequest) {
+
+        var callerUserId = getUserId(authentication);
+        LOGGER.info("Modify user password by [{}]", userId);
+        userService.modifyPassword(callerUserId, userId, patchPasswordRequest);
+        LOGGER.info("Successful modified user password by [{}]", callerUserId);
+    }
+
+    @PatchMapping(value = "/users/{userId}/password")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void modifyProfile(
+            Authentication authentication,
+            @PathVariable("userId") UUID userId,
+            @Valid @RequestBody PatchProfileRequest patchProfileRequest) {
+
+        var callerUserId = getUserId(authentication);
+        LOGGER.info("Modify user profile by [{}]", userId);
+        userService.modifyProfile(callerUserId, userId, patchProfileRequest);
+        LOGGER.info("Successful modified user profile by [{}]", callerUserId);
     }
 }

@@ -1,6 +1,9 @@
 package hu.bme.szgbizt.secushop.service;
 
-import hu.bme.szgbizt.secushop.dto.*;
+import hu.bme.szgbizt.secushop.dto.CaffData;
+import hu.bme.szgbizt.secushop.dto.DetailedUser;
+import hu.bme.szgbizt.secushop.dto.PatchPasswordRequest;
+import hu.bme.szgbizt.secushop.dto.PatchProfileRequest;
 import hu.bme.szgbizt.secushop.exception.*;
 import hu.bme.szgbizt.secushop.exception.errorcode.ErrorCode;
 import hu.bme.szgbizt.secushop.persistence.entity.CaffDataEntity;
@@ -13,6 +16,7 @@ import hu.bme.szgbizt.secushop.security.persistence.entity.UserEntity;
 import hu.bme.szgbizt.secushop.security.persistence.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,6 +48,7 @@ public class UserService {
      * @param caffDataRepository Repository for {@link CaffDataEntity}.
      * @param commentRepository  Repository for {@link CommentEntity}.
      */
+    @Autowired
     public UserService(PasswordEncoder passwordEncoder, UserRepository userRepository, ShopUserRepository shopUserRepository, CaffDataRepository caffDataRepository, CommentRepository commentRepository) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
@@ -59,67 +64,35 @@ public class UserService {
         var userEntity = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
 
-        if (callerUserEntity.equals(userEntity)) {
-            var shopUserEntity = shopUserRepository.findById(userId)
-                    .orElseThrow(UserNotFoundException::new);
-
-            var caffData = shopUserEntity.getCaffData().stream()
-                    .map(caffDataEntity -> new CaffData(
-                            caffDataEntity.getId(),
-                            caffDataEntity.getName(),
-                            caffDataEntity.getDescription(),
-                            caffDataEntity.getPrice(),
-                            caffDataEntity.getShopUser().getUsername(),
-                            "imageUrl",
-                            caffDataEntity.getUploadDate())
-                    )
-                    .collect(Collectors.toList());
-
-            return new DetailedUser(
-                    userEntity.getId(),
-                    userEntity.getUsername(),
-                    userEntity.getEmail(),
-                    userEntity.getRoles(),
-                    shopUserEntity.getBalance(),
-                    caffData
-            );
+        if (!callerUserEntity.equals(userEntity)) {
+            LOGGER.error(ErrorCode.SS_0152.getMessage());
+            throw new NoAuthorityToProcessException(ErrorCode.SS_0152);
         }
 
-        LOGGER.error(ErrorCode.SS_0152.getMessage());
-        throw new NoAuthorityToProcessException(ErrorCode.SS_0152);
-    }
-
-    public RegisteredUser updateUser(UUID callerUserId, UUID userIdToUpdate, PatchProfileRequest putRegisteredUserRequest) {
-
-        var callerUserEntity = userRepository.findById(callerUserId)
-                .orElseThrow(UserNotFoundException::new);
-        var userEntityToUpdate = userRepository.findById(userIdToUpdate)
+        var shopUserEntity = shopUserRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
 
-        if (callerUserEntity.equals(userEntityToUpdate)) {
+        var caffData = shopUserEntity.getCaffData().stream()
+                .map(caffDataEntity -> new CaffData(
+                        caffDataEntity.getId(),
+                        caffDataEntity.getName(),
+                        caffDataEntity.getDescription(),
+                        caffDataEntity.getPrice(),
+                        caffDataEntity.getShopUser().getUsername(),
+                        "imageUrl",
+                        caffDataEntity.getUploadDate())
+                )
+                .collect(Collectors.toList());
 
-            var username = putRegisteredUserRequest.getUsername();
-            validateUserName(username);
+        return new DetailedUser(
+                userEntity.getId(),
+                userEntity.getUsername(),
+                userEntity.getEmail(),
+                userEntity.getRoles(),
+                shopUserEntity.getBalance(),
+                caffData
+        );
 
-            var email = putRegisteredUserRequest.getEmail();
-            validateEmail(email);
-
-            userEntityToUpdate.setUsername(username);
-            //userEntityToUpdate.setPassword(passwordEncoder.encode(putRegisteredUserRequest.getPassword()));
-            userEntityToUpdate.setEmail(email);
-
-            var updatedUserEntity = userRepository.save(userEntityToUpdate);
-
-            return new RegisteredUser(
-                    updatedUserEntity.getId(),
-                    updatedUserEntity.getUsername(),
-                    updatedUserEntity.getEmail(),
-                    updatedUserEntity.getRoles()
-            );
-        }
-
-        LOGGER.error(ErrorCode.SS_0152.getMessage());
-        throw new NoAuthorityToProcessException(ErrorCode.SS_0152);
     }
 
     public void deleteUser(UUID callerUserId, UUID userIdToDelete) {
@@ -129,14 +102,13 @@ public class UserService {
         var userEntityToDelete = userRepository.findById(userIdToDelete)
                 .orElseThrow(UserNotFoundException::new);
 
-        if (callerUserEntity.equals(userEntityToDelete)) {
-
-            shopUserRepository.deleteById(userIdToDelete);
-            userRepository.deleteById(userIdToDelete);
-        } else {
+        if (!callerUserEntity.equals(userEntityToDelete)) {
             LOGGER.error(ErrorCode.SS_0152.getMessage());
             throw new NoAuthorityToProcessException(ErrorCode.SS_0152);
         }
+
+        shopUserRepository.deleteById(userIdToDelete);
+        userRepository.deleteById(userIdToDelete);
     }
 
     public void deleteComment(UUID callerUserId, UUID commentIdToDelete) {
@@ -184,31 +156,51 @@ public class UserService {
         }
     }
 
-    public CaffComment postComment(UUID callerUserId, UUID caffDataId, String message) {
+    public void modifyPassword(UUID callerUserId, UUID userIdToModify, PatchPasswordRequest patchPasswordRequest) {
 
-        var shopUserEntity = shopUserRepository.findById(callerUserId)
+        var callerUserEntity = userRepository.findById(callerUserId)
                 .orElseThrow(UserNotFoundException::new);
-        var caffDataEntity = caffDataRepository.findById(caffDataId)
-                .orElseThrow(CaffDataNotFoundException::new);
+        var userEntityToModify = userRepository.findById(userIdToModify)
+                .orElseThrow(UserNotFoundException::new);
 
-        var commentEntity = new CommentEntity(
-                message,
-                shopUserEntity,
-                caffDataEntity
-        );
+        if (!callerUserEntity.equals(userEntityToModify)) {
+            LOGGER.error(ErrorCode.SS_0152.getMessage());
+            throw new NoAuthorityToProcessException(ErrorCode.SS_0152);
+        }
 
-        shopUserEntity.getComments().add(commentEntity);
-        caffDataEntity.getComments().add(commentEntity);
+        var currentPassword = patchPasswordRequest.getCurrentPassword();
+        var newPassword = patchPasswordRequest.getNewPassword();
 
-        var savedCommentEntity = commentRepository.save(commentEntity);
+        if (!passwordEncoder.matches(currentPassword, callerUserEntity.getPassword())) {
+            LOGGER.error(ErrorCode.SS_0122.getMessage());
+            throw new NoAuthorityToProcessException(ErrorCode.SS_0122); //todo excepion
+        }
 
-        return new CaffComment(
-                savedCommentEntity.getId(),
-                savedCommentEntity.getMessage(),
-                savedCommentEntity.getShopUser().getUsername(),
-                savedCommentEntity.getCaffData().getId(),
-                savedCommentEntity.getUploadDate()
-        );
+        userEntityToModify.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(userEntityToModify);
+    }
+
+    public void modifyProfile(UUID callerUserId, UUID userIdToModify, PatchProfileRequest patchProfileRequest) {
+
+        var callerUserEntity = userRepository.findById(callerUserId)
+                .orElseThrow(UserNotFoundException::new);
+        var userEntityToModify = userRepository.findById(userIdToModify)
+                .orElseThrow(UserNotFoundException::new);
+
+        if (!callerUserEntity.equals(userEntityToModify)) {
+            LOGGER.error(ErrorCode.SS_0152.getMessage());
+            throw new NoAuthorityToProcessException(ErrorCode.SS_0152);
+        }
+
+        var username = patchProfileRequest.getUsername();
+        validateUserName(username);
+
+        var email = patchProfileRequest.getEmail();
+        validateEmail(email);
+
+        userEntityToModify.setUsername(username);
+        userEntityToModify.setEmail(email); // todo shopUser username
+        userRepository.save(userEntityToModify);
     }
 
     private void validateUserName(String username) {

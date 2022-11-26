@@ -16,6 +16,7 @@ import hu.bme.szgbizt.secushop.security.persistence.entity.UserEntity;
 import hu.bme.szgbizt.secushop.security.persistence.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,6 +52,7 @@ public class AdminService {
      * @param caffDataRepository The repository for {@link CaffDataEntity}.
      * @param commentRepository  The repository for {@link CommentEntity}.
      */
+    @Autowired
     public AdminService(UserRepository userRepository, ShopUserRepository shopUserRepository, CaffDataRepository caffDataRepository, CommentRepository commentRepository) {
         this.userRepository = userRepository;
         this.shopUserRepository = shopUserRepository;

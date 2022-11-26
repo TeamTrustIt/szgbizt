@@ -1,5 +1,6 @@
 package hu.bme.szgbizt.secushop.service;
 
+import hu.bme.szgbizt.secushop.dto.CaffComment;
 import hu.bme.szgbizt.secushop.dto.CaffData;
 import hu.bme.szgbizt.secushop.dto.DetailedCaffData;
 import hu.bme.szgbizt.secushop.exception.CaffDataAlreadyExistException;
@@ -7,11 +8,14 @@ import hu.bme.szgbizt.secushop.exception.CaffDataNotFoundException;
 import hu.bme.szgbizt.secushop.exception.SecuShopInternalServerException;
 import hu.bme.szgbizt.secushop.exception.UserNotFoundException;
 import hu.bme.szgbizt.secushop.persistence.entity.CaffDataEntity;
+import hu.bme.szgbizt.secushop.persistence.entity.CommentEntity;
 import hu.bme.szgbizt.secushop.persistence.entity.ShopUserEntity;
 import hu.bme.szgbizt.secushop.persistence.repository.CaffDataRepository;
+import hu.bme.szgbizt.secushop.persistence.repository.CommentRepository;
 import hu.bme.szgbizt.secushop.persistence.repository.ShopUserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -38,16 +42,20 @@ public class SecuShopService {
 
     private final CaffDataRepository caffDataRepository;
     private final ShopUserRepository shopUserRepository;
+    private final CommentRepository commentRepository;
 
     /**
      * Instantiates a new {@link CaffDataRepository}.
      *
      * @param caffDataRepository The repository for {@link CaffDataEntity}.
      * @param shopUserRepository The repository for {@link ShopUserEntity}.
+     * @param commentRepository  The repository for {@link CommentEntity}.
      */
-    public SecuShopService(CaffDataRepository caffDataRepository, ShopUserRepository shopUserRepository) {
+    @Autowired
+    public SecuShopService(CaffDataRepository caffDataRepository, ShopUserRepository shopUserRepository, CommentRepository commentRepository) {
         this.caffDataRepository = caffDataRepository;
         this.shopUserRepository = shopUserRepository;
+        this.commentRepository = commentRepository;
     }
 
     public UrlResource getImage(String filename) {
@@ -154,6 +162,33 @@ public class SecuShopService {
             LOGGER.error("Error while loading caff data [{}] as resource, exception: {}", filename, ex.getMessage());
             throw new SecuShopInternalServerException();
         }
+    }
+
+    public CaffComment postComment(UUID callerUserId, UUID caffDataId, String message) {
+
+        var shopUserEntity = shopUserRepository.findById(callerUserId)
+                .orElseThrow(UserNotFoundException::new);
+        var caffDataEntity = caffDataRepository.findById(caffDataId)
+                .orElseThrow(CaffDataNotFoundException::new);
+
+        var commentEntity = new CommentEntity(
+                message,
+                shopUserEntity,
+                caffDataEntity
+        );
+
+        shopUserEntity.getComments().add(commentEntity);
+        caffDataEntity.getComments().add(commentEntity);
+
+        var savedCommentEntity = commentRepository.save(commentEntity);
+
+        return new CaffComment(
+                savedCommentEntity.getId(),
+                savedCommentEntity.getMessage(),
+                savedCommentEntity.getShopUser().getUsername(),
+                savedCommentEntity.getCaffData().getId(),
+                savedCommentEntity.getUploadDate()
+        );
     }
 
     private String buildImageUrl(String filename) {
