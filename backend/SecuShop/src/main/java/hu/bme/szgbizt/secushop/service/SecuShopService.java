@@ -134,14 +134,29 @@ public class SecuShopService {
 
     public DetailedCaffData getCaffData(UUID caffDataId) {
         return caffDataRepository.findById(caffDataId)
-                .map(caffDataEntity -> new DetailedCaffData(
-                        caffDataEntity.getId(),
-                        caffDataEntity.getName(),
-                        caffDataEntity.getDescription(),
-                        caffDataEntity.getPrice(),
-                        caffDataEntity.getShopUser().getUsername(),
-                        caffDataEntity.getImageUrl(),
-                        caffDataEntity.getUploadDate(), List.of())
+                .map(caffDataEntity -> {
+
+                            var caffComments = caffDataEntity.getComments().stream()
+                                    .map(commentEntity -> new CaffComment(
+                                            commentEntity.getId(),
+                                            commentEntity.getMessage(),
+                                            commentEntity.getShopUser().getUsername(),
+                                            commentEntity.getCaffData().getId(),
+                                            commentEntity.getUploadDate())
+                                    )
+                                    .collect(Collectors.toList());
+
+                            return new DetailedCaffData(
+                                    caffDataEntity.getId(),
+                                    caffDataEntity.getName(),
+                                    caffDataEntity.getDescription(),
+                                    caffDataEntity.getPrice(),
+                                    caffDataEntity.getShopUser().getUsername(),
+                                    caffDataEntity.getImageUrl(),
+                                    caffDataEntity.getUploadDate(),
+                                    caffComments
+                            );
+                        }
                 )
                 .orElseThrow(CaffDataNotFoundException::new);
     }
@@ -153,7 +168,7 @@ public class SecuShopService {
         var filename = caffDataEntity.getName();
 
         try {
-            var file = PATH_CAFF_DATA_RAW.resolve(filename);
+            var file = PATH_CAFF_DATA_RAW.resolve(filename + FILE_EXTENSION_CAFF);
             var resource = new UrlResource(file.toUri());
 
             if (resource.exists() || resource.isReadable()) {

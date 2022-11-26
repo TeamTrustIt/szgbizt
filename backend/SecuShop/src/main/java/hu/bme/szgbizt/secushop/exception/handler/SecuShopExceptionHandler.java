@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartException;
 
 import static java.util.Objects.nonNull;
 
@@ -70,6 +72,24 @@ public class SecuShopExceptionHandler {
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public @ResponseBody ErrorMessageResponse handleInvalidFileExtensionException(InvalidFileExtensionException ex) {
         return buildErrorMessage(ex.getErrorCode());
+    }
+
+    @ExceptionHandler(PasswordMismatchException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public @ResponseBody ErrorMessageResponse handlePasswordMismatchException(PasswordMismatchException ex) {
+        return buildErrorMessage(ex.getErrorCode());
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public @ResponseBody ErrorMessageResponse handlePasswordMismatchException(MaxUploadSizeExceededException ex) {
+        return buildErrorMessage(ErrorCode.SS_0101, "The upload file size is greater than the allowed");
+    }
+
+    @ExceptionHandler(MultipartException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public @ResponseBody ErrorMessageResponse handleMultipartException(MultipartException ex) {
+        return buildErrorMessage(ErrorCode.SS_0102);
     }
 
     @ExceptionHandler(UserNotFoundException.class)
