@@ -3,10 +3,7 @@ package hu.bme.szgbizt.secushop.service;
 import hu.bme.szgbizt.secushop.dto.CaffComment;
 import hu.bme.szgbizt.secushop.dto.CaffData;
 import hu.bme.szgbizt.secushop.dto.DetailedCaffData;
-import hu.bme.szgbizt.secushop.exception.CaffDataAlreadyExistException;
-import hu.bme.szgbizt.secushop.exception.CaffDataNotFoundException;
-import hu.bme.szgbizt.secushop.exception.SecuShopInternalServerException;
-import hu.bme.szgbizt.secushop.exception.UserNotFoundException;
+import hu.bme.szgbizt.secushop.exception.*;
 import hu.bme.szgbizt.secushop.persistence.entity.CaffDataEntity;
 import hu.bme.szgbizt.secushop.persistence.entity.CommentEntity;
 import hu.bme.szgbizt.secushop.persistence.entity.ShopUserEntity;
@@ -22,6 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -32,7 +31,10 @@ import java.util.stream.Collectors;
 
 import static hu.bme.szgbizt.secushop.service.AdminService.PATH_CAFF_DATA_JPG;
 import static hu.bme.szgbizt.secushop.service.AdminService.PATH_CAFF_DATA_RAW;
+import static hu.bme.szgbizt.secushop.util.Constant.FILE_EXTENSION_CAFF;
+import static hu.bme.szgbizt.secushop.util.Constant.FILE_EXTENSION_JSON;
 import static java.math.BigDecimal.ZERO;
+import static java.util.Collections.emptyList;
 
 @Service
 @Transactional
@@ -89,7 +91,9 @@ public class SecuShopService {
             );
             shopUserEntity.getCaffData().add(caffDataEntityToSave);
 
-            Files.copy(file.getInputStream(), PATH_CAFF_DATA_RAW.resolve(Objects.requireNonNull(filename)));
+            var filenameToSave = filename + FILE_EXTENSION_CAFF;
+            Files.copy(file.getInputStream(), PATH_CAFF_DATA_RAW.resolve(Objects.requireNonNull(filenameToSave)));
+            parseCaffData(filename);
             var savedCaffDataEntity = caffDataRepository.save(caffDataEntityToSave);
 
             return new DetailedCaffData(
@@ -98,9 +102,10 @@ public class SecuShopService {
                     savedCaffDataEntity.getDescription(),
                     savedCaffDataEntity.getPrice(),
                     savedCaffDataEntity.getShopUser().getUsername(),
-                    buildImageUrl("1"), // todo
+                    savedCaffDataEntity.getImageUrl(),
                     savedCaffDataEntity.getUploadDate(),
-                    List.of());
+                    emptyList()
+            );
 
         } catch (Exception ex) {
 
@@ -108,11 +113,10 @@ public class SecuShopService {
                 throw new CaffDataAlreadyExistException();
             }
 
-            LOGGER.error("Error while saving caff data [{}], exception: {}", filename, ex.getMessage());
+            LOGGER.error("Error while saving caff data [{}], error: {}", filename, ex.getMessage());
             throw new SecuShopInternalServerException();
         }
     }
-
 
     public List<CaffData> getCaffDataList() {
         return caffDataRepository.findAll().stream()
@@ -122,7 +126,7 @@ public class SecuShopService {
                         caffDataEntity.getDescription(),
                         caffDataEntity.getPrice(),
                         caffDataEntity.getShopUser().getUsername(),
-                        buildImageUrl("1"),
+                        caffDataEntity.getImageUrl(),
                         caffDataEntity.getUploadDate())
                 )
                 .collect(Collectors.toList());
@@ -136,7 +140,7 @@ public class SecuShopService {
                         caffDataEntity.getDescription(),
                         caffDataEntity.getPrice(),
                         caffDataEntity.getShopUser().getUsername(),
-                        buildImageUrl("1"),
+                        caffDataEntity.getImageUrl(),
                         caffDataEntity.getUploadDate(), List.of())
                 )
                 .orElseThrow(CaffDataNotFoundException::new);
@@ -159,7 +163,7 @@ public class SecuShopService {
                 throw new SecuShopInternalServerException();
             }
         } catch (MalformedURLException ex) {
-            LOGGER.error("Error while loading caff data [{}] as resource, exception: {}", filename, ex.getMessage());
+            LOGGER.error("Error while loading caff data [{}] as resource, error: {}", filename, ex.getMessage());
             throw new SecuShopInternalServerException();
         }
     }
@@ -192,6 +196,41 @@ public class SecuShopService {
     }
 
     private String buildImageUrl(String filename) {
-        return "http://localhost:8080/api/v1/secu-shop/images/" + filename;
+        return "http://localhost:8080/api/v1/secu-shop/images/" + filename + "_ciff0";
+    }
+
+    private void parseCaffData(String filename) {
+
+        try {
+            LOGGER.info("Parsing caff file [{}]", filename);
+
+            var userDirectory = System.getProperty("user.dir");
+            var caffDataDirectory = userDirectory + "\\caffdata";
+            var fileExe = caffDataDirectory + "\\caff_parser.exe";
+            var inputFile = ".\\raw\\" + filename + FILE_EXTENSION_CAFF;
+            var outputFile = ".\\jpg\\" + filename + FILE_EXTENSION_JSON;
+            var directory = new File(caffDataDirectory);
+            var process = Runtime.getRuntime().exec(fileExe + " " + inputFile + " " + outputFile, null, directory);
+            var exitCode = process.waitFor();
+
+            if (exitCode != 0) {
+                throw new CaffDataParsingException();
+            }
+
+        } catch (IOException | InterruptedException | CaffDataParsingException ex) {
+            try {
+                LOGGER.error("Something went wrong under the caff data [{}] parsing, error: {}", filename, ex.getMessage());
+
+                LOGGER.info("Try to rollback caff data [{}] automatically", filename);
+                var pathRaw = PATH_CAFF_DATA_RAW.resolve(filename);
+                Files.delete(pathRaw);
+                LOGGER.info("Successful rollback caff data [{}]", filename);
+            } catch (IOException e) {
+                LOGGER.info("Something went wrong under the caff data [{}] rollback", filename);
+            }
+
+            Thread.currentThread().interrupt();
+            throw new CaffDataParsingException();
+        }
     }
 }

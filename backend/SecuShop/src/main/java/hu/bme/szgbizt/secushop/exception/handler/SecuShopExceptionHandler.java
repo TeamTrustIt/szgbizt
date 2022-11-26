@@ -66,6 +66,12 @@ public class SecuShopExceptionHandler {
         return buildErrorMessage(ex.getErrorCode());
     }
 
+    @ExceptionHandler(InvalidFileExtensionException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public @ResponseBody ErrorMessageResponse handleInvalidFileExtensionException(InvalidFileExtensionException ex) {
+        return buildErrorMessage(ex.getErrorCode());
+    }
+
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public @ResponseBody ErrorMessageResponse handleUserNotFoundException(UserNotFoundException ex) {
@@ -84,15 +90,15 @@ public class SecuShopExceptionHandler {
         return buildErrorMessage(ex.getErrorCode());
     }
 
-    @ExceptionHandler(InvalidFileExtensionException.class)
-    @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public @ResponseBody ErrorMessageResponse handleInvalidFileExtensionException(InvalidFileExtensionException ex) {
-        return buildErrorMessage(ex.getErrorCode());
-    }
-
     @ExceptionHandler(NoAuthorityToProcessException.class)
     @ResponseStatus(value = HttpStatus.FORBIDDEN)
     public @ResponseBody ErrorMessageResponse handleNoAuthorityToProcessException(NoAuthorityToProcessException ex) {
+        return buildErrorMessage(ex.getErrorCode());
+    }
+
+    @ExceptionHandler(CaffDataParsingException.class)
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    public @ResponseBody ErrorMessageResponse handleCaffDataParsingException(CaffDataParsingException ex) {
         return buildErrorMessage(ex.getErrorCode());
     }
 

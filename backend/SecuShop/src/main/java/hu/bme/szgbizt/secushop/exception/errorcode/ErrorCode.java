@@ -3,6 +3,7 @@ package hu.bme.szgbizt.secushop.exception.errorcode;
 public enum ErrorCode {
 
     SS_0001("Internal server error"),
+    SS_0002("Caff data parsing error"),
     SS_0100("Missing input parameter"),
     SS_0101("Invalid input parameter"),
     SS_0102("Invalid file extension"),

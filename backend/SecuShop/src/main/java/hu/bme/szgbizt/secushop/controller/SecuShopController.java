@@ -24,6 +24,7 @@ import java.util.UUID;
 
 import static hu.bme.szgbizt.secushop.util.Constant.FILE_EXTENSION_CAFF;
 import static hu.bme.szgbizt.secushop.util.JwtHandler.getUserId;
+import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 
 @RestController
@@ -65,8 +66,10 @@ public class SecuShopController implements ISecuShopBaseController {
         var callerUserId = getUserId(authentication);
         LOGGER.info("Uploading caff data [{}] by [{}]", filename, callerUserId);
 
-        if (!Objects.requireNonNull(file.getOriginalFilename()).contains(FILE_EXTENSION_CAFF)) {
-            LOGGER.error("Invalid file extension");
+        var originalFilename = Objects.requireNonNull(file.getOriginalFilename());
+        var fileExtension = originalFilename.substring(originalFilename.length() - 5);
+        if (!FILE_EXTENSION_CAFF.equals(fileExtension)) {
+            LOGGER.error("Invalid file extension, must be [.caff]");
             throw new InvalidFileExtensionException();
         }
 
@@ -75,7 +78,7 @@ public class SecuShopController implements ISecuShopBaseController {
         return caffData;
     }
 
-    @GetMapping(value = "/caff-data/{caffDataId}/caff")
+    @GetMapping(value = "/caff-data/{caffDataId}/caff", produces = APPLICATION_OCTET_STREAM_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
     public Resource getCaffDataAsResource(Authentication authentication, @PathVariable("caffDataId") UUID caffDataId) {
         var callerUserId = getUserId(authentication);

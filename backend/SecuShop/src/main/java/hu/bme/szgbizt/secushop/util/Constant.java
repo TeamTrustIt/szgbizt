@@ -12,6 +12,7 @@ public final class Constant {
     public static final String ROLE_USER = "ROLE_USER";
     public static final String ROLE_ADMIN = "ROLE_ADMIN";
     public static final String FILE_EXTENSION_CAFF = ".caff";
+    public static final String FILE_EXTENSION_JSON = ".json";
     public static final String REGEX_ONLY_LETTERS_AND_NUMBERS = "^[a-zA-Z0-9]*$";
     public static final String REGEX_ONLY_LETTERS_AND_NUMBERS_AND_POINT = "^[a-zA-Z0-9.]*$";
 
