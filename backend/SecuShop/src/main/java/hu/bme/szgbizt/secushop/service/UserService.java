@@ -172,8 +172,8 @@ public class UserService {
         var newPassword = patchPasswordRequest.getNewPassword();
 
         if (!passwordEncoder.matches(currentPassword, callerUserEntity.getPassword())) {
-            LOGGER.error(ErrorCode.SS_0122.getMessage());
-            throw new NoAuthorityToProcessException(ErrorCode.SS_0122); //todo excepion
+            LOGGER.error(ErrorCode.SS_0104.getMessage());
+            throw new PasswordMismatchException();
         }
 
         userEntityToModify.setPassword(passwordEncoder.encode(newPassword));
@@ -192,14 +192,26 @@ public class UserService {
             throw new NoAuthorityToProcessException(ErrorCode.SS_0152);
         }
 
-        var username = patchProfileRequest.getUsername();
-        validateUserName(username);
+        var newUsername = patchProfileRequest.getUsername();
+        if (!callerUserEntity.getUsername().equals(newUsername)) {
 
-        var email = patchProfileRequest.getEmail();
-        validateEmail(email);
+            validateUserName(newUsername);
+            userEntityToModify.setUsername(newUsername);
 
-        userEntityToModify.setUsername(username);
-        userEntityToModify.setEmail(email); // todo shopUser username
+            var shopUserEntity = shopUserRepository.findById(callerUserId)
+                    .orElseThrow(UserNotFoundException::new);
+
+            shopUserEntity.setUsername(newUsername);
+            shopUserRepository.save(shopUserEntity);
+        }
+
+        var newEmail = patchProfileRequest.getEmail();
+        if (!callerUserEntity.getEmail().equals(newEmail)) {
+
+            validateEmail(newEmail);
+            userEntityToModify.setEmail(newEmail);
+        }
+
         userRepository.save(userEntityToModify);
     }
 
