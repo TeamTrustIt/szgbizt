@@ -31,11 +31,12 @@ import static java.math.BigDecimal.ZERO;
 
 @Service
 @Transactional
-public class CaffDataService implements ICaffDataService {
+public class SecuShopService implements ICaffDataService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CaffDataService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SecuShopService.class);
 
     private static final String PATH_CAFF_DATA_RAW = "caffdata/raw";
+    private static final String PATH_CAFF_DATA_JPG = "caffdata/jpg";
     private static final Path ROOT = Paths.get(PATH_CAFF_DATA_RAW);
 
     private final CaffDataRepository caffDataRepository;
@@ -47,9 +48,20 @@ public class CaffDataService implements ICaffDataService {
      * @param caffDataRepository The repository for {@link CaffDataEntity}.
      * @param shopUserRepository The repository for {@link ShopUserEntity}.
      */
-    public CaffDataService(CaffDataRepository caffDataRepository, ShopUserRepository shopUserRepository) {
+    public SecuShopService(CaffDataRepository caffDataRepository, ShopUserRepository shopUserRepository) {
         this.caffDataRepository = caffDataRepository;
         this.shopUserRepository = shopUserRepository;
+    }
+
+    public UrlResource getImage(String filename) {
+        var path = Paths.get(PATH_CAFF_DATA_JPG + "/" + filename + ".jpg");
+
+        try {
+            return new UrlResource(path.toUri());
+        } catch (MalformedURLException ex) {
+            LOGGER.error("Something went wrong under the image [{}] downloading, error: {}", filename, ex);
+            throw new SecuShopInternalServerException();
+        }
     }
 
     @Override
