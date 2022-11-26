@@ -104,7 +104,7 @@ public class SecurityService {
 
         var shopUserEntityToSave = new ShopUserEntity(
                 savedUserEntity.getId(),
-                ZERO
+                username, ZERO
         );
         shopUserRepository.save(shopUserEntityToSave);
 

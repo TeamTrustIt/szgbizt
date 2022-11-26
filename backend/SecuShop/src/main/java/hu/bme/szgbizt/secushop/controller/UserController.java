@@ -1,7 +1,7 @@
 package hu.bme.szgbizt.secushop.controller;
 
 import hu.bme.szgbizt.secushop.dto.*;
-import hu.bme.szgbizt.secushop.service.CaffDataService;
+import hu.bme.szgbizt.secushop.service.SecuShopService;
 import hu.bme.szgbizt.secushop.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,22 +22,22 @@ public class UserController implements ISecuShopBaseController {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     private final UserService userService;
-    private final CaffDataService caffDataService;
+    private final SecuShopService secuShopService;
 
     /**
      * Instantiates a new {@link UserService}.
      *
      * @param userService     The service class for user related processes.
-     * @param caffDataService The service class for caff data related processes.
+     * @param secuShopService The service class for caff data related processes.
      */
-    public UserController(UserService userService, CaffDataService caffDataService) {
+    public UserController(UserService userService, SecuShopService secuShopService) {
         this.userService = userService;
-        this.caffDataService = caffDataService;
+        this.secuShopService = secuShopService;
     }
 
     @GetMapping(value = "/users/{userId}")
     @ResponseStatus(value = HttpStatus.OK)
-    public User getUser(Authentication authentication, @PathVariable("userId") UUID userId) {
+    public DetailedUser getUser(Authentication authentication, @PathVariable("userId") UUID userId) {
         var callerUserId = getUserId(authentication);
         LOGGER.info("Querying user [{}] by [{}]", userId, callerUserId);
         var user = userService.getUser(callerUserId, userId);
@@ -50,7 +50,7 @@ public class UserController implements ISecuShopBaseController {
     public RegisteredUser updateUser(
             Authentication authentication,
             @PathVariable("userId") UUID userId,
-            @Valid @RequestBody PutRegisteredUserRequest putRegisteredUserRequest) {
+            @Valid @RequestBody PatchProfileRequest putRegisteredUserRequest) {
 
         var callerUserId = getUserId(authentication);
         LOGGER.info("Updating user [{}] by [{}]", userId, callerUserId);
@@ -70,7 +70,7 @@ public class UserController implements ISecuShopBaseController {
 
     @PostMapping(value = "/caff-data/{caffDataId}/comments")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public @ResponseBody Comment createComment(
+    public @ResponseBody CaffComment createComment(
             Authentication authentication,
             @PathVariable("caffDataId") UUID caffDataId,
             @Valid @RequestBody PostCommentRequest postCommentRequest) {
@@ -96,7 +96,7 @@ public class UserController implements ISecuShopBaseController {
     public void deleteCaffData(Authentication authentication, @PathVariable("caffDataId") UUID caffDataId) {
         var callerUserId = getUserId(authentication);
         LOGGER.info("Deleting caff data [{}] by [{}]", caffDataId, callerUserId);
-        caffDataService.delete(caffDataId);
+        userService.deleteCaffData(callerUserId, caffDataId);
         LOGGER.info("Successful deleted caff data [{}] by [{}]", caffDataId, callerUserId);
     }
 }

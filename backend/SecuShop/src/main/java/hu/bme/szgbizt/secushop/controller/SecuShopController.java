@@ -1,5 +1,6 @@
 package hu.bme.szgbizt.secushop.controller;
 
+import hu.bme.szgbizt.secushop.dto.CaffData;
 import hu.bme.szgbizt.secushop.dto.DetailedCaffData;
 import hu.bme.szgbizt.secushop.exception.InvalidFileExtensionException;
 import hu.bme.szgbizt.secushop.service.SecuShopService;
@@ -48,12 +49,33 @@ public class SecuShopController implements ISecuShopBaseController {
         return urlResource;
     }
 
+    @PostMapping(value = "/caff-data")
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public @ResponseBody DetailedCaffData createCaffData(
+            Authentication authentication,
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("filename") String filename,
+            @RequestParam("description") String description) {
+
+        var callerUserId = getUserId(authentication);
+        LOGGER.info("Uploading caff data [{}] by [{}]", filename, callerUserId);
+
+        if (!Objects.requireNonNull(file.getOriginalFilename()).contains(FILE_EXTENSION_CAFF)) {
+            LOGGER.error("Invalid file extension");
+            throw new InvalidFileExtensionException();
+        }
+
+        var caffData = secuShopService.createCaffData(callerUserId, filename, description, file);
+        LOGGER.info("Successful uploaded caff data [{}] by [{}]", filename, callerUserId);
+        return caffData;
+    }
+
     @GetMapping(value = "/caff-data/{caffDataId}/caff")
     @ResponseStatus(value = HttpStatus.OK)
     public Resource getCaffDataAsResource(Authentication authentication, @PathVariable("caffDataId") UUID caffDataId) {
         var callerUserId = getUserId(authentication);
         LOGGER.info("Downloading caff data [{}] by [{}]", caffDataId, callerUserId);
-        var resource = secuShopService.loadAsResource(caffDataId);
+        var resource = secuShopService.getCaffDataAsResource(caffDataId);
         LOGGER.info("Successful downloaded caff data [{}] by [{}]", caffDataId, callerUserId);
         return resource;
     }
@@ -63,38 +85,18 @@ public class SecuShopController implements ISecuShopBaseController {
     public DetailedCaffData getCaffData(Authentication authentication, @PathVariable("caffDataId") UUID caffDataId) {
         var callerUserId = getUserId(authentication);
         LOGGER.info("Querying caff data [{}] by [{}]", caffDataId, callerUserId);
-        var caffData = secuShopService.load(caffDataId);
+        var caffData = secuShopService.getCaffData(caffDataId);
         LOGGER.info("Successful queried caff data [{}] by [{}]", caffDataId, callerUserId);
         return caffData;
     }
 
     @GetMapping(value = "/caff-data")
     @ResponseStatus(value = HttpStatus.OK)
-    public List<DetailedCaffData> getCaffDataList(Authentication authentication) {
+    public List<CaffData> getCaffDataList(Authentication authentication) {
         var callerUserId = getUserId(authentication);
         LOGGER.info("Querying all caff data by [{}]", callerUserId);
-        var caffDataList = secuShopService.loadAll();
+        var caffDataList = secuShopService.getCaffDataList();
         LOGGER.info("Successful queried all caff data by [{}]", callerUserId);
         return caffDataList;
-    }
-
-    @PostMapping(value = "/caff-data")
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public @ResponseBody DetailedCaffData createCaffData(
-            Authentication authentication,
-            @RequestParam("file") MultipartFile file,
-            @RequestParam("filename") String filename,
-            @RequestParam("description") String description) {
-
-        if (!Objects.requireNonNull(file.getOriginalFilename()).contains(FILE_EXTENSION_CAFF)) {
-            LOGGER.error("Invalid file extension");
-            throw new InvalidFileExtensionException();
-        }
-
-        var callerUserId = getUserId(authentication);
-        LOGGER.info("Uploading caff data [{}] by [{}]", filename, callerUserId);
-        var caffData = secuShopService.store(callerUserId, filename, description, file);
-        LOGGER.info("Successful uploaded caff data [{}] by [{}]", filename, callerUserId);
-        return caffData;
     }
 }

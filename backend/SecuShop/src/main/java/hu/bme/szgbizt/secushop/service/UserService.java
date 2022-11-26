@@ -17,8 +17,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static hu.bme.szgbizt.secushop.service.AdminService.PATH_CAFF_DATA_JPG;
+import static hu.bme.szgbizt.secushop.service.AdminService.PATH_CAFF_DATA_RAW;
 
 @Service
 @Transactional
@@ -47,7 +52,7 @@ public class UserService {
         this.commentRepository = commentRepository;
     }
 
-    public User getUser(UUID callerUserId, UUID userId) {
+    public DetailedUser getUser(UUID callerUserId, UUID userId) {
 
         var callerUserEntity = userRepository.findById(callerUserId)
                 .orElseThrow(UserNotFoundException::new);
@@ -59,14 +64,18 @@ public class UserService {
                     .orElseThrow(UserNotFoundException::new);
 
             var caffData = shopUserEntity.getCaffData().stream()
-                    .map(caffDataEntity -> new BaseCaffData(
+                    .map(caffDataEntity -> new CaffData(
                             caffDataEntity.getId(),
                             caffDataEntity.getName(),
-                            caffDataEntity.getDescription()
-                    ))
+                            caffDataEntity.getDescription(),
+                            caffDataEntity.getPrice(),
+                            caffDataEntity.getShopUser().getUsername(),
+                            "imageUrl",
+                            caffDataEntity.getUploadDate())
+                    )
                     .collect(Collectors.toList());
 
-            return new User(
+            return new DetailedUser(
                     userEntity.getId(),
                     userEntity.getUsername(),
                     userEntity.getEmail(),
@@ -80,7 +89,7 @@ public class UserService {
         throw new NoAuthorityToProcessException(ErrorCode.SS_0152);
     }
 
-    public RegisteredUser updateUser(UUID callerUserId, UUID userIdToUpdate, PutRegisteredUserRequest putRegisteredUserRequest) {
+    public RegisteredUser updateUser(UUID callerUserId, UUID userIdToUpdate, PatchProfileRequest putRegisteredUserRequest) {
 
         var callerUserEntity = userRepository.findById(callerUserId)
                 .orElseThrow(UserNotFoundException::new);
@@ -96,7 +105,7 @@ public class UserService {
             validateEmail(email);
 
             userEntityToUpdate.setUsername(username);
-            userEntityToUpdate.setPassword(passwordEncoder.encode(putRegisteredUserRequest.getPassword()));
+            //userEntityToUpdate.setPassword(passwordEncoder.encode(putRegisteredUserRequest.getPassword()));
             userEntityToUpdate.setEmail(email);
 
             var updatedUserEntity = userRepository.save(userEntityToUpdate);
@@ -146,7 +155,36 @@ public class UserService {
         }
     }
 
-    public Comment postComment(UUID callerUserId, UUID caffDataId, String message) {
+    public void deleteCaffData(UUID callerUserId, UUID caffDataIdToDelete) {
+
+        var callerUserEntity = shopUserRepository.findById(callerUserId)
+                .orElseThrow(UserNotFoundException::new);
+        var caffDataEntity = caffDataRepository.findById(caffDataIdToDelete)
+                .orElseThrow(CaffDataNotFoundException::new);
+
+        var callerCaffDataList = callerUserEntity.getCaffData().stream().map(CaffDataEntity::getId).collect(Collectors.toList());
+        if (callerCaffDataList.contains(caffDataIdToDelete)) {
+
+            var filename = caffDataEntity.getName();
+            try {
+                var pathRaw = PATH_CAFF_DATA_RAW.resolve(filename);
+                var pathJpg = PATH_CAFF_DATA_JPG.resolve(filename);
+
+                caffDataRepository.delete(caffDataEntity);
+                Files.delete(pathRaw);
+                Files.delete(pathJpg);
+
+            } catch (IOException e) {
+                LOGGER.error("Error while deleting caff data [{}]", filename);
+                throw new SecuShopInternalServerException();
+            }
+        } else {
+            LOGGER.error(ErrorCode.SS_0152.getMessage());
+            throw new NoAuthorityToProcessException(ErrorCode.SS_0152);
+        }
+    }
+
+    public CaffComment postComment(UUID callerUserId, UUID caffDataId, String message) {
 
         var shopUserEntity = shopUserRepository.findById(callerUserId)
                 .orElseThrow(UserNotFoundException::new);
@@ -164,12 +202,12 @@ public class UserService {
 
         var savedCommentEntity = commentRepository.save(commentEntity);
 
-        return new Comment(
+        return new CaffComment(
                 savedCommentEntity.getId(),
                 savedCommentEntity.getMessage(),
-                savedCommentEntity.getUploadDate(),
-                savedCommentEntity.getShopUser().getId(),
-                savedCommentEntity.getCaffData().getId()
+                savedCommentEntity.getShopUser().getUsername(),
+                savedCommentEntity.getCaffData().getId(),
+                savedCommentEntity.getUploadDate()
         );
     }
 

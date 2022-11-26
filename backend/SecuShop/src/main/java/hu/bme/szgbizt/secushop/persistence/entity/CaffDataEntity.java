@@ -34,6 +34,9 @@ public class CaffDataEntity {
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 
+    @Column(name = "image_url", nullable = false)
+    private String imageUrl;
+
     @Column(name = "upload_date", nullable = false)
     private Instant uploadDate;
 
@@ -57,12 +60,14 @@ public class CaffDataEntity {
      * @param name        The name of the file.
      * @param description The description of the file.
      * @param price       The price of the file.
+     * @param imageUrl    The url of the file.
      * @param shopUser    The user who belongs to the caff data.
      */
-    public CaffDataEntity(String name, String description, BigDecimal price, ShopUserEntity shopUser) {
+    public CaffDataEntity(String name, String description, BigDecimal price, String imageUrl, ShopUserEntity shopUser) {
         this.name = name;
         this.description = description;
         this.price = price;
+        this.imageUrl = imageUrl;
         this.uploadDate = Instant.now();
         this.shopUser = shopUser;
         this.comments = new ArrayList<>();
@@ -106,6 +111,14 @@ public class CaffDataEntity {
 
     public void setShopUser(ShopUserEntity shopUser) {
         this.shopUser = shopUser;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public Instant getUploadDate() {

@@ -17,6 +17,9 @@ public class ShopUserEntity {
     @Column(name = "id", nullable = false, length = 36)
     private UUID id;
 
+    @Column(name = "username", nullable = false, length = 30, unique = true)
+    private String username;
+
     @Column(name = "balance", nullable = false)
     private BigDecimal balance;
 
@@ -36,11 +39,13 @@ public class ShopUserEntity {
     /**
      * Instantiates a new {@link ShopUserEntity}.
      *
-     * @param id      The identifier of the {@link ShopUserEntity}.
-     * @param balance The balance of the {@link ShopUserEntity}.
+     * @param id       The identifier of the {@link ShopUserEntity}.
+     * @param username The username of the {@link ShopUserEntity}.
+     * @param balance  The balance of the {@link ShopUserEntity}.
      */
-    public ShopUserEntity(UUID id, BigDecimal balance) {
+    public ShopUserEntity(UUID id, String username, BigDecimal balance) {
         this.id = id;
+        this.username = username;
         this.balance = balance;
         this.caffData = new ArrayList<>();
         this.comments = new ArrayList<>();
@@ -52,6 +57,14 @@ public class ShopUserEntity {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public BigDecimal getBalance() {

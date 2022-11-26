@@ -1,18 +1,19 @@
 create table users
 (
-    id      uuid    not null,
-    balance numeric not null,
+    id       uuid        not null,
+    username varchar(30) not null unique,
+    balance  numeric     not null,
     primary key (id)
 );
 
 create table caff_data
 (
-    id          uuid        not null,
-    file        text        not null,
-    name        varchar(30) not null,
+    id          uuid         not null,
+    name        varchar(30)  not null,
     description text,
-    price       numeric     not null,
-    upload_date date        not null,
+    price       numeric      not null,
+    upload_date date         not null,
+    image_url   varchar(100) not null unique,
     user_id     uuid,
     primary key (id),
     foreign key (user_id) references users (id)

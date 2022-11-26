@@ -3,6 +3,8 @@ package hu.bme.szgbizt.secushop.service;
 import hu.bme.szgbizt.secushop.dto.CaffData;
 import hu.bme.szgbizt.secushop.dto.DetailedUser;
 import hu.bme.szgbizt.secushop.dto.RegisteredUser;
+import hu.bme.szgbizt.secushop.exception.CaffDataNotFoundException;
+import hu.bme.szgbizt.secushop.exception.SecuShopInternalServerException;
 import hu.bme.szgbizt.secushop.exception.SelfDeletionException;
 import hu.bme.szgbizt.secushop.exception.UserNotFoundException;
 import hu.bme.szgbizt.secushop.persistence.entity.CaffDataEntity;
@@ -17,6 +19,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -28,6 +34,9 @@ import static hu.bme.szgbizt.secushop.util.Constant.ROLE_USER;
 public class AdminService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdminService.class);
+
+    public static final Path PATH_CAFF_DATA_RAW = Paths.get("caffdata/raw");
+    public static final Path PATH_CAFF_DATA_JPG = Paths.get("caffdata/jpg");
 
     private final UserRepository userRepository;
     private final ShopUserRepository shopUserRepository;
@@ -105,7 +114,23 @@ public class AdminService {
     }
 
     public void deleteCaffData(UUID caffDataIdToDelete) {
-        caffDataRepository.deleteById(caffDataIdToDelete);
+
+        var caffDataEntity = caffDataRepository.findById(caffDataIdToDelete)
+                .orElseThrow(CaffDataNotFoundException::new);
+
+        var filename = caffDataEntity.getName();
+        try {
+            var pathRaw = PATH_CAFF_DATA_RAW.resolve(filename);
+            var pathJpg = PATH_CAFF_DATA_JPG.resolve(filename);
+
+            caffDataRepository.delete(caffDataEntity);
+            Files.delete(pathRaw);
+            Files.delete(pathJpg);
+
+        } catch (IOException e) {
+            LOGGER.error("Error while deleting caff data [{}]", filename);
+            throw new SecuShopInternalServerException();
+        }
     }
 
     public void deleteComment(UUID commentIdToDelete) {

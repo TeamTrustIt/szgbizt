@@ -1,5 +1,6 @@
 package hu.bme.szgbizt.secushop.service;
 
+import hu.bme.szgbizt.secushop.dto.CaffData;
 import hu.bme.szgbizt.secushop.dto.DetailedCaffData;
 import hu.bme.szgbizt.secushop.exception.CaffDataAlreadyExistException;
 import hu.bme.szgbizt.secushop.exception.CaffDataNotFoundException;
@@ -17,27 +18,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static hu.bme.szgbizt.secushop.service.AdminService.PATH_CAFF_DATA_JPG;
+import static hu.bme.szgbizt.secushop.service.AdminService.PATH_CAFF_DATA_RAW;
 import static java.math.BigDecimal.ZERO;
 
 @Service
 @Transactional
-public class SecuShopService implements ICaffDataService {
+public class SecuShopService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SecuShopService.class);
-
-    private static final String PATH_CAFF_DATA_RAW = "caffdata/raw";
-    private static final String PATH_CAFF_DATA_JPG = "caffdata/jpg";
-    private static final Path ROOT = Paths.get(PATH_CAFF_DATA_RAW);
 
     private final CaffDataRepository caffDataRepository;
     private final ShopUserRepository shopUserRepository;
@@ -64,8 +61,7 @@ public class SecuShopService implements ICaffDataService {
         }
     }
 
-    @Override
-    public DetailedCaffData store(UUID callerUserId, String filename, String description, MultipartFile file) {
+    public DetailedCaffData createCaffData(UUID callerUserId, String filename, String description, MultipartFile file) {
         try {
 
             caffDataRepository.findByName(filename).ifPresent(ignored -> {
@@ -80,11 +76,12 @@ public class SecuShopService implements ICaffDataService {
                     filename,
                     description,
                     ZERO,
+                    buildImageUrl(filename),
                     shopUserEntity
             );
             shopUserEntity.getCaffData().add(caffDataEntityToSave);
 
-            Files.copy(file.getInputStream(), ROOT.resolve(Objects.requireNonNull(filename)));
+            Files.copy(file.getInputStream(), PATH_CAFF_DATA_RAW.resolve(Objects.requireNonNull(filename)));
             var savedCaffDataEntity = caffDataRepository.save(caffDataEntityToSave);
 
             return new DetailedCaffData(
@@ -93,7 +90,7 @@ public class SecuShopService implements ICaffDataService {
                     savedCaffDataEntity.getDescription(),
                     savedCaffDataEntity.getPrice(),
                     savedCaffDataEntity.getShopUser().getUsername(),
-                    "imageUrl", // todo
+                    buildImageUrl("1"), // todo
                     savedCaffDataEntity.getUploadDate(),
                     List.of());
 
@@ -108,32 +105,22 @@ public class SecuShopService implements ICaffDataService {
         }
     }
 
-    @Override
-    public List<DetailedCaffData> loadAll() {
+
+    public List<CaffData> getCaffDataList() {
         return caffDataRepository.findAll().stream()
-                .map(caffDataEntity -> new DetailedCaffData(
+                .map(caffDataEntity -> new CaffData(
                         caffDataEntity.getId(),
                         caffDataEntity.getName(),
                         caffDataEntity.getDescription(),
                         caffDataEntity.getPrice(),
                         caffDataEntity.getShopUser().getUsername(),
-                        "imageUrl",
-                        caffDataEntity.getUploadDate(),
-                        List.of()))
+                        buildImageUrl("1"),
+                        caffDataEntity.getUploadDate())
+                )
                 .collect(Collectors.toList());
-
-        /*
-        try {
-            return Files.walk(ROOT, 1).filter(path -> !path.equals(ROOT)).map(ROOT::relativize);
-        } catch (IOException ex) {
-            LOGGER.error("Error while loading all caff data, exception: {}", ex.getMessage());
-            throw new SecuShopInternalServerException();
-        }
-         */
     }
 
-    @Override
-    public DetailedCaffData load(UUID caffDataId) {
+    public DetailedCaffData getCaffData(UUID caffDataId) {
         return caffDataRepository.findById(caffDataId)
                 .map(caffDataEntity -> new DetailedCaffData(
                         caffDataEntity.getId(),
@@ -141,21 +128,20 @@ public class SecuShopService implements ICaffDataService {
                         caffDataEntity.getDescription(),
                         caffDataEntity.getPrice(),
                         caffDataEntity.getShopUser().getUsername(),
-                        "imageUrl",
+                        buildImageUrl("1"),
                         caffDataEntity.getUploadDate(), List.of())
                 )
                 .orElseThrow(CaffDataNotFoundException::new);
     }
 
-    @Override
-    public Resource loadAsResource(UUID caffDataId) {
+    public Resource getCaffDataAsResource(UUID caffDataId) {
 
         var caffDataEntity = caffDataRepository.findById(caffDataId)
                 .orElseThrow(CaffDataNotFoundException::new);
         var filename = caffDataEntity.getName();
 
         try {
-            var file = ROOT.resolve(filename);
+            var file = PATH_CAFF_DATA_RAW.resolve(filename);
             var resource = new UrlResource(file.toUri());
 
             if (resource.exists() || resource.isReadable()) {
@@ -170,22 +156,7 @@ public class SecuShopService implements ICaffDataService {
         }
     }
 
-    @Override
-    public void delete(UUID caffDataId) {
-
-        var caffDataEntity = caffDataRepository.findById(caffDataId)
-                .orElseThrow(CaffDataNotFoundException::new);
-        var filename = caffDataEntity.getName();
-
-        try {
-            var path = ROOT.resolve(filename);
-
-            caffDataRepository.delete(caffDataEntity);
-            Files.delete(path);
-
-        } catch (IOException e) {
-            LOGGER.error("Error while deleting caff data [{}]", filename);
-            throw new SecuShopInternalServerException();
-        }
+    private String buildImageUrl(String filename) {
+        return "http://localhost:8080/api/v1/secu-shop/images/" + filename;
     }
 }
