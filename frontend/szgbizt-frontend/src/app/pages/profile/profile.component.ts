@@ -90,13 +90,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
             this.currentPassword = ""
             this.newPassword = ""
             this.newPasswordConfirm = ""
+            this.alertService.warning("Password successfully updated")
           },
           error: err => {
             this.updatingPassword = false
           }
         })
       } else {
-        this.alertService.warning("Password and Password Confirm are different")
+        this.alertService.success("Password and Password Confirm are different")
       }
 
     } else {

@@ -4,6 +4,6 @@ export interface CaffDataNoCommentDto {
   description: string,
   price: number,
   username: string,
-  urlImage: string,
+  imageUrl: string,
   uploadDate: Date
 }

@@ -5,7 +5,7 @@ export interface CaffData {
   description: string,
   price: number,
   username: string,
-  urlImage: string,
+  imageUrl: string,
   uploadDate: Date
 
   comments: CaffComment[]

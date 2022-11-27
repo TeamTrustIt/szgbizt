@@ -4,6 +4,7 @@ import { DetailComponent } from './detail.component';
 import {CommentModule} from "../../components/comment/comment.module";
 import {TextInputModule} from "../../components/text-input/text-input.module";
 import {ButtonModule} from "../../components/button/button.module";
+import {UseHttpImgSrcModule} from "../../pipes/use-http-img-src/use-http-img-src.module";
 
 
 
@@ -11,11 +12,12 @@ import {ButtonModule} from "../../components/button/button.module";
   declarations: [
     DetailComponent
   ],
-  imports: [
-    CommonModule,
-    CommentModule,
-    TextInputModule,
-    ButtonModule
-  ]
+    imports: [
+        CommonModule,
+        CommentModule,
+        TextInputModule,
+        ButtonModule,
+        UseHttpImgSrcModule
+    ]
 })
 export class DetailModule { }

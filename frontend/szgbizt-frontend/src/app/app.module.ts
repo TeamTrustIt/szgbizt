@@ -1,6 +1,5 @@
 import {APP_INITIALIZER, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {HotToastModule} from '@ngneat/hot-toast';
@@ -15,12 +14,12 @@ import {LoginAdminModule} from "./pages/login-admin/login-admin.module";
 import {RegisterModule} from "./pages/register/register.module";
 import {DetailModule} from "./pages/detail/detail.module";
 import {ListModule} from "./pages/list/list.module";
-import {ListUserComponent} from "./pages/list-user/list-user.component";
 import {ListUserModule} from "./pages/list-user/list-user.module";
 import {UploadModule} from "./pages/upload/upload.module";
 import {AuthReducer} from "./reducers/AuthReducer";
 import {AuthService} from "./services/AuthService";
 import {ProfileModule} from "./pages/profile/profile.module";
+import {UseHttpImgSrcModule} from "./pipes/use-http-img-src/use-http-img-src.module";
 
 @NgModule({
   declarations: [
@@ -42,13 +41,16 @@ import {ProfileModule} from "./pages/profile/profile.module";
     ListModule,
     ListUserModule,
     UploadModule,
-    ProfileModule
+    ProfileModule,
+    UseHttpImgSrcModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: UnauthorizedInterceptor, multi: true},
-    { provide: APP_INITIALIZER, useFactory: initializeAuth, deps: [AuthService], multi: true }
+    {provide: APP_INITIALIZER, useFactory: initializeAuth, deps: [AuthService], multi: true}
+  ],
+  exports: [
   ],
   bootstrap: [AppComponent]
 })

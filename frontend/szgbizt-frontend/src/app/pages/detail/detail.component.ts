@@ -17,7 +17,7 @@ export class DetailComponent implements OnInit, OnDestroy {
 
   isAdmin: boolean = false;
 
-  caff?: CaffData
+  caff!: CaffData
   caffId?: string
 
   newCommentText: string = "";

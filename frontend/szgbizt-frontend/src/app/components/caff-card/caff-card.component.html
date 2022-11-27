@@ -1,5 +1,5 @@
 <div class="simpleCard flex flex-col {{classes}}">
-  <img class="simpleImage cardImage flex-grow" [src]="caffData.urlImage" alt="card-image">
+  <img class="simpleImage cardImage flex-grow" [src]="caffData.imageUrl | useHttpImgSrc"  alt="card-image">
   <div class="simpleCardBottom">
     <div class="flex justify-between">
       <p class="bold">{{caffData.filename}}</p>
