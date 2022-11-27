@@ -5,6 +5,9 @@ import {Router} from "@angular/router";
 import {HotToastService} from "@ngneat/hot-toast";
 import {Subscription} from "rxjs";
 import {AuthService} from "../../services/AuthService";
+import {Store} from "@ngrx/store";
+import {AuthState} from "../../interfaces/states/auth-state";
+import {AdminService} from "../../services/AdminService";
 
 @Component({
   selector: 'app-profile',
@@ -12,6 +15,8 @@ import {AuthService} from "../../services/AuthService";
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit, OnDestroy {
+
+  isAdmin: boolean = false
 
   userO: UserEditDto = {caffData: [], email: "", id: "", username: "", roles: "ROLE_USER", balance: 0}
   currentPassword: string = "";
@@ -27,34 +32,73 @@ export class ProfileComponent implements OnInit, OnDestroy {
   subscriptionUpdatePassword?: Subscription
   subscriptionDeleteUser?: Subscription
 
-  constructor(private userService: UserService, private router: Router, private alertService: HotToastService, private authService: AuthService) {
+  constructor(private userService: UserService,
+              private adminService: AdminService,
+              private router: Router,
+              private alertService: HotToastService,
+              private authService: AuthService,
+              private store: Store<{ auth: AuthState }>) {
   }
 
   ngOnInit(): void {
-    this.getUserData()
+    this.store.subscribe(state => {
+      this.isAdmin = state.auth.user?.roles ? state.auth.user.roles === "ROLE_ADMIN" : false
+      this.getUserData()
+    })
+
   }
 
   getUserData() {
-    this.subscriptionGetData = this.userService.getUserDataById().subscribe((res: UserEditDto) => {
-      this.userO = res
-    })
+    if (this.isAdmin) {
+      this.subscriptionGetData = this.adminService.getUserDataById().subscribe((res: UserEditDto) => {
+        this.userO = res
+      })
+    } else {
+      this.subscriptionGetData = this.userService.getUserDataById().subscribe((res: UserEditDto) => {
+        this.userO = res
+      })
+    }
+
   }
 
   updateProfile() {
     if (this.userO.email !== "" && this.userO.username !== "") {
-      // todo
       this.updatingProfile = true
-      /*this.subscriptionUpdateProfile = this.userService.updateProfile()*/
+      this.subscriptionUpdateProfile = this.userService.updateProfile(undefined, this.userO.email, this.userO.username).subscribe({
+        next: (res) => {
+          this.updatingProfile = false
+          this.alertService.success("Profile updated")
+          this.getUserData()
+        },
+        error: err => {
+          this.updatingProfile = false
+        }
+      })
     } else {
       this.alertService.warning("Username and Email must not be empty")
     }
   }
 
   updatePassword() {
-    if (this.currentPassword !== "" && this.newPassword !== "" && this.newPasswordConfirm !== "") {
-      // todo
-      this.updatingPassword = true
-      /*this.subscriptionUpdatePassword = this.userService.updateProfile()*/
+    if (this.currentPassword !== "" && this.newPassword !== "") {
+      if (this.newPassword === this.newPasswordConfirm) {
+        this.updatingPassword = true
+        this.subscriptionUpdatePassword = this.userService.updatePassword(undefined, this.currentPassword, this.newPassword).subscribe({
+          next: value => {
+            this.updatingPassword = false
+            this.getUserData()
+            this.currentPassword = ""
+            this.newPassword = ""
+            this.newPasswordConfirm = ""
+          },
+          error: err => {
+            this.updatingPassword = false
+          }
+        })
+      } else {
+        this.alertService.warning("Password and Password Confirm are different")
+      }
+
     } else {
       this.alertService.warning("Password fields must not be empty")
     }

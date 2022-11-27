@@ -57,7 +57,7 @@ export class UserService {
     return this.http.delete<unknown>(`${this.baseUrl}/comments/${id}`) //204 ha sikeres
   }
 
-  updatePassword(id: string, currentPassword: string, newPassword: string): Observable<unknown> {
+  updatePassword(id: string = this.userId, currentPassword: string, newPassword: string): Observable<unknown> {
     const data: { currentPassword: string, newPassword: string } = {
       currentPassword: currentPassword,
       newPassword: newPassword
@@ -65,7 +65,7 @@ export class UserService {
     return this.http.patch<unknown>(`${this.baseUrl}/users/${id}/password`, data) //200 ha sikeres
   }
 
-  updateProfile(id: string, email: string, username: string): Observable<unknown> {
+  updateProfile(id: string = this.userId, email: string, username: string): Observable<unknown> {
     const data: { email: string, username: string } = {
       email: email,
       username: username

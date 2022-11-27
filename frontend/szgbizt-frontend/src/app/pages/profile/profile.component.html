@@ -12,9 +12,9 @@
       </div>
 
       <p class="bold mb-5">User Password:</p>
-      <app-text-input classes="mb-5" placeholder="Current password" [(value)]="currentPassword"></app-text-input>
-      <app-text-input [(value)]="newPassword" classes="mb-5" placeholder="New password"></app-text-input>
-      <app-text-input [(value)]="newPasswordConfirm" classes="mb-10" placeholder="Confirm new password"></app-text-input>
+      <app-text-input classes="mb-5" placeholder="Current password" [(value)]="currentPassword" inputType="password"></app-text-input>
+      <app-text-input [(value)]="newPassword" classes="mb-5" placeholder="New password" inputType="password"></app-text-input>
+      <app-text-input [(value)]="newPasswordConfirm" classes="mb-10" placeholder="Confirm new password" inputType="password"></app-text-input>
       <div class="flex justify-right">
         <app-button [disabled]="updatingPassword" (onClick)="updatePassword()" text="Change password"></app-button>
       </div>

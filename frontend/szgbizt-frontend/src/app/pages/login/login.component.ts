@@ -28,10 +28,18 @@ export class LoginComponent implements OnDestroy {
           this.loggingIn = false
         },
         complete: () => {
+          console.log("complete")
+          this.loggingIn = false
+        },
+        error: err => {
+          console.log("err")
+          // todo error mint mutlkor mindenhol
+
           this.loggingIn = false
         }
       })
-    } else {
+    }
+    else {
       this.alertService.warning("Fill every field")
     }
   }
