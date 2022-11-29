@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,7 +38,7 @@ public final class DetailedCaffData {
     private final String imageUrl;
 
     @NotNull(message = "Upload date cannot be null")
-    private final Instant uploadDate;
+    private final String uploadDate;
 
     @NotNull(message = "Comments cannot be null")
     private final List<CaffComment> comments;
@@ -64,7 +63,7 @@ public final class DetailedCaffData {
             @JsonProperty("price") BigDecimal price,
             @JsonProperty("username") String username,
             @JsonProperty("imageUrl") String imageUrl,
-            @JsonProperty("uploadDate") Instant uploadDate,
+            @JsonProperty("uploadDate") String uploadDate,
             @JsonProperty("comments") List<CaffComment> comments) {
 
         this.id = id;
@@ -101,7 +100,7 @@ public final class DetailedCaffData {
         return imageUrl;
     }
 
-    public Instant getUploadDate() {
+    public String getUploadDate() {
         return uploadDate;
     }
 

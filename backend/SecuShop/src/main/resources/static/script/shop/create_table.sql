@@ -12,7 +12,7 @@ create table caff_data
     name        varchar(30)  not null,
     description text,
     price       numeric      not null,
-    upload_date date         not null,
+    upload_date timestamp    not null default current_timestamp,
     image_url   varchar(100) not null unique,
     user_id     uuid,
     primary key (id),

@@ -21,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -38,6 +40,7 @@ public class AdminService {
     public static final Path PATH_CAFF_DATA_RAW = Paths.get("caffdata/raw");
     public static final Path PATH_CAFF_DATA_JPG = Paths.get("caffdata/jpg");
 
+    private final DateTimeFormatter dateTimeFormatter;
     private final UserRepository userRepository;
     private final ShopUserRepository shopUserRepository;
     private final CaffDataRepository caffDataRepository;
@@ -46,13 +49,15 @@ public class AdminService {
     /**
      * Instantiates a new {@link AdminService}.
      *
+     * @param dateTimeFormatter  The formatter of {@link LocalDateTime}.
      * @param userRepository     The repository for {@link UserEntity}.
      * @param shopUserRepository The repository for {@link ShopUserRepository}.
      * @param caffDataRepository The repository for {@link CaffDataEntity}.
      * @param commentRepository  The repository for {@link CommentEntity}.
      */
     @Autowired
-    public AdminService(UserRepository userRepository, ShopUserRepository shopUserRepository, CaffDataRepository caffDataRepository, CommentRepository commentRepository) {
+    public AdminService(DateTimeFormatter dateTimeFormatter, UserRepository userRepository, ShopUserRepository shopUserRepository, CaffDataRepository caffDataRepository, CommentRepository commentRepository) {
+        this.dateTimeFormatter = dateTimeFormatter;
         this.userRepository = userRepository;
         this.shopUserRepository = shopUserRepository;
         this.caffDataRepository = caffDataRepository;
@@ -85,8 +90,8 @@ public class AdminService {
                         caffDataEntity.getDescription(),
                         caffDataEntity.getPrice(),
                         caffDataEntity.getShopUser().getUsername(),
-                        "imageUrl",
-                        caffDataEntity.getUploadDate())
+                        caffDataEntity.getImageUrl(),
+                        caffDataEntity.getUploadDate().format(dateTimeFormatter))
                 )
                 .collect(Collectors.toList());
 

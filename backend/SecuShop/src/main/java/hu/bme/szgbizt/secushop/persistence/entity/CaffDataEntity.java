@@ -4,7 +4,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -38,7 +38,7 @@ public class CaffDataEntity {
     private String imageUrl;
 
     @Column(name = "upload_date", nullable = false)
-    private Instant uploadDate;
+    private LocalDateTime uploadDate;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -68,7 +68,7 @@ public class CaffDataEntity {
         this.description = description;
         this.price = price;
         this.imageUrl = imageUrl;
-        this.uploadDate = Instant.now();
+        this.uploadDate = LocalDateTime.now();
         this.shopUser = shopUser;
         this.comments = new ArrayList<>();
     }
@@ -121,11 +121,11 @@ public class CaffDataEntity {
         this.imageUrl = imageUrl;
     }
 
-    public Instant getUploadDate() {
+    public LocalDateTime getUploadDate() {
         return uploadDate;
     }
 
-    public void setUploadDate(Instant uploadDate) {
+    public void setUploadDate(LocalDateTime uploadDate) {
         this.uploadDate = uploadDate;
     }
 

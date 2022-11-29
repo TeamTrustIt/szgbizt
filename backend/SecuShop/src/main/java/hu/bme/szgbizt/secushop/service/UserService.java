@@ -21,6 +21,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -33,6 +35,7 @@ public class UserService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
+    private final DateTimeFormatter dateTimeFormatter;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final ShopUserRepository shopUserRepository;
@@ -40,6 +43,7 @@ public class UserService {
     private final CommentRepository commentRepository;
 
     /**
+     * @param dateTimeFormatter  The formatter of {@link LocalDateTime}.
      * @param passwordEncoder    The password encoder.
      * @param userRepository     Repository for {@link UserEntity}.
      * @param shopUserRepository Repository for {@link ShopUserEntity}.
@@ -47,7 +51,8 @@ public class UserService {
      * @param commentRepository  Repository for {@link CommentEntity}.
      */
     @Autowired
-    public UserService(PasswordEncoder passwordEncoder, UserRepository userRepository, ShopUserRepository shopUserRepository, CaffDataRepository caffDataRepository, CommentRepository commentRepository) {
+    public UserService(DateTimeFormatter dateTimeFormatter, PasswordEncoder passwordEncoder, UserRepository userRepository, ShopUserRepository shopUserRepository, CaffDataRepository caffDataRepository, CommentRepository commentRepository) {
+        this.dateTimeFormatter = dateTimeFormatter;
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.shopUserRepository = shopUserRepository;
@@ -77,8 +82,8 @@ public class UserService {
                         caffDataEntity.getDescription(),
                         caffDataEntity.getPrice(),
                         caffDataEntity.getShopUser().getUsername(),
-                        "imageUrl",
-                        caffDataEntity.getUploadDate())
+                        caffDataEntity.getImageUrl(),
+                        caffDataEntity.getUploadDate().format(dateTimeFormatter))
                 )
                 .collect(Collectors.toList());
 

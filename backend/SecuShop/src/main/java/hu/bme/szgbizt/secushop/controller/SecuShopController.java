@@ -17,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
@@ -59,6 +60,7 @@ public class SecuShopController implements ISecuShopBaseController {
     @ResponseStatus(value = HttpStatus.CREATED)
     public @ResponseBody DetailedCaffData createCaffData(
             Authentication authentication,
+            HttpServletRequest httpServletRequest,
             @RequestParam("file") MultipartFile file,
             @RequestParam("filename") String filename,
             @RequestParam("description") String description) {
@@ -73,7 +75,7 @@ public class SecuShopController implements ISecuShopBaseController {
             throw new InvalidFileExtensionException();
         }
 
-        var caffData = secuShopService.createCaffData(callerUserId, filename, description, file);
+        var caffData = secuShopService.createCaffData(callerUserId, filename, description, file, httpServletRequest.getLocalAddr());
         LOGGER.info("Successful uploaded caff data [{}] by [{}]", filename, callerUserId);
         return caffData;
     }

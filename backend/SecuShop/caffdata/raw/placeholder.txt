@@ -1,0 +1,1 @@
+Placeholder file to do not remove the raw directory.

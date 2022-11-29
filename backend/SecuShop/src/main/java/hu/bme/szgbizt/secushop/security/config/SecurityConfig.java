@@ -98,6 +98,7 @@ public class SecurityConfig {
                 .userDetailsService(jpaUserDetailsService)
                 .httpBasic(withDefaults())
                 .addFilterBefore(jwtBlackListFilter, UsernamePasswordAuthenticationFilter.class)
+                .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
                 .build();
     }
 

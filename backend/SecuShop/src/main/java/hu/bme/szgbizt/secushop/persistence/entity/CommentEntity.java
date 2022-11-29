@@ -3,7 +3,7 @@ package hu.bme.szgbizt.secushop.persistence.entity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -23,7 +23,7 @@ public class CommentEntity {
     private String message;
 
     @Column(name = "upload_date", nullable = false)
-    private Instant uploadDate;
+    private LocalDateTime uploadDate;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -49,7 +49,7 @@ public class CommentEntity {
      */
     public CommentEntity(String message, ShopUserEntity shopUser, CaffDataEntity caffData) {
         this.message = message;
-        this.uploadDate = Instant.now();
+        this.uploadDate = LocalDateTime.now();
         this.shopUser = shopUser;
         this.caffData = caffData;
     }
@@ -70,11 +70,11 @@ public class CommentEntity {
         this.message = message;
     }
 
-    public Instant getUploadDate() {
+    public LocalDateTime getUploadDate() {
         return uploadDate;
     }
 
-    public void setUploadDate(Instant uploadDate) {
+    public void setUploadDate(LocalDateTime uploadDate) {
         this.uploadDate = uploadDate;
     }
 

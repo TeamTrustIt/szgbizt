@@ -16,9 +16,10 @@ public class CaffParser {
         var fileExe = DIRECTORY_CAFF_DATA + "\\caff_parser.exe";
         var inputFile = ".\\raw\\" + filename + FILE_EXTENSION_CAFF;
         var outputFile = ".\\jpg\\" + filename + "\\" + filename + FILE_EXTENSION_JSON;
+        var command = fileExe + " " + inputFile + " " + outputFile; // caff_parser.exe <input_file.caff> <output_file.json>
 
         var process = Runtime.getRuntime().exec(
-                fileExe + " " + inputFile + " " + outputFile, // caff_parser.exe <input_file.caff> <output_file.json>
+                command,
                 null,
                 new File(DIRECTORY_CAFF_DATA)
         );

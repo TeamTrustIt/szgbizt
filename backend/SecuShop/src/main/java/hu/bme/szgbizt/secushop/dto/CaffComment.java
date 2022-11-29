@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import javax.validation.constraints.NotNull;
-import java.time.Instant;
 import java.util.UUID;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
@@ -31,7 +30,7 @@ public final class CaffComment {
     private final UUID caffDataId;
 
     @NotNull(message = "Upload date cannot be null")
-    private final Instant uploadDate;
+    private final String uploadDate;
 
     /**
      * Instantiates a new {@link CaffComment}.
@@ -48,7 +47,7 @@ public final class CaffComment {
             @JsonProperty("message") String message,
             @JsonProperty("username") String username,
             @JsonProperty("caffDataId") UUID caffDataId,
-            @JsonProperty("uploadDate") Instant uploadDate) {
+            @JsonProperty("uploadDate") String uploadDate) {
 
         this.id = id;
         this.message = message;
@@ -73,7 +72,7 @@ public final class CaffComment {
         return caffDataId;
     }
 
-    public Instant getUploadDate() {
+    public String getUploadDate() {
         return uploadDate;
     }
 }

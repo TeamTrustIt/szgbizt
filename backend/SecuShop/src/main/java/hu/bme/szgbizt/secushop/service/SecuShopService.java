@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -42,6 +44,7 @@ public class SecuShopService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SecuShopService.class);
 
+    private final DateTimeFormatter dateTimeFormatter;
     private final CaffDataRepository caffDataRepository;
     private final ShopUserRepository shopUserRepository;
     private final CommentRepository commentRepository;
@@ -49,12 +52,14 @@ public class SecuShopService {
     /**
      * Instantiates a new {@link CaffDataRepository}.
      *
+     * @param dateTimeFormatter  The formatter of {@link LocalDateTime}.
      * @param caffDataRepository The repository for {@link CaffDataEntity}.
      * @param shopUserRepository The repository for {@link ShopUserEntity}.
      * @param commentRepository  The repository for {@link CommentEntity}.
      */
     @Autowired
-    public SecuShopService(CaffDataRepository caffDataRepository, ShopUserRepository shopUserRepository, CommentRepository commentRepository) {
+    public SecuShopService(DateTimeFormatter dateTimeFormatter, CaffDataRepository caffDataRepository, ShopUserRepository shopUserRepository, CommentRepository commentRepository) {
+        this.dateTimeFormatter = dateTimeFormatter;
         this.caffDataRepository = caffDataRepository;
         this.shopUserRepository = shopUserRepository;
         this.commentRepository = commentRepository;
@@ -72,7 +77,7 @@ public class SecuShopService {
         }
     }
 
-    public DetailedCaffData createCaffData(UUID callerUserId, String filename, String description, MultipartFile file) {
+    public DetailedCaffData createCaffData(UUID callerUserId, String filename, String description, MultipartFile file, String localAddress) {
         try {
 
             caffDataRepository.findByName(filename).ifPresent(ignored -> {
@@ -87,7 +92,7 @@ public class SecuShopService {
                     filename,
                     description,
                     ZERO,
-                    buildImageUrl(filename),
+                    buildImageUrl(localAddress, filename),
                     shopUserEntity
             );
             shopUserEntity.getCaffData().add(caffDataEntityToSave);
@@ -104,7 +109,7 @@ public class SecuShopService {
                     savedCaffDataEntity.getPrice(),
                     savedCaffDataEntity.getShopUser().getUsername(),
                     savedCaffDataEntity.getImageUrl(),
-                    savedCaffDataEntity.getUploadDate(),
+                    savedCaffDataEntity.getUploadDate().format(dateTimeFormatter),
                     emptyList()
             );
 
@@ -128,7 +133,7 @@ public class SecuShopService {
                         caffDataEntity.getPrice(),
                         caffDataEntity.getShopUser().getUsername(),
                         caffDataEntity.getImageUrl(),
-                        caffDataEntity.getUploadDate())
+                        caffDataEntity.getUploadDate().format(dateTimeFormatter))
                 )
                 .collect(Collectors.toList());
     }
@@ -143,7 +148,7 @@ public class SecuShopService {
                                             commentEntity.getMessage(),
                                             commentEntity.getShopUser().getUsername(),
                                             commentEntity.getCaffData().getId(),
-                                            commentEntity.getUploadDate())
+                                            commentEntity.getUploadDate().format(dateTimeFormatter))
                                     )
                                     .collect(Collectors.toList());
 
@@ -154,7 +159,7 @@ public class SecuShopService {
                                     caffDataEntity.getPrice(),
                                     caffDataEntity.getShopUser().getUsername(),
                                     caffDataEntity.getImageUrl(),
-                                    caffDataEntity.getUploadDate(),
+                                    caffDataEntity.getUploadDate().format(dateTimeFormatter),
                                     caffComments
                             );
                         }
@@ -207,12 +212,12 @@ public class SecuShopService {
                 savedCommentEntity.getMessage(),
                 savedCommentEntity.getShopUser().getUsername(),
                 savedCommentEntity.getCaffData().getId(),
-                savedCommentEntity.getUploadDate()
+                savedCommentEntity.getUploadDate().format(dateTimeFormatter)
         );
     }
 
-    private String buildImageUrl(String filename) {
-        return "http://localhost:8080/api/v1/secu-shop/images/" + filename + "_ciff0";
+    private String buildImageUrl(String localAddress, String filename) {
+        return "http://" + localAddress + "/api/v1/secu-shop/images/" + filename + "_ciff0";
     }
 
     private void parseCaffData(String filename) {
