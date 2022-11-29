@@ -1,6 +1,5 @@
-package hu.bme.szgbizt.secushop.security.controller;
+package hu.bme.szgbizt.secushop.controller;
 
-import hu.bme.szgbizt.secushop.controller.ISecuShopBaseController;
 import hu.bme.szgbizt.secushop.dto.LoggedUser;
 import hu.bme.szgbizt.secushop.dto.PostRegistrationRequest;
 import hu.bme.szgbizt.secushop.dto.RegisteredUser;
