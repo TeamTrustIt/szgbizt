@@ -78,27 +78,24 @@ export class DetailComponent implements OnInit, OnDestroy {
   }
 
 
-  downLoadFile(data: any, type: string) {
-    let blob = new Blob([data], {type: type});
-    let url = window.URL.createObjectURL(blob);
-    let pwa = window.open(url);
-    if (!pwa || pwa.closed || typeof pwa.closed == 'undefined') {
-      alert('Please disable your Pop-up blocker and try again.');
-    }
+  downLoadCaffFile(data: any) {
+    const blob = new Blob([data], { type: 'application/octet-stream' });
+    const url= window.URL.createObjectURL(blob);
+    window.open(url);
   }
 
 
   buyCaff(id?: string) {
-    if (id) {
+    const sure = window.confirm("Are you sure? If you did not buy it before, you have to now!")
+    if (sure && id) {
       this.buyingCaff = true
       this.subscriptionBuyCaff = this.userService.buyCaff(id).subscribe({
-        next: (res) => {
+        next: value => {
+          this.downLoadCaffFile(value)
           this.buyingCaff = false
-          console.log(res)
-          this.downLoadFile(res, "application/ms-excel")
-          console.log(res)
         },
-        error: () => {
+        error: err => {
+          this.alertService.error("Something went wrong: " + err)
           this.buyingCaff = false
         }
       })

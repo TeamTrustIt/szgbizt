@@ -73,7 +73,8 @@ export class UserService {
     return this.http.patch<unknown>(`${this.baseUrl}/users/${id}/profile`, data) //200 ha sikeres
   }
 
-  buyCaff(id: string) {
-    return this.http.get<unknown>(`${this.baseUrl}/caff-data/${id}/caff`)
+  buyCaff(id: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/caff-data/${id}/caff`, {responseType: "arraybuffer"})
   }
+
 }
