@@ -37,6 +37,7 @@ import static hu.bme.szgbizt.secushop.service.AdminService.PATH_CAFF_DATA_JPG;
 import static hu.bme.szgbizt.secushop.service.AdminService.PATH_CAFF_DATA_RAW;
 import static hu.bme.szgbizt.secushop.util.CaffParser.runParseCommand;
 import static hu.bme.szgbizt.secushop.util.Constant.FILE_EXTENSION_CAFF;
+import static hu.bme.szgbizt.secushop.util.Constant.ROLE_ADMIN;
 import static hu.bme.szgbizt.secushop.util.handler.FileHandler.*;
 import static java.math.BigDecimal.ZERO;
 import static java.util.Collections.emptyList;
@@ -307,8 +308,14 @@ public class SecuShopService {
 
         var shopUserEntity = shopUserRepository.findById(callerUserId)
                 .orElseThrow(UserNotFoundException::new);
+        var userEntity = userRepository.findById(callerUserId)
+                .orElseThrow(UserNotFoundException::new);
         var caffDataEntityToDownload = caffDataRepository.findById(caffDataId)
                 .orElseThrow(CaffDataNotFoundException::new);
+
+        if (isAdmin(userEntity)) {
+            return true;
+        }
 
         if (isOwn(shopUserEntity, caffDataId)) {
             return true;
@@ -329,6 +336,10 @@ public class SecuShopService {
         LOGGER.info("Caff data [{}] is successfully purchased for user [{}]", callerUserId, caffDataId);
 
         return true;
+    }
+
+    private boolean isAdmin(UserEntity userEntity) {
+        return userEntity.getRoles().equals(ROLE_ADMIN);
     }
 
     private boolean isOwn(ShopUserEntity shopUserEntity, UUID caffDataIdToDownload) {
