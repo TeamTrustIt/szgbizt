@@ -4,6 +4,7 @@ import hu.bme.szgbizt.secushop.dto.CaffComment;
 import hu.bme.szgbizt.secushop.dto.CaffData;
 import hu.bme.szgbizt.secushop.dto.DetailedCaffData;
 import hu.bme.szgbizt.secushop.exception.*;
+import hu.bme.szgbizt.secushop.exception.errorcode.ErrorCode;
 import hu.bme.szgbizt.secushop.persistence.entity.CaffDataEntity;
 import hu.bme.szgbizt.secushop.persistence.entity.CommentEntity;
 import hu.bme.szgbizt.secushop.persistence.entity.ShopUserEntity;
@@ -95,7 +96,7 @@ public class SecuShopService {
                     buildImageUrl(localAddress, filename),
                     shopUserEntity
             );
-            shopUserEntity.getCaffData().add(caffDataEntityToSave);
+            shopUserEntity.getUploadedCaffData().add(caffDataEntityToSave);
 
             var filenameToSave = filename + FILE_EXTENSION_CAFF;
             Files.copy(file.getInputStream(), PATH_CAFF_DATA_RAW.resolve(Objects.requireNonNull(filenameToSave)));
@@ -167,7 +168,12 @@ public class SecuShopService {
                 .orElseThrow(CaffDataNotFoundException::new);
     }
 
-    public Resource getCaffDataAsResource(UUID caffDataId) {
+    public Resource getCaffDataAsResource(UUID callerUserId, UUID caffDataId) {
+
+        if (!isDownloadable(callerUserId, caffDataId)) {
+            LOGGER.error(ErrorCode.SS_0152.getMessage());
+            throw new NoAuthorityToProcessException();
+        }
 
         var caffDataEntity = caffDataRepository.findById(caffDataId)
                 .orElseThrow(CaffDataNotFoundException::new);
@@ -214,6 +220,46 @@ public class SecuShopService {
                 savedCommentEntity.getCaffData().getId(),
                 savedCommentEntity.getUploadDate().format(dateTimeFormatter)
         );
+    }
+
+    private boolean isDownloadable(UUID callerUserId, UUID caffDataId) {
+
+        var shopUserEntity = shopUserRepository.findById(callerUserId)
+                .orElseThrow(UserNotFoundException::new);
+        var caffDataEntityToDownload = caffDataRepository.findById(caffDataId)
+                .orElseThrow(CaffDataNotFoundException::new);
+
+        if (isOwn(shopUserEntity, caffDataId)) {
+            return true;
+        }
+
+        var userBalance = shopUserEntity.getBalance();
+        var caffDataPrice = caffDataEntityToDownload.getPrice();
+        if (userBalance.compareTo(caffDataPrice) < 0) {
+            LOGGER.info("User [{}] can not download caff data [{}], do not have enough money", callerUserId, caffDataId);
+            return false;
+        }
+
+        var newBalance = userBalance.subtract(caffDataPrice);
+        shopUserEntity.setBalance(newBalance);
+        shopUserEntity.getPurchasedCaffData().add(caffDataEntityToDownload);
+        caffDataEntityToDownload.getCustomerUsers().add(shopUserEntity);
+        shopUserRepository.save(shopUserEntity);
+        LOGGER.info("Caff data [{}] is successfully purchased for user [{}]", callerUserId, caffDataId);
+
+        return true;
+    }
+
+    private boolean isOwn(ShopUserEntity shopUserEntity, UUID caffDataIdToDownload) {
+
+        var uploadedCaffDataIds = shopUserEntity.getUploadedCaffData().stream().map(CaffDataEntity::getId).collect(Collectors.toSet());
+        var purchasedCaffDataIds = shopUserEntity.getPurchasedCaffData().stream().map(CaffDataEntity::getId).collect(Collectors.toSet());
+        if (uploadedCaffDataIds.contains(caffDataIdToDownload) || purchasedCaffDataIds.contains(caffDataIdToDownload)) {
+            LOGGER.info("User [{}] can download caff data [{}]", shopUserEntity.getId(), caffDataIdToDownload);
+            return true;
+        }
+
+        return false;
     }
 
     private String buildImageUrl(String localAddress, String filename) {

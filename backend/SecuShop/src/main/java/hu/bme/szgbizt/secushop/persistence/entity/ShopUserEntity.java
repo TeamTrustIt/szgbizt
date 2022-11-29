@@ -24,7 +24,15 @@ public class ShopUserEntity {
     private BigDecimal balance;
 
     @OneToMany(fetch = EAGER, mappedBy = "shopUser", cascade = REMOVE)
-    private Set<CaffDataEntity> caffData;
+    private Set<CaffDataEntity> uploadedCaffData;
+
+    @ManyToMany(fetch = EAGER)
+    @JoinTable(
+            name = "user_caff_data",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "caff_data_id")
+    )
+    private Set<CaffDataEntity> purchasedCaffData;
 
     @OneToMany(fetch = EAGER, mappedBy = "shopUser", cascade = REMOVE)
     private Set<CommentEntity> comments;
@@ -47,7 +55,8 @@ public class ShopUserEntity {
         this.id = id;
         this.username = username;
         this.balance = balance;
-        this.caffData = new HashSet<>();
+        this.purchasedCaffData = new HashSet<>();
+        this.uploadedCaffData = new HashSet<>();
         this.comments = new HashSet<>();
     }
 
@@ -75,12 +84,20 @@ public class ShopUserEntity {
         this.balance = balance;
     }
 
-    public Set<CaffDataEntity> getCaffData() {
-        return caffData;
+    public Set<CaffDataEntity> getPurchasedCaffData() {
+        return purchasedCaffData;
     }
 
-    public void setCaffData(Set<CaffDataEntity> caffData) {
-        this.caffData = caffData;
+    public void setPurchasedCaffData(Set<CaffDataEntity> purchasedCaffData) {
+        this.purchasedCaffData = purchasedCaffData;
+    }
+
+    public Set<CaffDataEntity> getUploadedCaffData() {
+        return uploadedCaffData;
+    }
+
+    public void setUploadedCaffData(Set<CaffDataEntity> caffData) {
+        this.uploadedCaffData = caffData;
     }
 
     public Set<CommentEntity> getComments() {

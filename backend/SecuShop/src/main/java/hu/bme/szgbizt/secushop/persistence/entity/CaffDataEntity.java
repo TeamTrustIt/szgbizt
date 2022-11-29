@@ -40,6 +40,9 @@ public class CaffDataEntity {
     @Column(name = "upload_date", nullable = false)
     private LocalDateTime uploadDate;
 
+    @ManyToMany(fetch = EAGER, mappedBy = "purchasedCaffData")
+    private Set<ShopUserEntity> customerUsers;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private ShopUserEntity shopUser;
@@ -57,17 +60,18 @@ public class CaffDataEntity {
     /**
      * Instantiates a new {@link CaffDataEntity}.
      *
-     * @param name        The name of the file.
-     * @param description The description of the file.
-     * @param price       The price of the file.
-     * @param imageUrl    The url of the file.
-     * @param shopUser    The user who belongs to the caff data.
+     * @param name          The name of the file.
+     * @param description   The description of the file.
+     * @param price         The price of the file.
+     * @param imageUrl      The url of the file.
+     * @param shopUser      The user who belongs to the caff data.
      */
     public CaffDataEntity(String name, String description, BigDecimal price, String imageUrl, ShopUserEntity shopUser) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.imageUrl = imageUrl;
+        this.customerUsers = new HashSet<>();
         this.uploadDate = LocalDateTime.now();
         this.shopUser = shopUser;
         this.comments = new HashSet<>();
@@ -127,6 +131,14 @@ public class CaffDataEntity {
 
     public void setUploadDate(LocalDateTime uploadDate) {
         this.uploadDate = uploadDate;
+    }
+
+    public Set<ShopUserEntity> getCustomerUsers() {
+        return customerUsers;
+    }
+
+    public void setCustomerUsers(Set<ShopUserEntity> customerUsers) {
+        this.customerUsers = customerUsers;
     }
 
     public Set<CommentEntity> getComments() {

@@ -83,7 +83,7 @@ public class AdminService {
         var shopUserEntity = shopUserRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
 
-        var caffData = shopUserEntity.getCaffData().stream()
+        var caffData = shopUserEntity.getUploadedCaffData().stream()
                 .map(caffDataEntity -> new CaffData(
                         caffDataEntity.getId(),
                         caffDataEntity.getName(),

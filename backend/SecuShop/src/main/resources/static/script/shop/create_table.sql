@@ -29,4 +29,12 @@ create table comment
     primary key (id),
     foreign key (user_id) references users (id),
     foreign key (caff_data_id) references caff_data (id)
-)
+);
+
+create table user_caff_data
+(
+    user_id uuid not null,
+    caff_data_id uuid not null,
+    foreign key (user_id) references users (id),
+    foreign key (caff_data_id) references caff_data (id)
+);

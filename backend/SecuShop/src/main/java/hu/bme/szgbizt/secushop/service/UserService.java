@@ -69,13 +69,13 @@ public class UserService {
 
         if (!callerUserEntity.equals(userEntity)) {
             LOGGER.error(ErrorCode.SS_0152.getMessage());
-            throw new NoAuthorityToProcessException(ErrorCode.SS_0152);
+            throw new NoAuthorityToProcessException();
         }
 
         var shopUserEntity = shopUserRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
 
-        var caffData = shopUserEntity.getCaffData().stream()
+        var caffData = shopUserEntity.getUploadedCaffData().stream()
                 .map(caffDataEntity -> new CaffData(
                         caffDataEntity.getId(),
                         caffDataEntity.getName(),
@@ -107,7 +107,7 @@ public class UserService {
 
         if (!callerUserEntity.equals(userEntityToDelete)) {
             LOGGER.error(ErrorCode.SS_0152.getMessage());
-            throw new NoAuthorityToProcessException(ErrorCode.SS_0152);
+            throw new NoAuthorityToProcessException();
         }
 
         shopUserRepository.deleteById(userIdToDelete);
@@ -126,7 +126,7 @@ public class UserService {
             commentRepository.delete(commentEntityToDelete);
         } else {
             LOGGER.error(ErrorCode.SS_0152.getMessage());
-            throw new NoAuthorityToProcessException(ErrorCode.SS_0152);
+            throw new NoAuthorityToProcessException();
         }
     }
 
@@ -137,7 +137,7 @@ public class UserService {
         var caffDataEntity = caffDataRepository.findById(caffDataIdToDelete)
                 .orElseThrow(CaffDataNotFoundException::new);
 
-        var callerCaffDataList = callerUserEntity.getCaffData().stream().map(CaffDataEntity::getId).collect(Collectors.toList());
+        var callerCaffDataList = callerUserEntity.getUploadedCaffData().stream().map(CaffDataEntity::getId).collect(Collectors.toList());
         if (callerCaffDataList.contains(caffDataIdToDelete)) {
 
             var filename = caffDataEntity.getName();
@@ -147,7 +147,7 @@ public class UserService {
 
         } else {
             LOGGER.error(ErrorCode.SS_0152.getMessage());
-            throw new NoAuthorityToProcessException(ErrorCode.SS_0152);
+            throw new NoAuthorityToProcessException();
         }
     }
 
@@ -160,7 +160,7 @@ public class UserService {
 
         if (!callerUserEntity.equals(userEntityToModify)) {
             LOGGER.error(ErrorCode.SS_0152.getMessage());
-            throw new NoAuthorityToProcessException(ErrorCode.SS_0152);
+            throw new NoAuthorityToProcessException();
         }
 
         var currentPassword = patchPasswordRequest.getCurrentPassword();
@@ -184,7 +184,7 @@ public class UserService {
 
         if (!callerUserEntity.equals(userEntityToModify)) {
             LOGGER.error(ErrorCode.SS_0152.getMessage());
-            throw new NoAuthorityToProcessException(ErrorCode.SS_0152);
+            throw new NoAuthorityToProcessException();
         }
 
         var newUsername = patchProfileRequest.getUsername();

@@ -85,7 +85,7 @@ public class SecuShopController implements ISecuShopBaseController {
     public Resource getCaffDataAsResource(Authentication authentication, @PathVariable("caffDataId") UUID caffDataId) {
         var callerUserId = getUserId(authentication);
         LOGGER.info("Downloading caff data [{}] by [{}]", caffDataId, callerUserId);
-        var resource = secuShopService.getCaffDataAsResource(caffDataId);
+        var resource = secuShopService.getCaffDataAsResource(callerUserId, caffDataId);
         LOGGER.info("Successful downloaded caff data [{}] by [{}]", caffDataId, callerUserId);
         return resource;
     }

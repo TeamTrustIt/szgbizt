@@ -16,7 +16,7 @@ public enum ErrorCode {
     SS_0142("Caff data not found"),
     SS_0143("Comment not found"),
     SS_0151("Cannot delete yourself"),
-    SS_0152("Cannot access or modify other users");
+    SS_0152("Cannot access or modify");
 
     private final String message;
 
