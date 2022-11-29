@@ -74,6 +74,6 @@ export class UserService {
   }
 
   buyCaff(id: string) {
-    return this.http.get<string>(`${this.baseUrl}/caff-data/${id}/caff`)
+    return this.http.get<unknown>(`${this.baseUrl}/caff-data/${id}/caff`)
   }
 }
