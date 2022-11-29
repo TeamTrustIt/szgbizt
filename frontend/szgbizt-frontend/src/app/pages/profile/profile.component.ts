@@ -125,10 +125,18 @@ export class ProfileComponent implements OnInit, OnDestroy {
   deleteCaff(id: string, filename: string) {
     const sure = window.confirm(`Are you sure to delete ${filename}?`)
     if (sure) {
-      this.userService.deleteCaff(id).subscribe(res => {
-        this.alertService.success(`${filename} successfully delete`)
-        this.getUserData()
-      })
+      if(this.isAdmin){
+        this.adminService.deleteCaff(id).subscribe(res => {
+          this.alertService.success(`${filename} successfully delete`)
+          this.getUserData()
+        })
+      }
+      else {
+        this.userService.deleteCaff(id).subscribe(res => {
+          this.alertService.success(`${filename} successfully delete`)
+          this.getUserData()
+        })
+      }
     }
   }
 

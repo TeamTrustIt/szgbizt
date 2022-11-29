@@ -16,6 +16,7 @@ import {AdminService} from "../../services/AdminService";
 export class DetailComponent implements OnInit, OnDestroy {
 
   isAdmin: boolean = false;
+  username: string = ""
 
   caff!: CaffData
   caffId?: string
@@ -46,6 +47,7 @@ export class DetailComponent implements OnInit, OnDestroy {
     })
     this.store.subscribe(state => {
       this.isAdmin = state.auth.user?.roles === "ROLE_ADMIN"
+      this.username = state.auth.user?.username ?? ""
     })
   }
 

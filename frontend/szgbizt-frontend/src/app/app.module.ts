@@ -1,4 +1,4 @@
-import {APP_INITIALIZER, NgModule} from '@angular/core';
+import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -17,7 +17,6 @@ import {ListModule} from "./pages/list/list.module";
 import {ListUserModule} from "./pages/list-user/list-user.module";
 import {UploadModule} from "./pages/upload/upload.module";
 import {AuthReducer} from "./reducers/AuthReducer";
-import {AuthService} from "./services/AuthService";
 import {ProfileModule} from "./pages/profile/profile.module";
 import {UseHttpImgSrcModule} from "./pipes/use-http-img-src/use-http-img-src.module";
 
@@ -48,7 +47,6 @@ import {UseHttpImgSrcModule} from "./pipes/use-http-img-src/use-http-img-src.mod
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: UnauthorizedInterceptor, multi: true},
-    {provide: APP_INITIALIZER, useFactory: initializeAuth, deps: [AuthService], multi: true}
   ],
   exports: [
   ],
@@ -57,25 +55,3 @@ import {UseHttpImgSrcModule} from "./pipes/use-http-img-src/use-http-img-src.mod
 export class AppModule {
 }
 
-function initializeAuth(authService: AuthService): Function {
-  return () => new Promise<void>((resolve) => {
-    const token = authService.getToken()
-    if(token) {
-      localStorage.clear()
-      //authService.login("test@test.hu", "")
-      resolve()
-      // todo when backend done
-      /*const authObserver: Observer<AuthResource> = {
-        next: (res: any) => {
-          tokenService.handleData(res.data.token)
-          store.dispatch(login({ user: res.data.user }))
-        },
-        error: () => {},
-        complete: () => resolve()
-      }
-      authService.authRefreshPost().subscribe(authObserver)*/
-    } else {
-      resolve()
-    }
-  })
-}
