@@ -1,8 +1,6 @@
 package hu.bme.szgbizt.secushop.service;
 
-import hu.bme.szgbizt.secushop.dto.CaffComment;
-import hu.bme.szgbizt.secushop.dto.CaffData;
-import hu.bme.szgbizt.secushop.dto.DetailedCaffData;
+import hu.bme.szgbizt.secushop.dto.*;
 import hu.bme.szgbizt.secushop.exception.*;
 import hu.bme.szgbizt.secushop.exception.errorcode.ErrorCode;
 import hu.bme.szgbizt.secushop.persistence.entity.CaffDataEntity;
@@ -11,11 +9,14 @@ import hu.bme.szgbizt.secushop.persistence.entity.ShopUserEntity;
 import hu.bme.szgbizt.secushop.persistence.repository.CaffDataRepository;
 import hu.bme.szgbizt.secushop.persistence.repository.CommentRepository;
 import hu.bme.szgbizt.secushop.persistence.repository.ShopUserRepository;
+import hu.bme.szgbizt.secushop.security.persistence.entity.UserEntity;
+import hu.bme.szgbizt.secushop.security.persistence.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -46,24 +47,30 @@ public class SecuShopService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SecuShopService.class);
 
     private final DateTimeFormatter dateTimeFormatter;
+    private final PasswordEncoder passwordEncoder;
     private final CaffDataRepository caffDataRepository;
     private final ShopUserRepository shopUserRepository;
     private final CommentRepository commentRepository;
+    private final UserRepository userRepository;
 
     /**
      * Instantiates a new {@link CaffDataRepository}.
      *
      * @param dateTimeFormatter  The formatter of {@link LocalDateTime}.
+     * @param passwordEncoder    The password encoder.
      * @param caffDataRepository The repository for {@link CaffDataEntity}.
      * @param shopUserRepository The repository for {@link ShopUserEntity}.
      * @param commentRepository  The repository for {@link CommentEntity}.
+     * @param userRepository     The repository for {@link UserEntity}.
      */
     @Autowired
-    public SecuShopService(DateTimeFormatter dateTimeFormatter, CaffDataRepository caffDataRepository, ShopUserRepository shopUserRepository, CommentRepository commentRepository) {
+    public SecuShopService(DateTimeFormatter dateTimeFormatter, PasswordEncoder passwordEncoder, CaffDataRepository caffDataRepository, ShopUserRepository shopUserRepository, CommentRepository commentRepository, UserRepository userRepository) {
         this.dateTimeFormatter = dateTimeFormatter;
+        this.passwordEncoder = passwordEncoder;
         this.caffDataRepository = caffDataRepository;
         this.shopUserRepository = shopUserRepository;
         this.commentRepository = commentRepository;
+        this.userRepository = userRepository;
     }
 
     public UrlResource getImage(String filename) {
@@ -220,6 +227,79 @@ public class SecuShopService {
                 savedCommentEntity.getCaffData().getId(),
                 savedCommentEntity.getUploadDate().format(dateTimeFormatter)
         );
+    }
+
+    public void modifyPassword(UUID callerUserId, UUID userIdToModify, PatchPasswordRequest patchPasswordRequest) {
+
+        var callerUserEntity = userRepository.findById(callerUserId)
+                .orElseThrow(UserNotFoundException::new);
+        var userEntityToModify = userRepository.findById(userIdToModify)
+                .orElseThrow(UserNotFoundException::new);
+
+        if (!callerUserEntity.equals(userEntityToModify)) {
+            LOGGER.error(ErrorCode.SS_0152.getMessage());
+            throw new NoAuthorityToProcessException();
+        }
+
+        var currentPassword = patchPasswordRequest.getCurrentPassword();
+        var newPassword = patchPasswordRequest.getNewPassword();
+
+        if (!passwordEncoder.matches(currentPassword, callerUserEntity.getPassword())) {
+            LOGGER.error(ErrorCode.SS_0104.getMessage());
+            throw new PasswordMismatchException();
+        }
+
+        userEntityToModify.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(userEntityToModify);
+    }
+
+    public void modifyProfile(UUID callerUserId, UUID userIdToModify, PatchProfileRequest patchProfileRequest) {
+
+        var callerUserEntity = userRepository.findById(callerUserId)
+                .orElseThrow(UserNotFoundException::new);
+        var userEntityToModify = userRepository.findById(userIdToModify)
+                .orElseThrow(UserNotFoundException::new);
+
+        if (!callerUserEntity.equals(userEntityToModify)) {
+            LOGGER.error(ErrorCode.SS_0152.getMessage());
+            throw new NoAuthorityToProcessException();
+        }
+
+        var newUsername = patchProfileRequest.getUsername();
+        if (!callerUserEntity.getUsername().equals(newUsername)) {
+
+            validateUserName(newUsername);
+            userEntityToModify.setUsername(newUsername);
+
+            var shopUserEntity = shopUserRepository.findById(callerUserId)
+                    .orElseThrow(UserNotFoundException::new);
+
+            shopUserEntity.setUsername(newUsername);
+            shopUserRepository.save(shopUserEntity);
+        }
+
+        var newEmail = patchProfileRequest.getEmail();
+        if (!callerUserEntity.getEmail().equals(newEmail)) {
+
+            validateEmail(newEmail);
+            userEntityToModify.setEmail(newEmail);
+        }
+
+        userRepository.save(userEntityToModify);
+    }
+
+    private void validateUserName(String username) {
+        userRepository.findByUsername(username).ifPresent(userEntity -> {
+            LOGGER.error("Username [{}] is already taken", username);
+            throw new UsernameNotUniqueException();
+        });
+    }
+
+    private void validateEmail(String email) {
+        userRepository.findByEmail(email).ifPresent(userEntity -> {
+            LOGGER.error("Email [{}] is already taken", email);
+            throw new EmailNotUniqueException();
+        });
     }
 
     private boolean isDownloadable(UUID callerUserId, UUID caffDataId) {

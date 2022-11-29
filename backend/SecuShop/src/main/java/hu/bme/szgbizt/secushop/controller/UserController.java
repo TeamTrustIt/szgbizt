@@ -1,8 +1,6 @@
 package hu.bme.szgbizt.secushop.controller;
 
 import hu.bme.szgbizt.secushop.dto.DetailedUser;
-import hu.bme.szgbizt.secushop.dto.PatchPasswordRequest;
-import hu.bme.szgbizt.secushop.dto.PatchProfileRequest;
 import hu.bme.szgbizt.secushop.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +10,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.UUID;
 
 import static hu.bme.szgbizt.secushop.util.handler.JwtHandler.getUserId;
@@ -70,31 +67,5 @@ public class UserController implements ISecuShopBaseController {
         LOGGER.info("Deleting caff data [{}] by [{}]", caffDataId, callerUserId);
         userService.deleteCaffData(callerUserId, caffDataId);
         LOGGER.info("Successful deleted caff data [{}] by [{}]", caffDataId, callerUserId);
-    }
-
-    @PatchMapping(value = "/users/{userId}/password")
-    @ResponseStatus(value = HttpStatus.OK)
-    public void modifyPassword(
-            Authentication authentication,
-            @PathVariable("userId") UUID userId,
-            @Valid @RequestBody PatchPasswordRequest patchPasswordRequest) {
-
-        var callerUserId = getUserId(authentication);
-        LOGGER.info("Modify user password by [{}]", userId);
-        userService.modifyPassword(callerUserId, userId, patchPasswordRequest);
-        LOGGER.info("Successful modified user password by [{}]", callerUserId);
-    }
-
-    @PatchMapping(value = "/users/{userId}/profile")
-    @ResponseStatus(value = HttpStatus.OK)
-    public void modifyProfile(
-            Authentication authentication,
-            @PathVariable("userId") UUID userId,
-            @Valid @RequestBody PatchProfileRequest patchProfileRequest) {
-
-        var callerUserId = getUserId(authentication);
-        LOGGER.info("Modify user profile by [{}]", userId);
-        userService.modifyProfile(callerUserId, userId, patchProfileRequest);
-        LOGGER.info("Successful modified user profile by [{}]", callerUserId);
     }
 }

@@ -1,9 +1,6 @@
 package hu.bme.szgbizt.secushop.controller;
 
-import hu.bme.szgbizt.secushop.dto.CaffComment;
-import hu.bme.szgbizt.secushop.dto.CaffData;
-import hu.bme.szgbizt.secushop.dto.DetailedCaffData;
-import hu.bme.szgbizt.secushop.dto.PostCommentRequest;
+import hu.bme.szgbizt.secushop.dto.*;
 import hu.bme.szgbizt.secushop.exception.InvalidFileExtensionException;
 import hu.bme.szgbizt.secushop.service.SecuShopService;
 import org.slf4j.Logger;
@@ -123,5 +120,31 @@ public class SecuShopController implements ISecuShopBaseController {
         var comment = secuShopService.postComment(callerUserId, caffDataId, postCommentRequest.getMessage());
         LOGGER.info("Successful posted comment to caff data [{}] by [{}]", caffDataId, callerUserId);
         return comment;
+    }
+
+    @PatchMapping(value = "/users/{userId}/password")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void modifyPassword(
+            Authentication authentication,
+            @PathVariable("userId") UUID userId,
+            @Valid @RequestBody PatchPasswordRequest patchPasswordRequest) {
+
+        var callerUserId = getUserId(authentication);
+        LOGGER.info("Modify user password by [{}]", userId);
+        secuShopService.modifyPassword(callerUserId, userId, patchPasswordRequest);
+        LOGGER.info("Successful modified user password by [{}]", callerUserId);
+    }
+
+    @PatchMapping(value = "/users/{userId}/profile")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void modifyProfile(
+            Authentication authentication,
+            @PathVariable("userId") UUID userId,
+            @Valid @RequestBody PatchProfileRequest patchProfileRequest) {
+
+        var callerUserId = getUserId(authentication);
+        LOGGER.info("Modify user profile by [{}]", userId);
+        secuShopService.modifyProfile(callerUserId, userId, patchProfileRequest);
+        LOGGER.info("Successful modified user profile by [{}]", callerUserId);
     }
 }

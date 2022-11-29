@@ -2,9 +2,10 @@ package hu.bme.szgbizt.secushop.service;
 
 import hu.bme.szgbizt.secushop.dto.CaffData;
 import hu.bme.szgbizt.secushop.dto.DetailedUser;
-import hu.bme.szgbizt.secushop.dto.PatchPasswordRequest;
-import hu.bme.szgbizt.secushop.dto.PatchProfileRequest;
-import hu.bme.szgbizt.secushop.exception.*;
+import hu.bme.szgbizt.secushop.exception.CaffDataNotFoundException;
+import hu.bme.szgbizt.secushop.exception.CommentNotFoundException;
+import hu.bme.szgbizt.secushop.exception.NoAuthorityToProcessException;
+import hu.bme.szgbizt.secushop.exception.UserNotFoundException;
 import hu.bme.szgbizt.secushop.exception.errorcode.ErrorCode;
 import hu.bme.szgbizt.secushop.persistence.entity.CaffDataEntity;
 import hu.bme.szgbizt.secushop.persistence.entity.CommentEntity;
@@ -17,7 +18,6 @@ import hu.bme.szgbizt.secushop.security.persistence.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +36,6 @@ public class UserService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     private final DateTimeFormatter dateTimeFormatter;
-    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final ShopUserRepository shopUserRepository;
     private final CaffDataRepository caffDataRepository;
@@ -44,16 +43,14 @@ public class UserService {
 
     /**
      * @param dateTimeFormatter  The formatter of {@link LocalDateTime}.
-     * @param passwordEncoder    The password encoder.
      * @param userRepository     Repository for {@link UserEntity}.
      * @param shopUserRepository Repository for {@link ShopUserEntity}.
      * @param caffDataRepository Repository for {@link CaffDataEntity}.
      * @param commentRepository  Repository for {@link CommentEntity}.
      */
     @Autowired
-    public UserService(DateTimeFormatter dateTimeFormatter, PasswordEncoder passwordEncoder, UserRepository userRepository, ShopUserRepository shopUserRepository, CaffDataRepository caffDataRepository, CommentRepository commentRepository) {
+    public UserService(DateTimeFormatter dateTimeFormatter, UserRepository userRepository, ShopUserRepository shopUserRepository, CaffDataRepository caffDataRepository, CommentRepository commentRepository) {
         this.dateTimeFormatter = dateTimeFormatter;
-        this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.shopUserRepository = shopUserRepository;
         this.caffDataRepository = caffDataRepository;
@@ -149,78 +146,5 @@ public class UserService {
             LOGGER.error(ErrorCode.SS_0152.getMessage());
             throw new NoAuthorityToProcessException();
         }
-    }
-
-    public void modifyPassword(UUID callerUserId, UUID userIdToModify, PatchPasswordRequest patchPasswordRequest) {
-
-        var callerUserEntity = userRepository.findById(callerUserId)
-                .orElseThrow(UserNotFoundException::new);
-        var userEntityToModify = userRepository.findById(userIdToModify)
-                .orElseThrow(UserNotFoundException::new);
-
-        if (!callerUserEntity.equals(userEntityToModify)) {
-            LOGGER.error(ErrorCode.SS_0152.getMessage());
-            throw new NoAuthorityToProcessException();
-        }
-
-        var currentPassword = patchPasswordRequest.getCurrentPassword();
-        var newPassword = patchPasswordRequest.getNewPassword();
-
-        if (!passwordEncoder.matches(currentPassword, callerUserEntity.getPassword())) {
-            LOGGER.error(ErrorCode.SS_0104.getMessage());
-            throw new PasswordMismatchException();
-        }
-
-        userEntityToModify.setPassword(passwordEncoder.encode(newPassword));
-        userRepository.save(userEntityToModify);
-    }
-
-    public void modifyProfile(UUID callerUserId, UUID userIdToModify, PatchProfileRequest patchProfileRequest) {
-
-        var callerUserEntity = userRepository.findById(callerUserId)
-                .orElseThrow(UserNotFoundException::new);
-        var userEntityToModify = userRepository.findById(userIdToModify)
-                .orElseThrow(UserNotFoundException::new);
-
-        if (!callerUserEntity.equals(userEntityToModify)) {
-            LOGGER.error(ErrorCode.SS_0152.getMessage());
-            throw new NoAuthorityToProcessException();
-        }
-
-        var newUsername = patchProfileRequest.getUsername();
-        if (!callerUserEntity.getUsername().equals(newUsername)) {
-
-            validateUserName(newUsername);
-            userEntityToModify.setUsername(newUsername);
-
-            var shopUserEntity = shopUserRepository.findById(callerUserId)
-                    .orElseThrow(UserNotFoundException::new);
-
-            shopUserEntity.setUsername(newUsername);
-            shopUserRepository.save(shopUserEntity);
-        }
-
-        var newEmail = patchProfileRequest.getEmail();
-        if (!callerUserEntity.getEmail().equals(newEmail)) {
-
-            validateEmail(newEmail);
-            userEntityToModify.setEmail(newEmail);
-        }
-
-        userRepository.save(userEntityToModify);
-    }
-
-    private void validateUserName(String username) {
-        userRepository.findByUsername(username).ifPresent(userEntity -> {
-            LOGGER.error("Username [{}] is already taken", username);
-            throw new UsernameNotUniqueException();
-        });
-    }
-
-    private void validateEmail(String email) {
-        userRepository.findByEmail(email).ifPresent(userEntity -> {
-            LOGGER.error("Email [{}] is already taken", email);
-            throw new EmailNotUniqueException();
-        });
     }
 }
