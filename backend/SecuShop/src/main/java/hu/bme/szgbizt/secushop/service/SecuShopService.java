@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -85,7 +86,7 @@ public class SecuShopService {
         }
     }
 
-    public DetailedCaffData createCaffData(UUID callerUserId, String filename, String description, MultipartFile file, String localAddress) {
+    public DetailedCaffData createCaffData(UUID callerUserId, String filename, String description, MultipartFile file, HttpServletRequest httpServletRequest) {
         try {
 
             caffDataRepository.findByName(filename).ifPresent(ignored -> {
@@ -100,7 +101,7 @@ public class SecuShopService {
                     filename,
                     description,
                     ZERO,
-                    buildImageUrl(localAddress, filename),
+                    buildImageUrl(httpServletRequest, filename),
                     shopUserEntity
             );
             shopUserEntity.getUploadedCaffData().add(caffDataEntityToSave);
@@ -342,8 +343,8 @@ public class SecuShopService {
         return false;
     }
 
-    private String buildImageUrl(String localAddress, String filename) {
-        return "http://" + localAddress + "/api/v1/secu-shop/images/" + filename + "_ciff0";
+    private String buildImageUrl(HttpServletRequest request, String filename) {
+        return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/api/v1/secu-shop/images/" + filename + "_ciff0";
     }
 
     private void parseCaffData(String filename) {

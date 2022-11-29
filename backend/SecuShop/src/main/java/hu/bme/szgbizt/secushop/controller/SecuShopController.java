@@ -72,7 +72,7 @@ public class SecuShopController implements ISecuShopBaseController {
             throw new InvalidFileExtensionException();
         }
 
-        var caffData = secuShopService.createCaffData(callerUserId, filename, description, file, httpServletRequest.getLocalAddr());
+        var caffData = secuShopService.createCaffData(callerUserId, filename, description, file, httpServletRequest);
         LOGGER.info("Successful uploaded caff data [{}] by [{}]", filename, callerUserId);
         return caffData;
     }
