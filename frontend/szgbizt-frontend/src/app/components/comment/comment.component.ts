@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {CaffComment} from "../../interfaces/caffComment";
 import {UserService} from "../../services/UserService";
 import {AdminService} from "../../services/AdminService";
@@ -15,6 +15,8 @@ export class CommentComponent implements OnInit, OnDestroy{
   @Input() comment: CaffComment = {username: "tester", caffDataId: "0", id: "0", message: "Test Message", uploadDate: new Date(Date.now())}
   @Input() isAdmin: boolean = false
   @Input() username: string = "tester"
+
+  @Output() onDeleted: EventEmitter<unknown> = new EventEmitter<unknown>()
 
   subscriptionDelete?: Subscription
   deleting: boolean = false
@@ -34,6 +36,7 @@ export class CommentComponent implements OnInit, OnDestroy{
           next: value => {
             this.alert.success("Comment deleted")
             this.deleting = false
+            this.onDeleted.emit()
           },
           error: err => {
             this.deleting = false
@@ -45,6 +48,7 @@ export class CommentComponent implements OnInit, OnDestroy{
           next: value => {
             this.alert.success("Comment deleted")
             this.deleting = false
+            this.onDeleted.emit()
           },
           error: err => {
             this.deleting = false

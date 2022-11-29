@@ -62,10 +62,15 @@ export class DetailComponent implements OnInit, OnDestroy {
   sendComment() {
     if (this.newCommentText !== "" && this.caffId) {
       this.commenting = true
-      this.subscriptionComment = this.userService.sendComment(this.caffId, this.newCommentText).subscribe(res => {
-        this.newCommentText = ""
-        this.commenting = false
-        this.getCaffData()
+      this.subscriptionComment = this.userService.sendComment(this.caffId, this.newCommentText).subscribe({
+        next: (res) => {
+          this.newCommentText = ""
+          this.commenting = false
+          this.getCaffData()
+        },
+        error: err => {
+          this.commenting = false
+        }
       })
     } else {
       this.alertService.warning("Comment text field must not be empty")
