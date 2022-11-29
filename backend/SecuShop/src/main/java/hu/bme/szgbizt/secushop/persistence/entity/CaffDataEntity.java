@@ -5,8 +5,8 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import static javax.persistence.CascadeType.REMOVE;
@@ -45,7 +45,7 @@ public class CaffDataEntity {
     private ShopUserEntity shopUser;
 
     @OneToMany(fetch = EAGER, mappedBy = "caffData", cascade = REMOVE)
-    private List<CommentEntity> comments;
+    private Set<CommentEntity> comments;
 
     /**
      * Instantiates a new {@link CaffDataEntity}.
@@ -70,7 +70,7 @@ public class CaffDataEntity {
         this.imageUrl = imageUrl;
         this.uploadDate = LocalDateTime.now();
         this.shopUser = shopUser;
-        this.comments = new ArrayList<>();
+        this.comments = new HashSet<>();
     }
 
     public UUID getId() {
@@ -129,11 +129,11 @@ public class CaffDataEntity {
         this.uploadDate = uploadDate;
     }
 
-    public List<CommentEntity> getComments() {
+    public Set<CommentEntity> getComments() {
         return comments;
     }
 
-    public void setComments(List<CommentEntity> comments) {
+    public void setComments(Set<CommentEntity> comments) {
         this.comments = comments;
     }
 }

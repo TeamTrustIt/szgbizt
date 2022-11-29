@@ -2,8 +2,8 @@ package hu.bme.szgbizt.secushop.persistence.entity;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import static javax.persistence.CascadeType.REMOVE;
@@ -24,10 +24,10 @@ public class ShopUserEntity {
     private BigDecimal balance;
 
     @OneToMany(fetch = EAGER, mappedBy = "shopUser", cascade = REMOVE)
-    private List<CaffDataEntity> caffData;
+    private Set<CaffDataEntity> caffData;
 
     @OneToMany(fetch = EAGER, mappedBy = "shopUser", cascade = REMOVE)
-    private List<CommentEntity> comments;
+    private Set<CommentEntity> comments;
 
     /**
      * Instantiates a new {@link ShopUserEntity}.
@@ -47,8 +47,8 @@ public class ShopUserEntity {
         this.id = id;
         this.username = username;
         this.balance = balance;
-        this.caffData = new ArrayList<>();
-        this.comments = new ArrayList<>();
+        this.caffData = new HashSet<>();
+        this.comments = new HashSet<>();
     }
 
     public UUID getId() {
@@ -75,19 +75,19 @@ public class ShopUserEntity {
         this.balance = balance;
     }
 
-    public List<CaffDataEntity> getCaffData() {
+    public Set<CaffDataEntity> getCaffData() {
         return caffData;
     }
 
-    public void setCaffData(List<CaffDataEntity> caffData) {
+    public void setCaffData(Set<CaffDataEntity> caffData) {
         this.caffData = caffData;
     }
 
-    public List<CommentEntity> getComments() {
+    public Set<CommentEntity> getComments() {
         return comments;
     }
 
-    public void setComments(List<CommentEntity> comments) {
+    public void setComments(Set<CommentEntity> comments) {
         this.comments = comments;
     }
 }
