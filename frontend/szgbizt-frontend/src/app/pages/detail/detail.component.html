@@ -8,7 +8,7 @@
         <app-button [disabled]="buyingCaff" (onClick)="buyCaff(caff.id)" type="buy" [text]="caff?.price?.toString() + ' Eur'"></app-button>
         <app-button *ngIf="isAdmin" [disabled]="deletingCaff" (onClick)="deleteCaff(caff?.id, caff?.filename)" type="icon" icon="delete"></app-button>
       </div>
-      <img class="simpleImage aspect-video" [src]="(caff?.imageUrl) | useHttpImgSrc" [alt]="caff?.filename + ' image'">
+      <img class="simpleImage aspect-video" [src]="(caff?.imageUrl ?? '') | useHttpImgSrc" [alt]="caff?.filename + ' image'">
       <div class="flex-mobile justify-between">
         <div class="flex pr-10">
           <p class="bold pr-10">Author:</p>
