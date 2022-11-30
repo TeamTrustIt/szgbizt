@@ -1,0 +1,38 @@
+{
+    "credits": {
+        "date": {
+            "year": 2020,
+            "month": 7,
+            "day": 2,
+            "hour": 50,
+            "minute": 0
+        },
+        "creator": "Test Creator"
+    },
+    "CIFFs": [
+        {
+            "caption": "Beautiful scenery",
+            "tags": [
+                "landscape",
+                "sunset",
+                "mountains"
+            ],
+            "width": 1000,
+            "height": 667,
+            "duration": 232,
+            "image": "./output_files/1_ciff0.jpg"
+        },
+        {
+            "caption": "Beautiful scenery",
+            "tags": [
+                "landscape",
+                "sunset",
+                "mountains"
+            ],
+            "width": 1000,
+            "height": 667,
+            "duration": 232,
+            "image": "./output_files/1_ciff1.jpg"
+        }
+    ]
+}
