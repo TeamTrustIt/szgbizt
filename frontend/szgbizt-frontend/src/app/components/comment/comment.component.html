@@ -1,0 +1,5 @@
+<div class="flex items-center">
+  <p class="bold w-20 pr-10">{{comment.username}}</p>
+  <p class="max-w-45" style="word-wrap: break-word">{{comment.message}}</p>
+  <app-button *ngIf="isAdmin || comment.username === username" (onClick)="deleteComment(comment.id)" [disabled]="deleting" type="icon" icon="delete"></app-button>
+</div>
