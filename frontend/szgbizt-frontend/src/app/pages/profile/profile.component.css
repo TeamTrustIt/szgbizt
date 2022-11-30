@@ -1,0 +1,28 @@
+.profilePage {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  justify-content: space-between;
+}
+
+@media screen and (max-width: 800px) {
+
+  .profilePage {
+    flex-direction: column;
+  }
+  .w-35 {
+    width: 100%;
+  }
+  .w-45 {
+    width: 100%;
+  }
+  .w-55 {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .grid-2 {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
