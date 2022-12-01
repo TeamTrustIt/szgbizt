@@ -11,16 +11,16 @@ import { catchError, Observable, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import {HotToastService} from "@ngneat/hot-toast";
 import {AuthService} from "../services/AuthService";
+import {logout} from "../actions/auth.actions";
+import {Store} from "@ngrx/store";
+import {AuthState} from "../interfaces/states/auth-state";
 
 @Injectable()
 export class UnauthorizedInterceptor implements HttpInterceptor {
 
-  constructor(private router: Router, private toastService: HotToastService, private authService: AuthService) {}
+  constructor(private router: Router, private toastService: HotToastService, private authService: AuthService, private store: Store<{ auth: AuthState }>) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    //const token = this.tokenService.getToken()
-
-    //if(!token) return next.handle(request)
 
     return next.handle(request).pipe(
       catchError((err: any) => {
@@ -28,7 +28,7 @@ export class UnauthorizedInterceptor implements HttpInterceptor {
           if(err.status === HttpStatusCode.Unauthorized) {
             this.toastService.error("Unauthorized request")
             this.authService.removeToken()
-            //this.store.dispatch(logout())
+            this.store.dispatch(logout())
             this.router.navigate(['/login'])
           }
         }
