@@ -24,7 +24,7 @@ public final class PostRegistrationRequest {
     @NotNull(message = "Username cannot be null")
     private final String username;
 
-    @Pattern(regexp = REGEX_PASSWORD, message = "Invalid character(s), every character must be letter or number and the length must be at least 8 characters")
+    @Pattern(regexp = REGEX_PASSWORD, message = "Invalid character(s), every character must be letter and the length must be at least 8 characters")
     @NotNull(message = "Password cannot be null")
     private final String password;
 
