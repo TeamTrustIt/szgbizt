@@ -20,11 +20,10 @@ import static hu.bme.szgbizt.secushop.util.Constant.REGEX_ONLY_LETTERS_AND_NUMBE
 @JsonInclude(NON_NULL)
 public final class RegisteredUser {
 
-    @Pattern(regexp = REGEX_ONLY_LETTERS_AND_NUMBERS, message = "Invalid character(s), every character should be letter or number")
     @NotNull(message = "Id cannot be null")
     private final UUID id;
 
-    @Pattern(regexp = REGEX_ONLY_LETTERS_AND_NUMBERS, message = "Invalid character(s), every character should be letter or number")
+    @Pattern(regexp = REGEX_ONLY_LETTERS_AND_NUMBERS, message = "Invalid character(s), every character should be letter or number and the length must be at least 5 characters")
     @NotNull(message = "Username cannot be null")
     private final String username;
 
