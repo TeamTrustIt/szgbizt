@@ -11,7 +11,7 @@ export class AuthGuard implements CanActivate {
 
   readonly mustBeLoggedIn = [
     '/home',
-    '/detail', // /:id ?
+    '/detail/:id',
     '/profile',
     '/upload'
   ]

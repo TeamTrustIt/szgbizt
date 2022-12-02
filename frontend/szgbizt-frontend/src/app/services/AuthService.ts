@@ -45,7 +45,7 @@ export class AuthService {
 
   public logout() {
     this.http.post<UserLoginDto>(`${this.baseUrl}/logout`, null).subscribe({
-      next: value => {
+      next: _value => {
         this.removeToken()
         this.store.dispatch(logout())
         this.router.navigateByUrl("/login")

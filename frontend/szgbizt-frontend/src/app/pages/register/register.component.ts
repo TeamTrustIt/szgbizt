@@ -2,7 +2,6 @@ import {Component, OnDestroy} from '@angular/core';
 import {AuthService} from "../../services/AuthService";
 import {Subscription} from "rxjs";
 import {HotToastService} from "@ngneat/hot-toast";
-import {NetworkResponse} from "../../interfaces/network-response";
 import {Router} from "@angular/router";
 
 @Component({
@@ -18,6 +17,7 @@ export class RegisterComponent implements OnDestroy {
   passwordConfirm: string = ""
 
   subscription?: Subscription
+  registering: boolean = false;
 
   constructor(private authService: AuthService, private alertService: HotToastService, private router: Router) {
   }
@@ -25,17 +25,21 @@ export class RegisterComponent implements OnDestroy {
   register() {
     if (this.email !== "" && this.username !== "" && this.password !== "" && this.passwordConfirm !== "") {
       if (this.password === this.passwordConfirm) {
-        this.subscription = this.authService.register(this.email, this.password, this.username).subscribe(
-          res => {
+        this.registering = true
+        this.subscription = this.authService.register(this.email, this.password, this.username).subscribe({
+          next: (res) => {
+            this.registering = false
             this.alertService.success("Successful Registration for " + res.username)
             this.router.navigateByUrl('/login')
-          })
-      }
-      else {
+          },
+          error: _err => {
+            this.registering = false
+          }
+        })
+      } else {
         this.alertService.warning("Passwords don't match")
       }
-    }
-    else {
+    } else {
       this.alertService.warning("Fill every field")
     }
   }

@@ -8,7 +8,8 @@
     </div>
 
     <div class="grid w-full mt-2">
-      <app-caff-card (onDetailsClicked)="navigateToDetails(c.id)" *ngFor="let c of caffsFiltered" [caffData]="c"></app-caff-card>
+      <app-caff-card (onDetailsClicked)="navigateToDetails(c.id)" *ngFor="let c of caffsFiltered"
+                     [caffData]="c"></app-caff-card>
     </div>
 
   </div>

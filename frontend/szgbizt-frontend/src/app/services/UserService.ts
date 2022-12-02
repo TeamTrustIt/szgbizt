@@ -46,15 +46,15 @@ export class UserService {
   }
 
   deleteUser(id: string = this.userId): Observable<unknown> {
-    return this.http.delete<unknown>(`${this.baseUrl}/users/${id}`) //204 ha sikeres
+    return this.http.delete<unknown>(`${this.baseUrl}/users/${id}`) // 204 on success
   }
 
   deleteCaff(id: string): Observable<unknown> {
-    return this.http.delete<unknown>(`${this.baseUrl}/caff-data/${id}`) //204 ha sikeres
+    return this.http.delete<unknown>(`${this.baseUrl}/caff-data/${id}`) // 204 on success
   }
 
   deleteComment(id: string): Observable<unknown> {
-    return this.http.delete<unknown>(`${this.baseUrl}/comments/${id}`) //204 ha sikeres
+    return this.http.delete<unknown>(`${this.baseUrl}/comments/${id}`) // 204 on success
   }
 
   updatePassword(id: string = this.userId, currentPassword: string, newPassword: string): Observable<unknown> {
@@ -62,7 +62,7 @@ export class UserService {
       currentPassword: currentPassword,
       newPassword: newPassword
     }
-    return this.http.patch<unknown>(`${this.baseUrl}/users/${id}/password`, data) //200 ha sikeres
+    return this.http.patch<unknown>(`${this.baseUrl}/users/${id}/password`, data) // 200 on success
   }
 
   updateProfile(id: string = this.userId, email: string, username: string): Observable<unknown> {
@@ -70,7 +70,7 @@ export class UserService {
       email: email,
       username: username
     }
-    return this.http.patch<unknown>(`${this.baseUrl}/users/${id}/profile`, data) //200 ha sikeres
+    return this.http.patch<unknown>(`${this.baseUrl}/users/${id}/profile`, data) // 200 on success
   }
 
   buyCaff(id: string): Observable<any> {

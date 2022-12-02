@@ -10,9 +10,15 @@ import {HotToastService} from "@ngneat/hot-toast";
   templateUrl: './comment.component.html',
   styleUrls: ['./comment.component.css']
 })
-export class CommentComponent implements OnInit, OnDestroy{
+export class CommentComponent implements OnInit, OnDestroy {
 
-  @Input() comment: CaffComment = {username: "tester", caffDataId: "0", id: "0", message: "Test Message", uploadDate: new Date(Date.now())}
+  @Input() comment: CaffComment = {
+    username: "tester",
+    caffDataId: "0",
+    id: "0",
+    message: "Test Message",
+    uploadDate: new Date(Date.now())
+  }
   @Input() isAdmin: boolean = false
   @Input() username: string = "tester"
 
@@ -29,28 +35,27 @@ export class CommentComponent implements OnInit, OnDestroy{
 
   deleteComment(id: string) {
     const sure = window.confirm("Are you sure to delete this comment?")
-    if(sure){
+    if (sure) {
       this.deleting = true
-      if(this.isAdmin){
+      if (this.isAdmin) {
         this.subscriptionDelete = this.adminService.deleteComment(id).subscribe({
-          next: value => {
+          next: _value => {
             this.alert.success("Comment deleted")
             this.deleting = false
             this.onDeleted.emit()
           },
-          error: err => {
+          error: _err => {
             this.deleting = false
           }
         })
-      }
-      else {
+      } else {
         this.subscriptionDelete = this.userService.deleteComment(id).subscribe({
-          next: value => {
+          next: _value => {
             this.alert.success("Comment deleted")
             this.deleting = false
             this.onDeleted.emit()
           },
-          error: err => {
+          error: _err => {
             this.deleting = false
           }
         })

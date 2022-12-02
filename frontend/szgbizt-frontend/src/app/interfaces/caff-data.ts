@@ -1,4 +1,5 @@
 import {CaffComment} from "./caffComment";
+
 export interface CaffData {
   id: string,
   filename: string,

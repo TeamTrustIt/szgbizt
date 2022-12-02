@@ -5,7 +5,6 @@ import {ButtonModule} from "../button/button.module";
 import {UseHttpImgSrcModule} from "../../pipes/use-http-img-src/use-http-img-src.module";
 
 
-
 @NgModule({
   declarations: [
     CaffCardComponent

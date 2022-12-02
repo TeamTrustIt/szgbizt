@@ -12,9 +12,12 @@
       </div>
 
       <p class="bold mb-5">User Password:</p>
-      <app-text-input classes="mb-5" placeholder="Current password" [(value)]="currentPassword" inputType="password"></app-text-input>
-      <app-text-input [(value)]="newPassword" classes="mb-5" placeholder="New password" inputType="password"></app-text-input>
-      <app-text-input [(value)]="newPasswordConfirm" classes="mb-10" placeholder="Confirm new password" inputType="password"></app-text-input>
+      <app-text-input classes="mb-5" placeholder="Current password" [(value)]="currentPassword"
+                      inputType="password"></app-text-input>
+      <app-text-input [(value)]="newPassword" classes="mb-5" placeholder="New password"
+                      inputType="password"></app-text-input>
+      <app-text-input [(value)]="newPasswordConfirm" classes="mb-10" placeholder="Confirm new password"
+                      inputType="password"></app-text-input>
       <div class="flex justify-right">
         <app-button [disabled]="updatingPassword" (onClick)="updatePassword()" text="Change password"></app-button>
       </div>
@@ -26,7 +29,9 @@
         <app-button routerLink="/upload" icon="add" type="icon"></app-button>
       </div>
       <div class="grid-2">
-        <app-caff-card [deleteEnabled]="true" (onDeleteClicked)="deleteCaff(c.id, c.filename)" (onDetailsClicked)="navigateToDetail(c.id)" *ngFor="let c of userO.caffData" [caffData]="c"></app-caff-card>
+        <app-caff-card [deleteEnabled]="true" (onDeleteClicked)="deleteCaff(c.id, c.filename)"
+                       (onDetailsClicked)="navigateToDetail(c.id)" *ngFor="let c of userO.caffData"
+                       [caffData]="c"></app-caff-card>
       </div>
     </div>
 

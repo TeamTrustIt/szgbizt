@@ -10,12 +10,15 @@
   .profilePage {
     flex-direction: column;
   }
+
   .w-35 {
     width: 100%;
   }
+
   .w-45 {
     width: 100%;
   }
+
   .w-55 {
     width: 100%;
   }

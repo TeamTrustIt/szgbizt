@@ -1,10 +1,9 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RegisterComponent } from './register.component';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {RegisterComponent} from './register.component';
 import {ButtonModule} from "../../components/button/button.module";
 import {TextInputModule} from "../../components/text-input/text-input.module";
 import {AppRoutingModule} from "../../app-routing.module";
-
 
 
 @NgModule({
@@ -18,4 +17,5 @@ import {AppRoutingModule} from "../../app-routing.module";
     AppRoutingModule
   ]
 })
-export class RegisterModule { }
+export class RegisterModule {
+}

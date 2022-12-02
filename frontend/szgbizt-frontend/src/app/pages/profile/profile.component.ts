@@ -65,12 +65,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
     if (this.userO.email !== "" && this.userO.username !== "") {
       this.updatingProfile = true
       this.subscriptionUpdateProfile = this.userService.updateProfile(undefined, this.userO.email, this.userO.username).subscribe({
-        next: (res) => {
+        next: (_res) => {
           this.updatingProfile = false
           this.alertService.success("Profile updated")
           this.getUserData()
         },
-        error: err => {
+        error: _err => {
           this.updatingProfile = false
         }
       })
@@ -84,7 +84,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       if (this.newPassword === this.newPasswordConfirm) {
         this.updatingPassword = true
         this.subscriptionUpdatePassword = this.userService.updatePassword(undefined, this.currentPassword, this.newPassword).subscribe({
-          next: value => {
+          next: _value => {
             this.updatingPassword = false
             this.getUserData()
             this.currentPassword = ""
@@ -92,7 +92,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
             this.newPasswordConfirm = ""
             this.alertService.success("Password successfully updated")
           },
-          error: err => {
+          error: _err => {
             this.updatingPassword = false
           }
         })
@@ -110,7 +110,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     if (sure) {
       this.deletingUser = true
       this.subscriptionDeleteUser = this.userService.deleteUser().subscribe({
-        next: (res) => {
+        next: (_res) => {
           this.alertService.success("User successfully deleted")
           this.deletingUser = false
           this.authService.logout()
@@ -125,14 +125,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
   deleteCaff(id: string, filename: string) {
     const sure = window.confirm(`Are you sure to delete ${filename}?`)
     if (sure) {
-      if(this.isAdmin){
-        this.adminService.deleteCaff(id).subscribe(res => {
+      if (this.isAdmin) {
+        this.adminService.deleteCaff(id).subscribe(_res => {
           this.alertService.success(`${filename} successfully delete`)
           this.getUserData()
         })
-      }
-      else {
-        this.userService.deleteCaff(id).subscribe(res => {
+      } else {
+        this.userService.deleteCaff(id).subscribe(_res => {
           this.alertService.success(`${filename} successfully delete`)
           this.getUserData()
         })

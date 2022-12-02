@@ -28,17 +28,16 @@ export class AdminService {
     return this.http.get<UserEditDto>(`${this.baseUrl}/users/${id}`)
   }
 
-
   deleteUserById(id: string): Observable<unknown> {
-    return this.http.delete<unknown>(`${this.baseUrl}/users/${id}`) //204 ha sikeres
+    return this.http.delete<unknown>(`${this.baseUrl}/users/${id}`) // 204 on success
   }
 
   deleteCaff(id: string): Observable<unknown> {
-    return this.http.delete<unknown>(`${this.baseUrl}/caff-data/${id}`) //204 ha sikeres
+    return this.http.delete<unknown>(`${this.baseUrl}/caff-data/${id}`) // 204 on success
   }
 
   deleteComment(id: string): Observable<unknown> {
-    return this.http.delete<unknown>(`${this.baseUrl}/comments/${id}`) //204 ha sikeres
+    return this.http.delete<unknown>(`${this.baseUrl}/comments/${id}`) // 204 on success
   }
 
 }

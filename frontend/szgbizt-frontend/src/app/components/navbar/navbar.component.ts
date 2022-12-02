@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {AuthService} from "../../services/AuthService";
 import {Store} from "@ngrx/store";
 import {AuthState} from "../../interfaces/states/auth-state";
@@ -14,7 +14,8 @@ export class NavbarComponent implements OnInit {
   isAdmin: boolean = false
   title: string = 'SECUSHOP'
 
-  constructor(private store: Store<{ auth: AuthState }>, private authService: AuthService) { }
+  constructor(private store: Store<{ auth: AuthState }>, private authService: AuthService) {
+  }
 
   ngOnInit(): void {
     this.store.subscribe((state: { auth: AuthState }) => {

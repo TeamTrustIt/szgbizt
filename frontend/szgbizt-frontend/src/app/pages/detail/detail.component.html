@@ -5,10 +5,13 @@
     <div class="w-55 flex flex-col -mt-2">
       <div class="flex gap-2 mb-5">
         <p class="bold">{{caff?.filename}}</p>
-        <app-button [disabled]="buyingCaff" (onClick)="buyCaff(caff.id)" type="buy" [text]="caff?.price?.toString() + ' Eur'"></app-button>
-        <app-button *ngIf="isAdmin" [disabled]="deletingCaff" (onClick)="deleteCaff(caff?.id, caff?.filename)" type="icon" icon="delete"></app-button>
+        <app-button [disabled]="buyingCaff" (onClick)="buyCaff(caff.id)" type="buy"
+                    [text]="caff?.price?.toString() + ' Eur'"></app-button>
+        <app-button *ngIf="isAdmin" [disabled]="deletingCaff" (onClick)="deleteCaff(caff?.id, caff?.filename)"
+                    type="icon" icon="delete"></app-button>
       </div>
-      <img class="simpleImage aspect-video" [src]="(caff?.imageUrl ?? '') | useHttpImgSrc" [alt]="caff?.filename + ' image'">
+      <img class="simpleImage aspect-video" [src]="(caff?.imageUrl ?? '') | useHttpImgSrc"
+           [alt]="caff?.filename + ' image'">
       <div class="flex-mobile justify-between">
         <div class="flex pr-10">
           <p class="bold pr-10">Author:</p>
@@ -28,7 +31,8 @@
     <div class="w-35">
       <p class="bold mb-5">Comments:</p>
       <div class="mb-5">
-        <app-comment (onDeleted)="getCaffData()" [isAdmin]="isAdmin" [username]="username" *ngFor="let c of caff?.comments" [comment]="c"></app-comment>
+        <app-comment (onDeleted)="getCaffData()" [isAdmin]="isAdmin" [username]="username"
+                     *ngFor="let c of caff?.comments" [comment]="c"></app-comment>
       </div>
       <div class="flex justify-between">
         <app-text-input classes="pr-10" [(value)]="newCommentText" placeholder="Write a Comment..."></app-text-input>

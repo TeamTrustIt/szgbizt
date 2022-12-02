@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from "../../services/UserService";
 import {CaffDataNoCommentDto} from "../../interfaces/caff-data-no-comment-dto";
-import {map, Observable} from "rxjs";
 import {Router} from "@angular/router";
 
 @Component({
@@ -9,7 +8,7 @@ import {Router} from "@angular/router";
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.css']
 })
-export class ListComponent implements OnInit{
+export class ListComponent implements OnInit {
 
   caffs: CaffDataNoCommentDto[] = []
   caffsFiltered: CaffDataNoCommentDto[] = []

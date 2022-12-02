@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
 import {LoginComponent} from "./pages/login/login.component";
 import {RegisterComponent} from "./pages/register/register.component";
 import {ListUserComponent} from "./pages/list-user/list-user.component";
@@ -14,7 +14,6 @@ const routes: Routes = [
   {path: 'login', component: LoginComponent, canActivate: [AuthGuard, AdminGuard]},
   {path: 'register', component: RegisterComponent, canActivate: [AuthGuard, AdminGuard]},
 
-  //{path: 'admin-login', component: LoginAdminComponent, canActivate: [AuthGuard, AdminGuard]},
   {path: 'admin-users', component: ListUserComponent, canActivate: [AuthGuard, AdminGuard]},
 
   {path: 'home', component: ListComponent, canActivate: [AuthGuard]},
@@ -22,7 +21,7 @@ const routes: Routes = [
   {path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
   {path: 'upload', component: UploadComponent, canActivate: [AuthGuard]},
 
-  {path: '**', redirectTo: '/login',  pathMatch: 'full' },
+  {path: '**', redirectTo: '/login', pathMatch: 'full'},
 ];
 
 @NgModule({
@@ -32,4 +31,5 @@ const routes: Routes = [
   })],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+}

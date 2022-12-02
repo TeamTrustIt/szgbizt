@@ -46,10 +46,10 @@ export class UseHttpImageSourcePipe implements PipeTransform, OnDestroy {
         // we use switchMap, so the previous subscription gets torn down
         switchMap((imagePath: string) => this.httpClient
           // we get the imagePath, observing the response and getting it as a 'blob'
-          .get(imagePath, { observe: 'response', responseType: 'blob' })
+          .get(imagePath, {observe: 'response', responseType: 'blob'})
           .pipe(
             // we map our blob into an ObjectURL
-            map((response: HttpResponse<Blob>) => URL.createObjectURL(response.body? response.body : new Blob)),
+            map((response: HttpResponse<Blob>) => URL.createObjectURL(response.body ? response.body : new Blob)),
             // we bypass Angular's security mechanisms
             map((unsafeBlobUrl: string) => this.domSanitizer.bypassSecurityTrustUrl(unsafeBlobUrl)),
             // we trigger it only when there is a change in the result

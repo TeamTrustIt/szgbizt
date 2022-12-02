@@ -63,12 +63,12 @@ export class DetailComponent implements OnInit, OnDestroy {
     if (this.newCommentText !== "" && this.caffId) {
       this.commenting = true
       this.subscriptionComment = this.userService.sendComment(this.caffId, this.newCommentText).subscribe({
-        next: (res) => {
+        next: (_res) => {
           this.newCommentText = ""
           this.commenting = false
           this.getCaffData()
         },
-        error: err => {
+        error: _err => {
           this.commenting = false
         }
       })
@@ -79,8 +79,8 @@ export class DetailComponent implements OnInit, OnDestroy {
 
 
   downLoadCaffFile(data: any) {
-    const blob = new Blob([data], { type: 'application/octet-stream' });
-    const url= window.URL.createObjectURL(blob);
+    const blob = new Blob([data], {type: 'application/octet-stream'});
+    const url = window.URL.createObjectURL(blob);
     window.open(url);
   }
 
@@ -108,7 +108,7 @@ export class DetailComponent implements OnInit, OnDestroy {
       if (sure) {
         this.deletingCaff = true
         this.subscriptionDeleteCaff = this.adminService.deleteCaff(id).subscribe({
-          next: (res) => {
+          next: (_res) => {
             this.deletingCaff = false
             this.alertService.success(`${filename} successfully deleted`)
             this.router.navigateByUrl("/home")

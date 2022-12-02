@@ -16,7 +16,7 @@ export class ButtonComponent {
   @Output() onClick = new EventEmitter<unknown>()
 
   onClicked() {
-    if(!this.disabled) {
+    if (!this.disabled) {
       this.onClick.emit()
     }
   }

@@ -1,5 +1,5 @@
 <div class="simpleCard flex flex-col {{classes}}">
-  <img class="simpleImage cardImage flex-grow" [src]="caffData.imageUrl | useHttpImgSrc"  alt="card-image">
+  <img class="simpleImage cardImage flex-grow" [src]="caffData.imageUrl | useHttpImgSrc" alt="card-image">
   <div class="simpleCardBottom">
     <div class="flex justify-between">
       <p class="bold">{{caffData.filename}}</p>
@@ -7,7 +7,8 @@
     </div>
     <p>{{caffData.description}}</p>
     <div [ngClass]="deleteEnabled ? 'justify-between' : 'justify-right'" class="flex items-center">
-      <app-button *ngIf="deleteEnabled" (onClick)="onDeleteClicked.emit(caffData.id)" type="icon" icon="delete"></app-button>
+      <app-button *ngIf="deleteEnabled" (onClick)="onDeleteClicked.emit(caffData.id)" type="icon"
+                  icon="delete"></app-button>
       <app-button (onClick)="onDetailsClicked.emit(caffData.id)" text="Details"></app-button>
     </div>
   </div>

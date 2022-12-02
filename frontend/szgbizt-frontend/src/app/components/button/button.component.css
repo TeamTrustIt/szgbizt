@@ -7,13 +7,16 @@
   padding: 10px 20px;
   cursor: pointer;
 }
+
 .simpleButton:hover {
   background: rgba(3, 168, 243, 0.68);
 }
+
 .simpleButton:disabled {
   background: rgba(3, 168, 243, 0.68);
   cursor: progress;
 }
+
 .simpleButton:active {
   background: rgba(3, 168, 243, 0.57);
 }
@@ -25,16 +28,20 @@
   cursor: pointer;
   background: transparent;
 }
+
 .iconButton:hover {
 
 }
+
 .iconButton:disabled {
   cursor: progress;
 }
+
 .iconButton:disabled:active {
   cursor: progress;
   scale: 100%
 }
+
 .iconButton:active {
   scale: 110%;
 }
@@ -46,15 +53,17 @@
   font-weight: bold;
   cursor: pointer;
 }
+
 .navButton:hover {
   border-bottom: black solid 1px;
-  //border-top: black solid 1px;
+/ / border-top: black solid 1 px;
 }
 
 .square {
   width: 30px;
   aspect-ratio: 1/1;
 }
+
 .buyButton {
   display: flex;
   flex-direction: row;
@@ -72,10 +81,12 @@
 .buyButton:hover {
   background: rgba(3, 168, 243, 0.68);
 }
+
 .buyButton:disabled {
   background: rgba(3, 168, 243, 0.68);
   cursor: progress;
 }
+
 .buyButton:active {
   background: rgba(3, 168, 243, 0.57);
 }

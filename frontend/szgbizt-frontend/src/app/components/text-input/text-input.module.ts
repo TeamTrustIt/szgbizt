@@ -1,20 +1,20 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { TextInputComponent } from './text-input.component';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {TextInputComponent} from './text-input.component';
 import {FormsModule} from "@angular/forms";
 
 
-
 @NgModule({
-    declarations: [
-        TextInputComponent
-    ],
-    exports: [
-        TextInputComponent
-    ],
-    imports: [
-        CommonModule,
-        FormsModule
-    ]
+  declarations: [
+    TextInputComponent
+  ],
+  exports: [
+    TextInputComponent
+  ],
+  imports: [
+    CommonModule,
+    FormsModule
+  ]
 })
-export class TextInputModule { }
+export class TextInputModule {
+}

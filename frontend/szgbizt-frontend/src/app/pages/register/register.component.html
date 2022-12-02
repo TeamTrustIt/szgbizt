@@ -4,10 +4,11 @@
     <app-text-input [(value)]="email" classes="mb-5" placeholder="Email Address"></app-text-input>
     <app-text-input [(value)]="username" classes="mb-5" placeholder="Username"></app-text-input>
     <app-text-input [(value)]="password" classes="mb-5" inputType="password" placeholder="Password"></app-text-input>
-    <app-text-input [(value)]="passwordConfirm" classes="mb-10" inputType="password" placeholder="Confirm Password"></app-text-input>
+    <app-text-input [(value)]="passwordConfirm" classes="mb-10" inputType="password"
+                    placeholder="Confirm Password"></app-text-input>
     <div class="flex justify-between w-full items-center">
       <app-button routerLink="/login" text="Sign In"></app-button>
-      <app-button (onClick)="register()" text="Register"></app-button>
+      <app-button [disabled]="registering" (onClick)="register()" text="Register"></app-button>
     </div>
   </div>
 
