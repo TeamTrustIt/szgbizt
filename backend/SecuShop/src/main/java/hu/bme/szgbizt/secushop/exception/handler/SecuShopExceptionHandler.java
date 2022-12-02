@@ -83,9 +83,15 @@ public class SecuShopExceptionHandler {
         return buildErrorMessage(ex.getErrorCode());
     }
 
+    @ExceptionHandler(InvalidFilenameException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public @ResponseBody ErrorMessageResponse handleInvalidFilenameException(InvalidFilenameException ex) {
+        return buildErrorMessage(ex.getErrorCode());
+    }
+
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public @ResponseBody ErrorMessageResponse handlePasswordMismatchException(MaxUploadSizeExceededException ex) {
+    public @ResponseBody ErrorMessageResponse handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex) {
         return buildErrorMessage(ErrorCode.SS_0101, "The upload file size is greater than the allowed");
     }
 

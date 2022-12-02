@@ -13,11 +13,6 @@ import static springfox.documentation.spi.DocumentationType.SWAGGER_2;
 @EnableWebMvc
 public class SwaggerConfig {
 
-    public static final String[] PUBLIC_SWAGGER_ENDPOINT_PATTERNS = new String[]{
-            "/v2/api-docs",
-            "/swagger-resources/**",
-            "/swagger-ui/**"
-    };
     private static final String RESOURCE_PACKAGE_OF_SHOP_CONTROLLERS = "hu.bme.szgbizt.secushop.controller";
 
     @Bean

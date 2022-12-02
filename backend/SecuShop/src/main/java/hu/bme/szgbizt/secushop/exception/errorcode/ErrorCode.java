@@ -9,6 +9,7 @@ public enum ErrorCode {
     SS_0102("Invalid file extension"),
     SS_0103("Caff data with the specified name already exists"),
     SS_0104("Password mismatch"),
+    SS_0105("Invalid character(s) in the filename, every character must be letter or number or '-' and the length must be between 1 and 30 characters"),
     SS_0120("Username is not unique"),
     SS_0121("Email is not unique"),
     SS_0122("Invalid current password"),

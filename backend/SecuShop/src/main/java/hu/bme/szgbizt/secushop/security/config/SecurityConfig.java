@@ -26,7 +26,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
-import static hu.bme.szgbizt.secushop.config.SwaggerConfig.PUBLIC_SWAGGER_ENDPOINT_PATTERNS;
 import static hu.bme.szgbizt.secushop.util.Constant.SYSTEM_BASE_URL;
 import static org.springframework.security.config.Customizer.withDefaults;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
@@ -62,6 +61,12 @@ public class SecurityConfig {
     private static final List<String> ALLOWED_METHODS = List.of(
             "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"
     );
+
+    private static final String[] PUBLIC_SWAGGER_ENDPOINT_PATTERNS = new String[]{
+            "/v2/api-docs",
+            "/swagger-resources/**",
+            "/swagger-ui/**"
+    };
 
     private final RsaKeyProperties rsaKeyProperties;
     private final JpaUserDetailsService jpaUserDetailsService;
