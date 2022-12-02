@@ -2,6 +2,7 @@ package hu.bme.szgbizt.secushop.controller;
 
 import hu.bme.szgbizt.secushop.dto.*;
 import hu.bme.szgbizt.secushop.exception.InvalidFileExtensionException;
+import hu.bme.szgbizt.secushop.exception.InvalidFilenameException;
 import hu.bme.szgbizt.secushop.service.SecuShopService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,8 +20,10 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import static hu.bme.szgbizt.secushop.util.Constant.FILE_EXTENSION_CAFF;
+import static hu.bme.szgbizt.secushop.util.Constant.REGEX_FILENAME;
 import static hu.bme.szgbizt.secushop.util.handler.JwtHandler.getUserId;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
@@ -61,6 +64,11 @@ public class SecuShopController implements ISecuShopBaseController {
             @RequestParam("file") MultipartFile file,
             @RequestParam("filename") String filename,
             @RequestParam("description") String description) {
+
+        if (!Pattern.matches(REGEX_FILENAME, filename)) {
+            LOGGER.error("The specified filename [{}] is invalid", filename);
+            throw new InvalidFilenameException();
+        }
 
         var callerUserId = getUserId(authentication);
         LOGGER.info("Uploading caff data [{}] by [{}]", filename, callerUserId);

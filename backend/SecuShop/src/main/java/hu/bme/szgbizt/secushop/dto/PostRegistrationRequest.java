@@ -20,11 +20,11 @@ import static hu.bme.szgbizt.secushop.util.Constant.REGEX_PASSWORD;
 @JsonInclude(NON_NULL)
 public final class PostRegistrationRequest {
 
-    @Pattern(regexp = REGEX_ONLY_LETTERS_AND_NUMBERS, message = "Invalid character(s), every character should be letter or number")
+    @Pattern(regexp = REGEX_ONLY_LETTERS_AND_NUMBERS, message = "Invalid character(s), every character must be letter or number")
     @NotNull(message = "Username cannot be null")
     private final String username;
 
-    @Pattern(regexp = REGEX_PASSWORD, message = "Invalid character(s), every character should be letter or number and at least 8 characters long")
+    @Pattern(regexp = REGEX_PASSWORD, message = "Invalid character(s), every character must be letter or number and the length must be at least 8 characters")
     @NotNull(message = "Password cannot be null")
     private final String password;
 

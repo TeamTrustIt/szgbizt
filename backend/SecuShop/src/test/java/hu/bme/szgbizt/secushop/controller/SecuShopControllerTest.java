@@ -2,6 +2,7 @@ package hu.bme.szgbizt.secushop.controller;
 
 import hu.bme.szgbizt.secushop.dto.*;
 import hu.bme.szgbizt.secushop.exception.InvalidFileExtensionException;
+import hu.bme.szgbizt.secushop.exception.InvalidFilenameException;
 import hu.bme.szgbizt.secushop.service.SecuShopService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static hu.bme.szgbizt.secushop.exception.errorcode.ErrorCode.SS_0102;
+import static hu.bme.szgbizt.secushop.exception.errorcode.ErrorCode.SS_0105;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -75,7 +77,23 @@ class SecuShopControllerTest {
     }
 
     @Test
-    void testCreateCaffWithCaffFile() {
+    void testCreateCaffWithCaffFileButInvalidFilename() {
+
+        // Arrange
+        var httpServletRequest = mock(HttpServletRequest.class);
+        var content = "content".getBytes();
+        var file = new MockMultipartFile("name", "filename.caff", "contentType", content);
+
+        // Act
+        var invalidFilenameException = assertThrows(InvalidFilenameException.class,
+                () -> secuShopController.createCaffData(authentication, httpServletRequest, file, "file name", "description"));
+
+        // Arrange
+        assertEquals(SS_0105, invalidFilenameException.getErrorCode());
+    }
+
+    @Test
+    void testCreateCaffWithCaffFileHappyPath() {
 
         // Arrange
         var httpServletRequest = mock(HttpServletRequest.class);

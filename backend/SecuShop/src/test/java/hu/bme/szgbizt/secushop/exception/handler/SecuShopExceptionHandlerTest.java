@@ -176,6 +176,20 @@ class SecuShopExceptionHandlerTest {
     }
 
     @Test
+    void testHandleInvalidFilenameException() {
+
+        // Arrange
+        var invalidFilenameException = new InvalidFilenameException();
+
+        // Act
+        var errorMessageResponse = secuShopExceptionHandler.handleInvalidFilenameException(invalidFilenameException);
+
+        // Assert
+        assertNotNull(errorMessageResponse);
+        assertEquals(SS_0105.name(), errorMessageResponse.getErrorCode());
+    }
+
+    @Test
     void testHandleMaxUploadSizeExceededException() {
 
         // Arrange

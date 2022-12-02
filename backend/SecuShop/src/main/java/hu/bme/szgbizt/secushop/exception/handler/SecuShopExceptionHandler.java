@@ -83,6 +83,12 @@ public class SecuShopExceptionHandler {
         return buildErrorMessage(ex.getErrorCode());
     }
 
+    @ExceptionHandler(InvalidFilenameException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public @ResponseBody ErrorMessageResponse handleInvalidFilenameException(InvalidFilenameException ex) {
+        return buildErrorMessage(ex.getErrorCode());
+    }
+
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public @ResponseBody ErrorMessageResponse handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex) {
