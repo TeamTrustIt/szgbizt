@@ -4,6 +4,7 @@ import hu.bme.szgbizt.secushop.dto.CaffData;
 import hu.bme.szgbizt.secushop.dto.DetailedUser;
 import hu.bme.szgbizt.secushop.dto.RegisteredUser;
 import hu.bme.szgbizt.secushop.exception.CaffDataNotFoundException;
+import hu.bme.szgbizt.secushop.exception.CommentNotFoundException;
 import hu.bme.szgbizt.secushop.exception.SelfDeletionException;
 import hu.bme.szgbizt.secushop.exception.UserNotFoundException;
 import hu.bme.szgbizt.secushop.persistence.entity.CaffDataEntity;
@@ -132,6 +133,10 @@ public class AdminService {
     }
 
     public void deleteComment(UUID commentIdToDelete) {
-        commentRepository.deleteById(commentIdToDelete);
+
+        var commentEntity = commentRepository.findById(commentIdToDelete)
+                        .orElseThrow(CommentNotFoundException::new);
+
+        commentRepository.delete(commentEntity);
     }
 }

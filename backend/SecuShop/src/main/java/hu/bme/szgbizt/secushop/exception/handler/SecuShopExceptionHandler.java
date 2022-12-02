@@ -85,7 +85,7 @@ public class SecuShopExceptionHandler {
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public @ResponseBody ErrorMessageResponse handlePasswordMismatchException(MaxUploadSizeExceededException ex) {
+    public @ResponseBody ErrorMessageResponse handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex) {
         return buildErrorMessage(ErrorCode.SS_0101, "The upload file size is greater than the allowed");
     }
 

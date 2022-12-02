@@ -14,7 +14,8 @@ public final class Constant {
     public static final String FILE_EXTENSION_CAFF = ".caff";
     public static final String FILE_EXTENSION_JSON = ".json";
     public static final String REGEX_ONLY_LETTERS_AND_NUMBERS = "^[a-zA-Z0-9]*$";
-    public static final String REGEX_COMMENT = "^[a-zA-Z0-9.!?, ]*$";
+    public static final String REGEX_PASSWORD = "^[a-zA-Z0-9]*$";
+    public static final String REGEX_COMMENT = "^[a-zA-Z0-9.!?, ]{8,}$";
 
     private Constant() {
         // Empty constructor.

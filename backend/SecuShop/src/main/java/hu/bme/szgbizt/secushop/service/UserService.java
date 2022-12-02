@@ -107,8 +107,11 @@ public class UserService {
             throw new NoAuthorityToProcessException();
         }
 
-        shopUserRepository.deleteById(userIdToDelete);
-        userRepository.deleteById(userIdToDelete);
+        var shopUserEntity = shopUserRepository.findById(userIdToDelete)
+                .orElseThrow(UserNotFoundException::new);
+
+        shopUserRepository.delete(shopUserEntity);
+        userRepository.delete(userEntityToDelete);
     }
 
     public void deleteComment(UUID callerUserId, UUID commentIdToDelete) {

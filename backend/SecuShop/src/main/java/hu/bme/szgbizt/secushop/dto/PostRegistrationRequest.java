@@ -11,6 +11,7 @@ import javax.validation.constraints.Pattern;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static hu.bme.szgbizt.secushop.util.Constant.REGEX_ONLY_LETTERS_AND_NUMBERS;
+import static hu.bme.szgbizt.secushop.util.Constant.REGEX_PASSWORD;
 
 /**
  * Dto class for registration.
@@ -23,7 +24,7 @@ public final class PostRegistrationRequest {
     @NotNull(message = "Username cannot be null")
     private final String username;
 
-    @Pattern(regexp = REGEX_ONLY_LETTERS_AND_NUMBERS, message = "Invalid character(s), every character should be letter or number")
+    @Pattern(regexp = REGEX_PASSWORD, message = "Invalid character(s), every character should be letter or number and at least 8 characters long")
     @NotNull(message = "Password cannot be null")
     private final String password;
 

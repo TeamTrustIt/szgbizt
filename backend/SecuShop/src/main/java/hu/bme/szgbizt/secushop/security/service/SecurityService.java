@@ -68,12 +68,13 @@ public class SecurityService {
 
     public LoggedUser login(Authentication authentication) {
 
+        var userEntity = userRepository.findByUsername(authentication.getName())
+                .orElseThrow(UserNotFoundException::new);
+
         LOGGER.info("Token requested for user [{}]", authentication.getName());
         var token = generateToken(authentication);
         LOGGER.info("Token granted for user [{}]", authentication.getName());
 
-        var userEntity = userRepository.findByUsername(authentication.getName())
-                .orElseThrow(UserNotFoundException::new);
 
         var user = new RegisteredUser(
                 userEntity.getId(),
