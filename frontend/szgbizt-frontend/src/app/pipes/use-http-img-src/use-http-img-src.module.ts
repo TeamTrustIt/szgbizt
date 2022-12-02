@@ -1,16 +1,16 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {UseHttpImageSourcePipe} from "./use-http-img-src.pipe";
+import {UseHttpImgSourcePipe} from "./use-http-img-src.pipe";
 
 @NgModule({
   declarations: [
-    UseHttpImageSourcePipe
+    UseHttpImgSourcePipe
   ],
   imports: [
     CommonModule
   ],
   exports: [
-    UseHttpImageSourcePipe
+    UseHttpImgSourcePipe
   ]
 })
 export class UseHttpImgSrcModule {

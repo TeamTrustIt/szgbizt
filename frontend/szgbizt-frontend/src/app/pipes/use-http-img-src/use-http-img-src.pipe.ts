@@ -9,7 +9,7 @@ import {HttpClient, HttpResponse} from "@angular/common/http";
   name: 'useHttpImgSrc',
   pure: false,
 })
-export class UseHttpImageSourcePipe implements PipeTransform, OnDestroy {
+export class UseHttpImgSourcePipe implements PipeTransform, OnDestroy {
   private subscription = new Subscription();
   private transformValue = new BehaviorSubject<string>('');
 
@@ -21,8 +21,6 @@ export class UseHttpImageSourcePipe implements PipeTransform, OnDestroy {
     // every pipe instance will set up their subscription
     this.setUpSubscription();
   }
-
-  // ...
 
   transform(imagePath: string): string | SafeUrl {
     // we emit a new value
