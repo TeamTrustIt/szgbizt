@@ -34,7 +34,7 @@ export class ListUserComponent implements OnInit, OnDestroy {
     if (sure) {
       this.deleting = true
       this.subscriptionDelete = this.adminService.deleteUserById(id).subscribe({
-        next: (res) => {
+        next: (_res) => {
           this.deleting = false
           this.alertService.success(name + " successfully deleted")
           this.getUsers()

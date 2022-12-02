@@ -10,7 +10,6 @@ import {ErrorInterceptor} from "./interceptors/ErrorInterceptor";
 import {UnauthorizedInterceptor} from "./interceptors/UnauthorizedInterceptor";
 import {LoginModule} from "./pages/login/login.module";
 import {NavbarModule} from "./components/navbar/navbar.module";
-import {LoginAdminModule} from "./pages/login-admin/login-admin.module";
 import {RegisterModule} from "./pages/register/register.module";
 import {DetailModule} from "./pages/detail/detail.module";
 import {ListModule} from "./pages/list/list.module";
@@ -35,7 +34,6 @@ import {UseHttpImgSrcModule} from "./pipes/use-http-img-src/use-http-img-src.mod
     }, {}),
     LoginModule,
     NavbarModule,
-    LoginAdminModule,
     RegisterModule,
     DetailModule,
     ListModule,

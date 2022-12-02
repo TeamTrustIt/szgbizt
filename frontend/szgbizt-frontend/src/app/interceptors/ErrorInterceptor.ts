@@ -17,7 +17,7 @@ export class ErrorInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     return next.handle(request).pipe(
-      catchError((err: any, caught: any) => {
+      catchError((err: any, _caught: any) => {
         if(err instanceof HttpErrorResponse) {
           switch (err.status) {
             case HttpStatusCode.Forbidden: {

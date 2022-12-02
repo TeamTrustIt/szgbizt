@@ -56,7 +56,7 @@
 
 .navButton:hover {
   border-bottom: black solid 1px;
-/ / border-top: black solid 1 px;
+  border-top: black solid 1px;
 }
 
 .square {
