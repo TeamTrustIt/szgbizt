@@ -44,8 +44,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.store.subscribe(state => {
       this.isAdmin = state.auth.user?.roles ? state.auth.user.roles === "ROLE_ADMIN" : false
       this.getUserData()
-    })
-
+    }).unsubscribe()
   }
 
   getUserData() {

@@ -33,9 +33,10 @@ export class UploadComponent implements OnDestroy {
       this.subscription = this.userService.upload(formData).subscribe({
         next: (res) => {
           this.alertService.success(`${res.filename} was uploaded successfully`)
+          this.uploading = false
           this.router.navigateByUrl("/home")
         },
-        complete: () => {
+        error: _err => {
           this.uploading = false
         }
       })
