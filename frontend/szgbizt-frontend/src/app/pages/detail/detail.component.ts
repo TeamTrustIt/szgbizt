@@ -113,7 +113,7 @@ export class DetailComponent implements OnInit, OnDestroy {
             this.alertService.success(`${filename} successfully deleted`)
             this.router.navigateByUrl("/home")
           },
-          complete: () => {
+          error: () => {
             this.deletingCaff = false
           }
         })
