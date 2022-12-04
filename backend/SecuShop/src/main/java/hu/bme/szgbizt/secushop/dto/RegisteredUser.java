@@ -23,7 +23,7 @@ public final class RegisteredUser {
     @NotNull(message = "Id cannot be null")
     private final UUID id;
 
-    @Pattern(regexp = REGEX_ONLY_LETTERS_AND_NUMBERS, message = "Invalid character(s), every character should be letter or number and the length must be at least 5 characters")
+    @Pattern(regexp = REGEX_ONLY_LETTERS_AND_NUMBERS, message = "Invalid character(s) in the username, every character should be letter or number and the length must be at least 5 characters")
     @NotNull(message = "Username cannot be null")
     private final String username;
 

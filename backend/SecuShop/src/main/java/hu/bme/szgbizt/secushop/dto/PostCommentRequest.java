@@ -16,7 +16,7 @@ import static hu.bme.szgbizt.secushop.util.Constant.REGEX_COMMENT;
 @JsonInclude(NON_NULL)
 public final class PostCommentRequest {
 
-    @Pattern(regexp = REGEX_COMMENT, message = "Invalid character(s), every character should be letter, number, point, comma or white space")
+    @Pattern(regexp = REGEX_COMMENT, message = "Invalid character(s) in the comment, every character should be letter, number, point, comma or white space")
     @NotNull(message = "Message cannot be null")
     private final String message;
 
