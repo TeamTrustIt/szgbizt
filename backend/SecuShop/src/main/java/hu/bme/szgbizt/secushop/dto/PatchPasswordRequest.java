@@ -18,11 +18,11 @@ import static hu.bme.szgbizt.secushop.util.Constant.REGEX_PASSWORD;
 @JsonInclude(NON_NULL)
 public final class PatchPasswordRequest {
 
-    @Pattern(regexp = REGEX_PASSWORD, message = "Invalid character(s), every character must be letter and the length must be at least 8 characters")
+    @Pattern(regexp = REGEX_PASSWORD, message = "Invalid current password, every character must be letter and the length must be at least 8 characters")
     @NotNull(message = "Current password cannot be null")
     private final String currentPassword;
 
-    @Pattern(regexp = REGEX_PASSWORD, message = "Invalid character(s), every character must be letter and the length must be at least 8 characters")
+    @Pattern(regexp = REGEX_PASSWORD, message = "Invalid new password, every character must be letter and the length must be at least 8 characters")
     @NotNull(message = "New password cannot be null")
     private final String newPassword;
 
