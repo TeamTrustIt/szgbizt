@@ -19,7 +19,7 @@ import static hu.bme.szgbizt.secushop.util.Constant.REGEX_ONLY_LETTERS_AND_NUMBE
 @JsonInclude(NON_NULL)
 public final class PatchProfileRequest {
 
-    @Pattern(regexp = REGEX_ONLY_LETTERS_AND_NUMBERS, message = "Invalid character(s), every character should be letter or number and the length must be at least 5 characters")
+    @Pattern(regexp = REGEX_ONLY_LETTERS_AND_NUMBERS, message = "Invalid character(s) in the username, every character should be letter or number and the length must be at least 4 characters")
     @NotNull(message = "Username cannot be null")
     private final String username;
 
